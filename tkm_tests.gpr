@@ -1,0 +1,40 @@
+with "ahven";
+with "tkm_common";
+
+project Tkm_Tests is
+
+   type Build_Type is ("tests", "coverage");
+   Build : Build_Type := external ("BUILD", "tests");
+
+   Compiler_Switches := Tkm_Common.Compiler_Switches & "-gnatwal";
+   Linker_Switches   := ();
+
+   case Build is
+      when "tests" =>
+         for Main use ("test_runner.adb");
+         for Source_Dirs use ("src", "tests");
+         for Object_Dir use "obj/tests";
+
+      when "coverage" =>
+         for Main use ("test_runner.adb");
+         for Source_Dirs use ("src", "tests");
+         for Object_Dir use "obj/cov";
+         Compiler_Switches := Compiler_Switches
+           & ("-ftest-coverage", "-fprofile-arcs");
+         Linker_Switches   := Linker_Switches
+           & ("-fprofile-generate");
+   end case;
+
+   package Compiler is
+      for Default_Switches ("ada") use Compiler_Switches;
+   end Compiler;
+
+   package Linker is
+      for Default_Switches ("ada") use Linker_Switches;
+   end Linker;
+
+   package Binder is
+      for Default_Switches ("ada") use Tkm_Common.Binder_Switches;
+   end Binder;
+
+end Tkm_Tests;
