@@ -1,4 +1,5 @@
 with "alog";
+with "tkmrpc_server";
 
 project Tkm_Common is
 

@@ -1,4 +1,3 @@
-with "tkmrpc_server";
 with "tkm_common";
 
 project Tkm_Tools is
