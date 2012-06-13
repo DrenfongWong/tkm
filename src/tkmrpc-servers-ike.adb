@@ -414,7 +414,7 @@ is
       L.Log (Message => "Nonce of length" & Nonce_Length'Img
              & " requested, context" & Nc_Id'Img);
 
-      Nonce.Size := Interfaces.Unsigned_32 (Nonce_Length);
+      Nonce.Size             := Interfaces.Unsigned_32 (Nonce_Length);
       Nonce.Data (1 .. Size) := Random.Get (Size => Size);
       Result := Results.Ok;
    end Nc_Create;

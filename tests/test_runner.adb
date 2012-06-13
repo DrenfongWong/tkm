@@ -4,6 +4,7 @@ with Ahven.Framework;
 with Tkm.Logger;
 
 with Random_Tests;
+with Server_Ike_Nonce_Tests;
 
 procedure Test_Runner is
    use Ahven.Framework;
@@ -14,6 +15,8 @@ begin
 
    Add_Test (Suite => S.all,
              T     => new Random_Tests.Testcase);
+   Add_Test (Suite => S.all,
+             T     => new Server_Ike_Nonce_Tests.Testcase);
 
    Ahven.Text_Runner.Run (Suite => S);
    Release_Suite (T => S);
