@@ -34,7 +34,7 @@ build_tools: tkm_tools.gpr $(VERSION_SPEC)
 	@gprbuild $(BUILD_OPTS) -P$<
 
 build_tests: tkm_tests.gpr
-	@gprbuild $(GMAKE_OPTS) -P$<
+	@gprbuild $(BUILD_OPTS) -P$<
 
 tests: build_tests
 	@obj/tests/test_runner
