@@ -4,13 +4,10 @@ with Tkmrpc.Results;
 with Tkmrpc.Types;
 with Tkmrpc.Servers.Ike;
 
-with Tkm.Random;
-
 package body Server_Ike_Nonce_Tests is
 
    use Ahven;
    use Tkmrpc;
-   use Tkm;
 
    -------------------------------------------------------------------------
 
@@ -24,7 +21,7 @@ package body Server_Ike_Nonce_Tests is
       Nonce  : Types.Nonce_Type;
       Res    : Results.Result_Type;
    begin
-      Random.Init;
+      Servers.Ike.Init;
       Servers.Ike.Nc_Create (Result       => Res,
                              Nc_Id        => 1,
                              Nonce_Length => Length,
@@ -38,11 +35,11 @@ package body Server_Ike_Nonce_Tests is
                  Message   => "Byte" & B'Img & " not zero");
       end loop;
 
-      Random.Finalize;
+      Servers.Ike.Finalize;
 
    exception
       when others =>
-         Random.Finalize;
+         Servers.Ike.Finalize;
          raise;
    end Check_Nc_Create;
 

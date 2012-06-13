@@ -258,6 +258,22 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Finalize
+   is
+   begin
+      Random.Finalize;
+   end Finalize;
+
+   -------------------------------------------------------------------------
+
+   procedure Init
+   is
+   begin
+      Random.Init;
+   end Init;
+
+   -------------------------------------------------------------------------
+
    procedure Isa_Auth
      (Result       : out Results.Result_Type;
       Isa_Id       : Types.Isa_Id_Type;
