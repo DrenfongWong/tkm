@@ -9,7 +9,7 @@ DESTDIR = /usr/local
 
 NUM_CPUS := $(shell getconf _NPROCESSORS_ONLN)
 
-BUILD_OPTS = -p -j$(NUM_CPUS)
+BUILD_OPTS = -p -j$(NUM_CPUS) -XOBJ_DIR=$(CURDIR)/$(OBJDIR)
 
 all: build_tools
 
