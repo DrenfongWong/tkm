@@ -34,18 +34,19 @@ is
 
    procedure Lock (Object : Element_Handle)
    is
-      Res  : Interfaces.C.int;
-      Size : constant Interfaces.C.size_t := Object.all'Size / 8;
+      Res     : Interfaces.C.int;
+      Size    : constant Interfaces.C.size_t := Object.all'Size / 8;
+      Address : constant System.Address      := Object.all'Address;
    begin
-      Res := C_Mlock (Addr => Object.all'Address,
+      Res := C_Mlock (Addr => Address,
                       Len  => Size);
       Logger.Log (Level   => Logger.Debug,
                   Message => "Locked" & Size'Img & " byte(s) at address "
-                  & System.Address_Image (A => Object.all'Address));
+                  & System.Address_Image (A => Address));
 
       if Res /= 0 then
          raise Locking_Error with "Unable to lock" & Size'Img & " byte(s) "
-           & "at address " & System.Address_Image (A => Object.all'Address)
+           & "at address " & System.Address_Image (A => Address)
            & ": " & Anet.Get_Errno_String;
       end if;
    end Lock;
@@ -54,18 +55,19 @@ is
 
    procedure Unlock (Object : Element_Handle)
    is
-      Res  : Interfaces.C.int;
-      Size : constant Interfaces.C.size_t := Object.all'Size / 8;
+      Res     : Interfaces.C.int;
+      Size    : constant Interfaces.C.size_t := Object.all'Size / 8;
+      Address : constant System.Address      := Object.all'Address;
    begin
-      Res := C_Munlock (Addr => Object.all'Address,
+      Res := C_Munlock (Addr => Address,
                         Len  => Size);
       Logger.Log (Level   => Logger.Debug,
                   Message => "Unlocked" & Size'Img & " byte(s) at address "
-                  & System.Address_Image (A => Object.all'Address));
+                  & System.Address_Image (A => Address));
 
       if Res /= 0 then
          raise Locking_Error with "Unable to unlock" & Size'Img & " byte(s) "
-           & "at address " & System.Address_Image (A => Object.all'Address)
+           & "at address " & System.Address_Image (A => Address)
            & ": " & Anet.Get_Errno_String;
       end if;
    end Unlock;
@@ -74,7 +76,8 @@ is
 
    procedure Wipe (Object : Element_Handle)
    is
-      Size : constant Interfaces.C.size_t := Object.all'Size / 8;
+      Size    : constant Interfaces.C.size_t := Object.all'Size / 8;
+      Address : constant System.Address      := Object.all'Address;
    begin
       --  !! Wipe memory region !!
 
@@ -87,13 +90,13 @@ is
       --
       --  http://dwheeler.com/secure-programs/Secure-Programs-HOWTO/ada.html
 
-      C_Memset (S => Object.all'Address,
+      C_Memset (S => Address,
                 C => 0,
                 N => Size);
       pragma Inspection_Point (Object);
       Logger.Log (Level   => Logger.Debug,
                   Message => "Wiped" & Size'Img & " byte(s) at address "
-                  & System.Address_Image (A => Object.all'Address));
+                  & System.Address_Image (A => Address));
    end Wipe;
 
 end Tkm.Locked_Memory;
