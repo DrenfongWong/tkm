@@ -4,6 +4,7 @@ with Ahven.Framework;
 with Tkm.Logger;
 
 with Random_Tests;
+with Locked_Mem_Tests;
 with Server_Ike_Nonce_Tests;
 
 procedure Test_Runner is
@@ -17,6 +18,8 @@ begin
              T     => new Random_Tests.Testcase);
    Add_Test (Suite => S.all,
              T     => new Server_Ike_Nonce_Tests.Testcase);
+   Add_Test (Suite => S.all,
+             T     => new Locked_Mem_Tests.Testcase);
 
    Ahven.Text_Runner.Run (Suite => S);
    Release_Suite (T => S);
