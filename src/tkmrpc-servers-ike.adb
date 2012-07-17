@@ -130,6 +130,22 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Dh_Get_Shared_Secret
+     (Result       : out Results.Result_Type;
+      Dh_Id        : Types.Dh_Id_Type;
+      Sharedsecret : out Types.Dh_Key_Type)
+   is
+      pragma Unreferenced (Dh_Id);
+      pragma Unreferenced (Sharedsecret);
+   begin
+
+      --  Auto-generated stub.
+
+      Result := Results.Invalid_Operation;
+   end Dh_Get_Shared_Secret;
+
+   -------------------------------------------------------------------------
+
    procedure Dh_Reset
      (Result : out Results.Result_Type;
       Dh_Id  : Types.Dh_Id_Type)
