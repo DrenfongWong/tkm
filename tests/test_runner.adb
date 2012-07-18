@@ -6,6 +6,7 @@ with Tkm.Logger;
 with Random_Tests;
 with Locked_Mem_Tests;
 with Util_Tests;
+with Diffie_Hellman_Tests;
 with Server_Ike_Nonce_Tests;
 
 procedure Test_Runner is
@@ -21,6 +22,8 @@ begin
              T     => new Locked_Mem_Tests.Testcase);
    Add_Test (Suite => S.all,
              T     => new Util_Tests.Testcase);
+   Add_Test (Suite => S.all,
+             T     => new Diffie_Hellman_Tests.Testcase);
    Add_Test (Suite => S.all,
              T     => new Server_Ike_Nonce_Tests.Testcase);
 
