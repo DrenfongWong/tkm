@@ -1,5 +1,6 @@
 with Tkm.Random;
 with Tkm.Servers.Ike.Nonce;
+with Tkm.Servers.Ike.DH;
 
 pragma Elaborate_All (Tkm.Random);
 
@@ -98,14 +99,11 @@ is
       Dha_Id   : Types.Dha_Id_Type;
       Pubvalue : out Types.Dh_Pubvalue_Type)
    is
-      pragma Unreferenced (Dh_Id);
-      pragma Unreferenced (Dha_Id);
-      pragma Unreferenced (Pubvalue);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Pubvalue := Tkm.Servers.Ike.DH.Create
+        (Id    => Dh_Id,
+         Group => Dha_Id);
+      Result := Results.Ok;
    end Dh_Create;
 
    -------------------------------------------------------------------------
@@ -115,13 +113,11 @@ is
       Dh_Id    : Types.Dh_Id_Type;
       Pubvalue : Types.Dh_Pubvalue_Type)
    is
-      pragma Unreferenced (Dh_Id);
-      pragma Unreferenced (Pubvalue);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.DH.Generate_Key
+        (Id       => Dh_Id,
+         Pubvalue => Pubvalue);
+      Result := Results.Ok;
    end Dh_Generate_Key;
 
    -------------------------------------------------------------------------
@@ -131,13 +127,9 @@ is
       Dh_Id        : Types.Dh_Id_Type;
       Sharedsecret : out Types.Dh_Key_Type)
    is
-      pragma Unreferenced (Dh_Id);
-      pragma Unreferenced (Sharedsecret);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Sharedsecret := Tkm.Servers.Ike.DH.Get_Shared_Secret (Id => Dh_Id);
+      Result       := Results.Ok;
    end Dh_Get_Shared_Secret;
 
    -------------------------------------------------------------------------
@@ -146,12 +138,9 @@ is
      (Result : out Results.Result_Type;
       Dh_Id  : Types.Dh_Id_Type)
    is
-      pragma Unreferenced (Dh_Id);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.DH.Reset (Id => Dh_Id);
+      Result := Results.Ok;
    end Dh_Reset;
 
    -------------------------------------------------------------------------

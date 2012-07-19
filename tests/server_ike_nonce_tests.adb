@@ -48,7 +48,7 @@ package body Server_Ike_Nonce_Tests is
    procedure Initialize (T : in out Testcase)
    is
    begin
-      T.Set_Name (Name => "Server IKE tests");
+      T.Set_Name (Name => "IKE server nonce tests");
       T.Add_Test_Routine
         (Routine => Check_Nc_Create'Access,
          Name    => "Check Nc_Create");
