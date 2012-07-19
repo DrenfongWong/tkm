@@ -12,9 +12,10 @@ package body Util_Tests is
    procedure Convert_Byte_Sequence_To_Hex
    is
       Null_Bytes : Tkmrpc.Types.Byte_Sequence (1 .. 0);
-      One_Byte   : Tkmrpc.Types.Byte_Sequence (1 .. 1) := (1 => 16#02#);
-      Bytes      : constant Tkmrpc.Types.Byte_Sequence :=
-        (16#52#, 16#41#, 16#06#, 16#be#, 16#6a#, 16#65#, 16#0a#, 16#9c#);
+      One_Byte   : constant Tkmrpc.Types.Byte_Sequence (1 .. 1)
+        := (1 => 16#02#);
+      Bytes      : constant Tkmrpc.Types.Byte_Sequence
+        := (16#52#, 16#41#, 16#06#, 16#be#, 16#6a#, 16#65#, 16#0a#, 16#9c#);
    begin
       Assert (Condition => Utils.To_Hex_String (Input => Null_Bytes) = "0",
               Message   => "Null bytes mismatch");
