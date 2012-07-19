@@ -11,9 +11,9 @@ is
    --  Currently, only DH group 'Modp_4096' is supported.
 
    procedure Compute_Zz
-     (Xa    :     Tkmrpc.Types.Byte_Sequence;
-      Yb    :     Tkmrpc.Types.Byte_Sequence;
-      Zz    : out Tkmrpc.Types.Byte_Sequence);
+     (Xa :     Tkmrpc.Types.Byte_Sequence;
+      Yb :     Tkmrpc.Types.Byte_Sequence;
+      Zz : out Tkmrpc.Types.Byte_Sequence);
    --  Compute DH zz (shared secret) using given xa (secret) and yb (other
    --  pubvalue). Currently, only DH group 'Modp_4096' is supported.
 

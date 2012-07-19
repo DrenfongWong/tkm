@@ -97,9 +97,9 @@ is
    -------------------------------------------------------------------------
 
    procedure Compute_Zz
-     (Xa    :     Tkmrpc.Types.Byte_Sequence;
-      Yb    :     Tkmrpc.Types.Byte_Sequence;
-      Zz    : out Tkmrpc.Types.Byte_Sequence)
+     (Xa :     Tkmrpc.Types.Byte_Sequence;
+      Yb :     Tkmrpc.Types.Byte_Sequence;
+      Zz : out Tkmrpc.Types.Byte_Sequence)
    is
       use type Interfaces.C.int;
 
