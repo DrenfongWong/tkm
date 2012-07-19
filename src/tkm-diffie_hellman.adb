@@ -35,15 +35,10 @@ is
       Bytes  : out Tkmrpc.Types.Byte_Sequence);
    --  Convert given GMP bignum to byte sequence.
 
-   procedure Mpz_Import
-     (Rop    : in out GMP.Binding.Mpz_T;
-      Count  :        Interfaces.C.size_t;
-      Order  :        Interfaces.C.int;
-      Size   :        Interfaces.C.size_t;
-      Endian :        Interfaces.C.int;
-      Nails  :        Interfaces.C.size_t;
-      Op     :        System.Address);
-   pragma Import (C, Mpz_Import, "__gmpz_import");
+   function To_Bignum
+     (Bytes : Tkmrpc.Types.Byte_Sequence)
+      return GMP.Binding.Mpz_T;
+   --  Convert given byte sequence to GMP bignum.
 
    -------------------------------------------------------------------------
 
@@ -66,14 +61,7 @@ is
          raise DH_Error with "Could not initialize group prime";
       end if;
 
-      Mpz_Init (Integer => Bn_Xa);
-      Mpz_Import (Rop    => Bn_Xa,
-                  Count  => Random_Bytes'Length,
-                  Order  => 1,
-                  Size   => 1,
-                  Endian => 1,
-                  Nails  => 0,
-                  Op     => Random_Bytes'Address);
+      Bn_Xa := To_Bignum (Bytes => Random_Bytes);
 
       --  Assert bitsize (xa) < bitsize (group prime)
 
@@ -126,24 +114,10 @@ is
          raise DH_Error with "Could not initialize group prime";
       end if;
 
-      Mpz_Init (Integer => Bn_Xa);
-      Mpz_Init (Integer => Bn_Yb);
-      Mpz_Init (Integer => Bn_Zz);
+      Bn_Xa := To_Bignum (Bytes => Xa);
+      Bn_Yb := To_Bignum (Bytes => Yb);
 
-      Mpz_Import (Rop    => Bn_Xa,
-                  Count  => Xa'Length,
-                  Order  => 1,
-                  Size   => 1,
-                  Endian => 1,
-                  Nails  => 0,
-                  Op     => Xa'Address);
-      Mpz_Import (Rop    => Bn_Yb,
-                  Count  => Yb'Length,
-                  Order  => 1,
-                  Size   => 1,
-                  Endian => 1,
-                  Nails  => 0,
-                  Op     => Yb'Address);
+      Mpz_Init (Integer => Bn_Zz);
 
       --  zz = yb^xa mod p
 
@@ -160,6 +134,36 @@ is
       Mpz_Clear (Integer => Bn_Yb);
       Mpz_Clear (Integer => Bn_Zz);
    end Compute_Zz;
+
+   -------------------------------------------------------------------------
+
+   function To_Bignum
+     (Bytes : Tkmrpc.Types.Byte_Sequence)
+      return GMP.Binding.Mpz_T
+   is
+      procedure Mpz_Import
+        (Rop    : in out GMP.Binding.Mpz_T;
+         Count  :        Interfaces.C.size_t;
+         Order  :        Interfaces.C.int;
+         Size   :        Interfaces.C.size_t;
+         Endian :        Interfaces.C.int;
+         Nails  :        Interfaces.C.size_t;
+         Op     :        System.Address);
+      pragma Import (C, Mpz_Import, "__gmpz_import");
+
+      Bignum : Mpz_T;
+   begin
+      Mpz_Init (Integer => Bignum);
+      Mpz_Import (Rop    => Bignum,
+                  Count  => Bytes'Length,
+                  Order  => 1,
+                  Size   => 1,
+                  Endian => 1,
+                  Nails  => 0,
+                  Op     => Bytes'Address);
+
+      return Bignum;
+   end To_Bignum;
 
    -------------------------------------------------------------------------
 
