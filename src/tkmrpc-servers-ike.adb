@@ -1,7 +1,5 @@
-with Interfaces;
-
-with Tkm.Logger;
 with Tkm.Random;
+with Tkm.Servers.Ike.Nonce;
 
 pragma Elaborate_All (Tkm.Random);
 
@@ -9,8 +7,6 @@ package body Tkmrpc.Servers.Ike
 is
 
    use Tkm;
-
-   package L renames Tkm.Logger;
 
    -------------------------------------------------------------------------
 
@@ -440,14 +436,10 @@ is
       Nonce_Length : Types.Nonce_Length_Type;
       Nonce        : out Types.Nonce_Type)
    is
-      Size : constant Types.Byte_Sequence_Range
-        := Types.Byte_Sequence_Range (Nonce_Length);
    begin
-      L.Log (Message => "Nonce of length" & Nonce_Length'Img
-             & " requested, context" & Nc_Id'Img);
-
-      Nonce.Size             := Interfaces.Unsigned_32 (Nonce_Length);
-      Nonce.Data (1 .. Size) := Random.Get (Size => Size);
+      Nonce := Tkm.Servers.Ike.Nonce.Create
+        (Id     => Nc_Id,
+         Length => Nonce_Length);
       Result := Results.Ok;
    end Nc_Create;
 
