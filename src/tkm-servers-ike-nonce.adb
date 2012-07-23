@@ -1,5 +1,3 @@
-with Interfaces;
-
 with Tkm.Random;
 with Tkm.Logger;
 
@@ -15,14 +13,14 @@ is
       Length : Tkmrpc.Types.Nonce_Length_Type)
       return Tkmrpc.Types.Nonce_Type
    is
-      Nonce : Tkmrpc.Types.Nonce_Type;
+      Nonce : Tkmrpc.Types.Nonce_Type := Tkmrpc.Types.Null_Nonce_Type;
       Size  : constant Tkmrpc.Types.Byte_Sequence_Range
         := Tkmrpc.Types.Byte_Sequence_Range (Length);
    begin
       L.Log (Message => "Nonce of length" & Length'Img
              & " requested, context" & Id'Img);
 
-      Nonce.Size             := Interfaces.Unsigned_32 (Length);
+      Nonce.Size             := Tkmrpc.Types.Nonce_Type_Range (Length);
       Nonce.Data (1 .. Size) := Random.Get (Size => Size);
       return Nonce;
    end Create;
