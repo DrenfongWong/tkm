@@ -39,16 +39,9 @@ is
         := Mpz_Sizeinbase
           (Op   => Bignum,
            Base => 2);
-      Size : Interfaces.C.size_t
-        := Interfaces.C.size_t (Float'Rounding (Float (Bits) / 8.0));
+      Size : constant Interfaces.C.size_t
+        := Interfaces.C.size_t (Float'Ceiling (Float (Bits) / 8.0));
    begin
-
-      --  Special case: ZERO, ONE
-
-      if Size = 0 then
-         Size := 1;
-      end if;
-
       if Integer (Size) > Bytes'Last then
          raise Conversion_Error with "Unable to convert bignum to bytes, "
            & "sequence size" & Bytes'Last'Img & " smaller than needed ("

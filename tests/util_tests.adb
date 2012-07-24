@@ -16,14 +16,18 @@ package body Util_Tests is
       use GMP.Binding;
       use type Tkmrpc.Types.Byte_Sequence;
 
-      Bn_One    : Mpz_T;
-      Bn_Value  : Mpz_T;
-      Nil       : Tkmrpc.Types.Byte_Sequence (1 .. 0);
-      One1      : Tkmrpc.Types.Byte_Sequence (1 .. 1);
-      One2      : Tkmrpc.Types.Byte_Sequence (1 .. 3);
-      Value     : Tkmrpc.Types.Byte_Sequence (1 .. 5);
-      Ref_Value : constant Tkmrpc.Types.Byte_Sequence (1 .. 5)
+      Bn_One     : Mpz_T;
+      Bn_Value1  : Mpz_T;
+      Bn_Value2  : Mpz_T;
+      Nil        : Tkmrpc.Types.Byte_Sequence (1 .. 0);
+      One1       : Tkmrpc.Types.Byte_Sequence (1 .. 1);
+      One2       : Tkmrpc.Types.Byte_Sequence (1 .. 3);
+      Value1     : Tkmrpc.Types.Byte_Sequence (1 .. 5);
+      Value2     : Tkmrpc.Types.Byte_Sequence (1 .. 2);
+      Ref_Value1 : constant Tkmrpc.Types.Byte_Sequence (1 .. 5)
         := (0, 16#14#, 16#96#, 16#ec#, 16#d0#);
+      Ref_Value2 : constant Tkmrpc.Types.Byte_Sequence (1 .. 2)
+        := (16#07#, 16#e3#);
    begin
       Mpz_Init_Set_Ui (Rop => Bn_One,
                        Op  => 1);
@@ -37,12 +41,19 @@ package body Util_Tests is
       Assert (Condition => One2 = (0, 0, 1),
               Message   => "One mismatch (2)");
 
-      Mpz_Init_Set_Ui (Rop => Bn_Value,
+      Mpz_Init_Set_Ui (Rop => Bn_Value1,
                        Op  => 345435344);
-      Utils.To_Bytes (Bignum => Bn_Value,
-                      Bytes  => Value);
-      Assert (Condition => Value = Ref_Value,
-              Message   => "Value mismatch");
+      Utils.To_Bytes (Bignum => Bn_Value1,
+                      Bytes  => Value1);
+      Assert (Condition => Value1 = Ref_Value1,
+              Message   => "Value mismatch (1)");
+
+      Mpz_Init_Set_Ui (Rop => Bn_Value2,
+                       Op  => 2019);
+      Utils.To_Bytes (Bignum => Bn_Value2,
+                      Bytes  => Value2);
+      Assert (Condition => Value2 = Ref_Value2,
+              Message   => "Value mismatch (2)");
 
       begin
          Utils.To_Bytes (Bignum => Bn_One,
@@ -54,12 +65,14 @@ package body Util_Tests is
       end;
 
       Mpz_Clear (Integer => Bn_One);
-      Mpz_Clear (Integer => Bn_Value);
+      Mpz_Clear (Integer => Bn_Value1);
+      Mpz_Clear (Integer => Bn_Value2);
 
    exception
       when others =>
          Mpz_Clear (Integer => Bn_One);
-         Mpz_Clear (Integer => Bn_Value);
+         Mpz_Clear (Integer => Bn_Value1);
+         Mpz_Clear (Integer => Bn_Value2);
          raise;
    end Convert_Bignum_To_Bytes;
 
