@@ -1,3 +1,5 @@
+with System;
+
 with Interfaces.C;
 
 package body Tkm.Utils
@@ -7,6 +9,70 @@ is
 
    Null_Byte_Sequence : constant Tkmrpc.Types.Byte_Sequence (1 .. 0)
      := (others => 0);
+
+   -------------------------------------------------------------------------
+
+   procedure To_Bytes
+     (Bignum :     GMP.Binding.Mpz_T;
+      Bytes  : out Tkmrpc.Types.Byte_Sequence)
+   is
+      use GMP.Binding;
+      use type Interfaces.C.size_t;
+
+      procedure Mpz_Export
+        (Result : out System.Address;
+         Rop    :     System.Address;
+         Countp :     Interfaces.C.size_t;
+         Order  :     Interfaces.C.int;
+         Size   :     Interfaces.C.size_t;
+         Endian :     Interfaces.C.int;
+         Nails  :     Interfaces.C.size_t;
+         Op     :     GMP.Binding.Mpz_T);
+      pragma Import (C, Mpz_Export, "__gmpz_export");
+      pragma Import_Valued_Procedure (Mpz_Export);
+
+      procedure C_Free (Ptr : System.Address);
+      pragma Import (C, C_Free, "free");
+
+      Addr : System.Address := System.Null_Address;
+      Bits : constant Interfaces.C.size_t
+        := Mpz_Sizeinbase
+          (Op   => Bignum,
+           Base => 2);
+      Size : Interfaces.C.size_t
+        := Interfaces.C.size_t (Float'Rounding (Float (Bits) / 8.0));
+   begin
+
+      --  Special case: ZERO, ONE
+
+      if Size = 0 then
+         Size := 1;
+      end if;
+
+      if Integer (Size) > Bytes'Last then
+         raise Conversion_Error with "Unable to convert bignum to bytes, "
+           & "sequence size" & Bytes'Last'Img & " smaller than needed ("
+           & Size'Img & ")";
+      end if;
+
+      Mpz_Export (Result => Addr,
+                  Rop    => System.Null_Address,
+                  Countp => 0,
+                  Order  => 1,
+                  Size   => Size,
+                  Endian => 1,
+                  Nails  => 0,
+                  Op     => Bignum);
+
+      declare
+         Byte_Seq : Tkmrpc.Types.Byte_Sequence (1 .. Integer (Size));
+         for Byte_Seq'Address use Addr;
+      begin
+         Bytes := (others => 0);
+         Bytes (Bytes'Last - Byte_Seq'Last + 1 .. Bytes'Last) := Byte_Seq;
+         C_Free (Ptr => Addr);
+      end;
+   end To_Bytes;
 
    ------------------------------------------------------------------------
 

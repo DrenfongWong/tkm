@@ -5,6 +5,7 @@ with Interfaces.C;
 with GMP.Binding;
 
 with Tkm.Logger;
+with Tkm.Utils;
 
 package body Tkm.Diffie_Hellman
 is
@@ -29,11 +30,6 @@ is
      & "05d99b2964fa090c3a2233ba186515be7ed1f612970cee2d7afb81bdd762170481cd00"
      & "69127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c934063199fffffffff"
      & "fffffff";
-
-   procedure To_Bytes
-     (Bignum :     GMP.Binding.Mpz_T;
-      Bytes  : out Tkmrpc.Types.Byte_Sequence);
-   --  Convert given GMP bignum to byte sequence.
 
    function To_Bignum
      (Bytes : Tkmrpc.Types.Byte_Sequence)
@@ -83,10 +79,10 @@ is
                 Exp    => Bn_Xa,
                 Modulo => Bn_P);
 
-      To_Bytes (Bignum => Bn_Xa,
-                Bytes  => Xa);
-      To_Bytes (Bignum => Bn_Ya,
-                Bytes  => Ya);
+      Utils.To_Bytes (Bignum => Bn_Xa,
+                      Bytes  => Xa);
+      Utils.To_Bytes (Bignum => Bn_Ya,
+                      Bytes  => Ya);
 
       Mpz_Clear (Integer => Bn_P);
       Mpz_Clear (Integer => Bn_G);
@@ -126,8 +122,8 @@ is
                 Exp    => Bn_Xa,
                 Modulo => Bn_P);
 
-      To_Bytes (Bignum => Bn_Zz,
-                Bytes  => Zz);
+      Utils.To_Bytes (Bignum => Bn_Zz,
+                      Bytes  => Zz);
 
       Mpz_Clear (Integer => Bn_P);
       Mpz_Clear (Integer => Bn_Xa);
@@ -164,54 +160,5 @@ is
 
       return Bignum;
    end To_Bignum;
-
-   -------------------------------------------------------------------------
-
-   procedure To_Bytes
-     (Bignum :     GMP.Binding.Mpz_T;
-      Bytes  : out Tkmrpc.Types.Byte_Sequence)
-   is
-      use type Interfaces.C.size_t;
-
-      procedure Mpz_Export
-        (Result : out System.Address;
-         Rop    :     System.Address;
-         Countp :     Interfaces.C.size_t;
-         Order  :     Interfaces.C.int;
-         Size   :     Interfaces.C.size_t;
-         Endian :     Interfaces.C.int;
-         Nails  :     Interfaces.C.size_t;
-         Op     :     GMP.Binding.Mpz_T);
-      pragma Import (C, Mpz_Export, "__gmpz_export");
-      pragma Import_Valued_Procedure (Mpz_Export);
-
-      procedure C_Free (Ptr : System.Address);
-      pragma Import (C, C_Free, "free");
-
-      Addr : System.Address := System.Null_Address;
-      Bits : constant Interfaces.C.size_t
-        := Mpz_Sizeinbase
-          (Op   => Bignum,
-           Base => 2);
-      Size : constant Interfaces.C.size_t
-        := Interfaces.C.size_t (Float'Rounding (Float (Bits) / 8.0));
-   begin
-      Mpz_Export (Result => Addr,
-                  Rop    => System.Null_Address,
-                  Countp => 0,
-                  Order  => 1,
-                  Size   => Size,
-                  Endian => 1,
-                  Nails  => 0,
-                  Op     => Bignum);
-
-      declare
-         Byte_Seq : Tkmrpc.Types.Byte_Sequence (1 .. Integer (Size));
-         for Byte_Seq'Address use Addr;
-      begin
-         Bytes := Byte_Seq;
-         C_Free (Ptr => Addr);
-      end;
-   end To_Bytes;
 
 end Tkm.Diffie_Hellman;

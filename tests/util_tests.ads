@@ -10,4 +10,7 @@ package Util_Tests is
    procedure Convert_Byte_Sequence_To_Hex;
    --  Convert byte sequences to hex strings.
 
+   procedure Convert_Bignum_To_Bytes;
+   --  Convert GMP bignum to byte sequence.
+
 end Util_Tests;
