@@ -110,8 +110,29 @@ is
          raise DH_Error with "Could not initialize group prime";
       end if;
 
-      Bn_Xa := To_Bignum (Bytes => Xa);
       Bn_Yb := To_Bignum (Bytes => Yb);
+
+      --  Public value must be larger than 1
+
+      if Mpz_Cmp_Ui (Op1 => Bn_Yb,
+                     Op2 => 1) <= 0
+      then
+         Mpz_Clear (Integer => Bn_P);
+         Mpz_Clear (Integer => Bn_Yb);
+         raise DH_Error with "Other public value smaller or equal to 1";
+      end if;
+
+      --  Public value Yb must be smaller than modulus
+
+      if Mpz_Cmp (Op1 => Bn_Yb,
+                  Op2 => Bn_P) >= 0
+      then
+         Mpz_Clear (Integer => Bn_P);
+         Mpz_Clear (Integer => Bn_Yb);
+         raise DH_Error with "Other public value larger or equal to modulus";
+      end if;
+
+      Bn_Xa := To_Bignum (Bytes => Xa);
 
       Mpz_Init (Integer => Bn_Zz);
 

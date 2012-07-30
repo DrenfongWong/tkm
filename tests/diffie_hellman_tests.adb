@@ -209,6 +209,46 @@ package body Diffie_Hellman_Tests is
       T.Add_Test_Routine
         (Routine => Compute_Xa_Ya_Zz'Access,
          Name    => "Compute xa, ya and zz");
+      T.Add_Test_Routine
+        (Routine => Invalid_Yb'Access,
+         Name    => "Public value validation");
    end Initialize;
+
+   -------------------------------------------------------------------------
+
+   procedure Invalid_Yb
+   is
+      Zz_Bytes : Tkmrpc.Types.Byte_Sequence (1 .. 512);
+      Yb       : Tkmrpc.Types.Byte_Sequence (1 .. 512) := (others => 0);
+   begin
+      begin
+         Diffie_Hellman.Compute_Zz (Xa => Random_Chunk,
+                                    Yb => Yb,
+                                    Zz => Zz_Bytes);
+
+      exception
+         when Diffie_Hellman.DH_Error => null;
+      end;
+
+      Yb (Yb'Last) := 1;
+      begin
+         Diffie_Hellman.Compute_Zz (Xa => Random_Chunk,
+                                    Yb => Yb,
+                                    Zz => Zz_Bytes);
+
+      exception
+         when Diffie_Hellman.DH_Error => null;
+      end;
+
+      Yb := (others => 16#ff#);
+      begin
+         Diffie_Hellman.Compute_Zz (Xa => Random_Chunk,
+                                    Yb => Yb,
+                                    Zz => Zz_Bytes);
+
+      exception
+         when Diffie_Hellman.DH_Error => null;
+      end;
+   end Invalid_Yb;
 
 end Diffie_Hellman_Tests;
