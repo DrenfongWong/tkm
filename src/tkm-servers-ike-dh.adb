@@ -13,6 +13,8 @@ is
    Xa, Zz : Bytes;
    --  DH secrets.
 
+   Group_Id : Tkmrpc.Types.Dh_Algorithm_Type;
+
    -------------------------------------------------------------------------
 
    function Create
@@ -26,7 +28,14 @@ is
              & ", context" & Id'Img);
 
       Random_Chunk := Random.Get (Size => Random_Chunk'Length);
-      Diffie_Hellman.Compute_Xa_Ya (Random_Bytes => Random_Chunk,
+
+      --  TODO: Once cfg server is implemented do proper mapping of Dha_Id to
+      --  DH group Id.
+
+      Group_Id := Group;
+
+      Diffie_Hellman.Compute_Xa_Ya (Group_Id     => Group_Id,
+                                    Random_Bytes => Random_Chunk,
                                     Xa           => Xa,
                                     Ya           => Ya);
 
@@ -44,9 +53,10 @@ is
    is
    begin
       L.Log (Message => "Generating shared secret for DH context" & Id'Img);
-      Diffie_Hellman.Compute_Zz (Xa => Xa,
-                                 Yb => Pubvalue.Data,
-                                 Zz => Zz);
+      Diffie_Hellman.Compute_Zz (Group_Id => Group_Id,
+                                 Xa       => Xa,
+                                 Yb       => Pubvalue.Data,
+                                 Zz       => Zz);
    end Generate_Key;
 
    -------------------------------------------------------------------------

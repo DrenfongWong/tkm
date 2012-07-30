@@ -2,6 +2,7 @@ with Interfaces;
 
 with Tkmrpc.Results;
 with Tkmrpc.Types;
+with Tkmrpc.Constants;
 with Tkmrpc.Servers.Ike;
 
 package body Server_Ike_DH_Tests is
@@ -18,7 +19,6 @@ package body Server_Ike_DH_Tests is
       use type Tkmrpc.Types.Byte_Sequence;
 
       Id    : constant := 11;
-      Group : constant := 14;
       Res   : Results.Result_Type;
       Pub   : Types.Dh_Pubvalue_Type;
       Sec   : Types.Dh_Key_Type;
@@ -28,7 +28,7 @@ package body Server_Ike_DH_Tests is
       Servers.Ike.Init;
       Servers.Ike.Dh_Create (Result   => Res,
                              Dh_Id    => Id,
-                             Dha_Id   => Group,
+                             Dha_Id   => Constants.Modp_4096,
                              Pubvalue => Pub);
       Assert (Condition => Res = Results.Ok,
               Message   => "Dh_Create failed");

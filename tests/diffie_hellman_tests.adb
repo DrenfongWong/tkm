@@ -1,4 +1,5 @@
 with Tkmrpc.Types;
+with Tkmrpc.Constants;
 
 with Tkm.Utils;
 with Tkm.Diffie_Hellman;
@@ -185,7 +186,8 @@ package body Diffie_Hellman_Tests is
    is
       Xa_Bytes, Ya_Bytes, Zz_Bytes : Tkmrpc.Types.Byte_Sequence (1 .. 512);
    begin
-      Diffie_Hellman.Compute_Xa_Ya (Random_Bytes => Random_Chunk,
+      Diffie_Hellman.Compute_Xa_Ya (Group_Id     => Tkmrpc.Constants.Modp_4096,
+                                    Random_Bytes => Random_Chunk,
                                     Xa           => Xa_Bytes,
                                     Ya           => Ya_Bytes);
       Assert (Condition => Utils.To_Hex_String (Input => Xa_Bytes) = Xa_Ref,
@@ -193,9 +195,10 @@ package body Diffie_Hellman_Tests is
       Assert (Condition => Utils.To_Hex_String (Input => Ya_Bytes) = Ya_Ref,
               Message   => "Ya mismatch");
 
-      Diffie_Hellman.Compute_Zz (Xa => Xa_Bytes,
-                                 Yb => Yb_Chunk,
-                                 Zz => Zz_Bytes);
+      Diffie_Hellman.Compute_Zz (Group_Id => Tkmrpc.Constants.Modp_4096,
+                                 Xa       => Xa_Bytes,
+                                 Yb       => Yb_Chunk,
+                                 Zz       => Zz_Bytes);
       Assert (Condition => Utils.To_Hex_String (Input => Zz_Bytes) = Zz_Ref,
               Message   => "Zz mismatch");
    end Compute_Xa_Ya_Zz;
@@ -212,6 +215,9 @@ package body Diffie_Hellman_Tests is
       T.Add_Test_Routine
         (Routine => Invalid_Yb'Access,
          Name    => "Public value validation");
+      T.Add_Test_Routine
+        (Routine => Unsupported_DH_Group'Access,
+         Name    => "Unsupported DH group");
    end Initialize;
 
    -------------------------------------------------------------------------
@@ -222,9 +228,10 @@ package body Diffie_Hellman_Tests is
       Yb       : Tkmrpc.Types.Byte_Sequence (1 .. 512) := (others => 0);
    begin
       begin
-         Diffie_Hellman.Compute_Zz (Xa => Random_Chunk,
-                                    Yb => Yb,
-                                    Zz => Zz_Bytes);
+         Diffie_Hellman.Compute_Zz (Group_Id => Tkmrpc.Constants.Modp_4096,
+                                    Xa       => Random_Chunk,
+                                    Yb       => Yb,
+                                    Zz       => Zz_Bytes);
 
       exception
          when Diffie_Hellman.DH_Error => null;
@@ -232,9 +239,10 @@ package body Diffie_Hellman_Tests is
 
       Yb (Yb'Last) := 1;
       begin
-         Diffie_Hellman.Compute_Zz (Xa => Random_Chunk,
-                                    Yb => Yb,
-                                    Zz => Zz_Bytes);
+         Diffie_Hellman.Compute_Zz (Group_Id => Tkmrpc.Constants.Modp_4096,
+                                    Xa       => Random_Chunk,
+                                    Yb       => Yb,
+                                    Zz       => Zz_Bytes);
 
       exception
          when Diffie_Hellman.DH_Error => null;
@@ -242,13 +250,40 @@ package body Diffie_Hellman_Tests is
 
       Yb := (others => 16#ff#);
       begin
-         Diffie_Hellman.Compute_Zz (Xa => Random_Chunk,
-                                    Yb => Yb,
-                                    Zz => Zz_Bytes);
+         Diffie_Hellman.Compute_Zz (Group_Id => Tkmrpc.Constants.Modp_4096,
+                                    Xa       => Random_Chunk,
+                                    Yb       => Yb,
+                                    Zz       => Zz_Bytes);
 
       exception
          when Diffie_Hellman.DH_Error => null;
       end;
    end Invalid_Yb;
+
+   -------------------------------------------------------------------------
+
+   procedure Unsupported_DH_Group
+   is
+      Xa_Bytes, Ya_Bytes, Zz_Bytes : Tkmrpc.Types.Byte_Sequence (1 .. 512);
+   begin
+      begin
+         Diffie_Hellman.Compute_Xa_Ya (Group_Id     => 0,
+                                       Random_Bytes => Random_Chunk,
+                                       Xa           => Xa_Bytes,
+                                       Ya           => Ya_Bytes);
+      exception
+         when Diffie_Hellman.DH_Error => null;
+      end;
+
+      begin
+         Diffie_Hellman.Compute_Zz (Group_Id => 0,
+                                    Xa       => Xa_Bytes,
+                                    Yb       => Yb_Chunk,
+                                    Zz       => Zz_Bytes);
+
+      exception
+         when Diffie_Hellman.DH_Error => null;
+      end;
+   end Unsupported_DH_Group;
 
 end Diffie_Hellman_Tests;

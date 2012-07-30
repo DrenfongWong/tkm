@@ -13,4 +13,7 @@ package Diffie_Hellman_Tests is
    procedure Invalid_Yb;
    --  Verify exception handling for invalid other public values.
 
+   procedure Unsupported_DH_Group;
+   --  Verify exception handling for unsupported DH group.
+
 end Diffie_Hellman_Tests;

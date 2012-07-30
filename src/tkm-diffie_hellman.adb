@@ -4,6 +4,8 @@ with Interfaces.C;
 
 with GMP.Binding;
 
+with Tkmrpc.Constants;
+
 with Tkm.Logger;
 with Tkm.Utils;
 
@@ -39,16 +41,22 @@ is
    -------------------------------------------------------------------------
 
    procedure Compute_Xa_Ya
-     (Random_Bytes :     Tkmrpc.Types.Byte_Sequence;
+     (Group_Id     :     Tkmrpc.Types.Dh_Algorithm_Type;
+      Random_Bytes :     Tkmrpc.Types.Byte_Sequence;
       Xa           : out Tkmrpc.Types.Byte_Sequence;
       Ya           : out Tkmrpc.Types.Byte_Sequence)
    is
       use type Interfaces.C.int;
       use type Interfaces.C.unsigned_long;
+      use type Tkmrpc.Types.Dh_Algorithm_Type;
 
       Res                      : Interfaces.C.int;
       Bn_G, Bn_P, Bn_Xa, Bn_Ya : Mpz_T;
    begin
+      if Group_Id /= Tkmrpc.Constants.Modp_4096 then
+         raise DH_Error with "Unsupported DH group" & Group_Id'Img;
+      end if;
+
       Mpz_Init_Set_Str (Result => Res,
                         Rop    => Bn_P,
                         Str    => Interfaces.C.To_C (Modp_4096_Prime),
@@ -93,15 +101,21 @@ is
    -------------------------------------------------------------------------
 
    procedure Compute_Zz
-     (Xa :     Tkmrpc.Types.Byte_Sequence;
-      Yb :     Tkmrpc.Types.Byte_Sequence;
-      Zz : out Tkmrpc.Types.Byte_Sequence)
+     (Group_Id :     Tkmrpc.Types.Dh_Algorithm_Type;
+      Xa       :     Tkmrpc.Types.Byte_Sequence;
+      Yb       :     Tkmrpc.Types.Byte_Sequence;
+      Zz       : out Tkmrpc.Types.Byte_Sequence)
    is
       use type Interfaces.C.int;
+      use type Tkmrpc.Types.Dh_Algorithm_Type;
 
       Res                       : Interfaces.C.int;
       Bn_P, Bn_Xa, Bn_Yb, Bn_Zz : Mpz_T;
    begin
+      if Group_Id /= Tkmrpc.Constants.Modp_4096 then
+         raise DH_Error with "Unsupported DH group" & Group_Id'Img;
+      end if;
+
       Mpz_Init_Set_Str (Result => Res,
                         Rop    => Bn_P,
                         Str    => Interfaces.C.To_C (Modp_4096_Prime),
