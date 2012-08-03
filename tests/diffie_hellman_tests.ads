@@ -19,4 +19,7 @@ package Diffie_Hellman_Tests is
    procedure Unsupported_DH_Group;
    --  Verify exception handling for unsupported DH group.
 
+   procedure Get_Group_Size;
+   --  Verify DH group sizes.
+
 end Diffie_Hellman_Tests;

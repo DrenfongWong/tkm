@@ -366,6 +366,19 @@ package body Diffie_Hellman_Tests is
 
    -------------------------------------------------------------------------
 
+   procedure Get_Group_Size
+   is
+   begin
+      Assert (Condition => Diffie_Hellman.Get_Group_Size
+              (Group_Id => Tkmrpc.Constants.Modp_4096) = 512,
+              Message   => "MODP-4096 group size mismatch");
+      Assert (Condition => Diffie_Hellman.Get_Group_Size
+              (Group_Id => Tkmrpc.Constants.Modp_3072) = 384,
+              Message   => "MODP-3072 group size mismatch");
+   end Get_Group_Size;
+
+   -------------------------------------------------------------------------
+
    procedure Initialize (T : in out Testcase)
    is
    begin
@@ -382,6 +395,9 @@ package body Diffie_Hellman_Tests is
       T.Add_Test_Routine
         (Routine => Unsupported_DH_Group'Access,
          Name    => "Unsupported DH group");
+      T.Add_Test_Routine
+        (Routine => Get_Group_Size'Access,
+         Name    => "Get DH group size");
    end Initialize;
 
    -------------------------------------------------------------------------

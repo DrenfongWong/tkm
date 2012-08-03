@@ -20,6 +20,12 @@ is
    --  pubvalue) for given DH group. Currently, only DH group 'Modp_4096' is
    --  supported.
 
+   function Get_Group_Size
+     (Group_Id : Tkmrpc.Types.Dh_Algorithm_Type)
+      return Tkmrpc.Types.Byte_Sequence_Range;
+   --  Returns the byte sequence size for the Diffie-Hellman group specified by
+   --  group id.
+
    DH_Error : exception;
 
 end Tkm.Diffie_Hellman;

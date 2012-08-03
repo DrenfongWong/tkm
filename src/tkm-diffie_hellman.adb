@@ -181,6 +181,20 @@ is
 
    -------------------------------------------------------------------------
 
+   function Get_Group_Size
+     (Group_Id : Tkmrpc.Types.Dh_Algorithm_Type)
+      return Tkmrpc.Types.Byte_Sequence_Range
+   is
+   begin
+
+      --  The group size is equal to the length of the hex-string prime divided
+      --  by 2
+
+      return Get_Prime (Group_Id => Group_Id)'Length / 2;
+   end Get_Group_Size;
+
+   -------------------------------------------------------------------------
+
    function Get_Prime
      (Group_Id : Tkmrpc.Types.Dh_Algorithm_Type)
       return String
