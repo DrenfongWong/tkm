@@ -10,6 +10,9 @@ package Diffie_Hellman_Tests is
    procedure Compute_Xa_Ya_Zz;
    --  Verify DH xa, ya and zz computation.
 
+   procedure Compute_Xa_Ya_Zz_Modp_3072;
+   --  Verify DH xa, ya and zz computation (MODP-3072).
+
    procedure Invalid_Yb;
    --  Verify exception handling for invalid other public values.
 

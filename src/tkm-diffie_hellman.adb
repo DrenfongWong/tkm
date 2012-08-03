@@ -33,10 +33,29 @@ is
      & "69127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c934063199fffffffff"
      & "fffffff";
 
+   Modp_3072_Prime : constant String := "ffffffffffffffffc90fdaa22168c234c4c66"
+     & "28b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3"
+     & "a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0"
+     & "bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb"
+     & "8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f35620855"
+     & "2bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39"
+     & "e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497ce"
+     & "a956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba6"
+     & "4ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c9"
+     & "4e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177"
+     & "b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4"
+     & "b82d120a93ad2caffffffffffffffff";
+
    function To_Bignum
      (Bytes : Tkmrpc.Types.Byte_Sequence)
       return GMP.Binding.Mpz_T;
    --  Convert given byte sequence to GMP bignum.
+
+   function Get_Prime
+     (Group_Id : Tkmrpc.Types.Dh_Algorithm_Type)
+      return String;
+   --  Get hex-string representation for prime of given Diffie-Hellman group
+   --  specified by group id.
 
    -------------------------------------------------------------------------
 
@@ -53,14 +72,11 @@ is
       Res                      : Interfaces.C.int;
       Bn_G, Bn_P, Bn_Xa, Bn_Ya : Mpz_T;
    begin
-      if Group_Id /= Tkmrpc.Constants.Modp_4096 then
-         raise DH_Error with "Unsupported DH group" & Group_Id'Img;
-      end if;
-
-      Mpz_Init_Set_Str (Result => Res,
-                        Rop    => Bn_P,
-                        Str    => Interfaces.C.To_C (Modp_4096_Prime),
-                        Base   => 16);
+      Mpz_Init_Set_Str
+        (Result => Res,
+         Rop    => Bn_P,
+         Str    => Interfaces.C.To_C (Get_Prime (Group_Id => Group_Id)),
+         Base   => 16);
       if Res /= 0 then
          raise DH_Error with "Could not initialize group prime";
       end if;
@@ -112,14 +128,11 @@ is
       Res                       : Interfaces.C.int;
       Bn_P, Bn_Xa, Bn_Yb, Bn_Zz : Mpz_T;
    begin
-      if Group_Id /= Tkmrpc.Constants.Modp_4096 then
-         raise DH_Error with "Unsupported DH group" & Group_Id'Img;
-      end if;
-
-      Mpz_Init_Set_Str (Result => Res,
-                        Rop    => Bn_P,
-                        Str    => Interfaces.C.To_C (Modp_4096_Prime),
-                        Base   => 16);
+      Mpz_Init_Set_Str
+        (Result => Res,
+         Rop    => Bn_P,
+         Str    => Interfaces.C.To_C (Get_Prime (Group_Id => Group_Id)),
+         Base   => 16);
       if Res /= 0 then
          raise DH_Error with "Could not initialize group prime";
       end if;
@@ -165,6 +178,23 @@ is
       Mpz_Clear (Integer => Bn_Yb);
       Mpz_Clear (Integer => Bn_Zz);
    end Compute_Zz;
+
+   -------------------------------------------------------------------------
+
+   function Get_Prime
+     (Group_Id : Tkmrpc.Types.Dh_Algorithm_Type)
+      return String
+   is
+   begin
+      case Group_Id is
+      when Tkmrpc.Constants.Modp_4096 =>
+         return Modp_4096_Prime;
+      when Tkmrpc.Constants.Modp_3072 =>
+         return Modp_3072_Prime;
+      when others =>
+         raise DH_Error with "Unsupported DH group" & Group_Id'Img;
+      end case;
+   end Get_Prime;
 
    -------------------------------------------------------------------------
 
