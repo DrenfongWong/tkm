@@ -1,9 +1,9 @@
 with Tkmrpc.Transport.Servers;
-with Tkmrpc.Dispatchers.Ike;
 with Tkmrpc.Servers.Ike;
 
 with Tkm.Logger;
 with Tkm.Version;
+with Tkm.Dispatchers;
 
 procedure Key_Manager
 is
@@ -19,7 +19,8 @@ begin
           & Tkm.Version.Version_String & ")");
 
    Servers.Ike.Init;
-   Transport.Servers.Listen (Server  => RPC_Server,
-                             Address => IKE_Socket,
-                             Process => Dispatchers.Ike.Dispatch'Access);
+   Transport.Servers.Listen
+     (Server  => RPC_Server,
+      Address => IKE_Socket,
+      Process => Tkm.Dispatchers.Dispatch_Ike_Request'Access);
 end Key_Manager;
