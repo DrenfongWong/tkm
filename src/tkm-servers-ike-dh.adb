@@ -9,9 +9,6 @@ is
 
    package L renames Tkm.Logger;
 
-   subtype Bytes is Tkmrpc.Types.Byte_Sequence (1 .. 512);
-   --  Byte array needed to store DH MODP_4096 values.
-
    -------------------------------------------------------------------------
 
    function Create
@@ -19,7 +16,9 @@ is
       Group : Tkmrpc.Types.Dha_Id_Type)
       return Tkmrpc.Types.Dh_Pubvalue_Type
    is
-      Random_Chunk, Xa, Ya : Bytes;
+      Group_Size           : constant Tkmrpc.Types.Byte_Sequence_Range
+        := Diffie_Hellman.Get_Group_Size (Group_Id => Group);
+      Random_Chunk, Xa, Ya : Tkmrpc.Types.Byte_Sequence (1 .. Group_Size);
       Priv                 : Tkmrpc.Types.Dh_Priv_Type
         := Tkmrpc.Types.Null_Dh_Priv_Type;
    begin
@@ -55,16 +54,19 @@ is
      (Id       : Tkmrpc.Types.Dh_Id_Type;
       Pubvalue : Tkmrpc.Types.Dh_Pubvalue_Type)
    is
-      Priv     : constant Tkmrpc.Types.Dh_Priv_Type
-        := Tkmrpc.Contexts.Dh.Get_Secvalue (Id => Id);
-      Zz       : Bytes;
-      Key      : Tkmrpc.Types.Dh_Key_Type := Tkmrpc.Types.Null_Dh_Key_Type;
 
       --  TODO: Once cfg server is implemented do proper mapping of Dha_Id to
       --  DH group Id.
 
-      Group_Id : constant Tkmrpc.Types.Dh_Algorithm_Type
+      Group_Id   : constant Tkmrpc.Types.Dh_Algorithm_Type
         := Tkmrpc.Contexts.Dh.Get_Dha_Id (Id => Id);
+      Group_Size : constant Tkmrpc.Types.Byte_Sequence_Range
+        := Diffie_Hellman.Get_Group_Size (Group_Id => Group_Id);
+      Priv       : constant Tkmrpc.Types.Dh_Priv_Type
+        := Tkmrpc.Contexts.Dh.Get_Secvalue (Id => Id);
+      Zz         : Tkmrpc.Types.Byte_Sequence (1 .. Group_Size);
+      Key        : Tkmrpc.Types.Dh_Key_Type
+        := Tkmrpc.Types.Null_Dh_Key_Type;
    begin
       L.Log (Message => "Generating shared secret for DH context" & Id'Img);
       Diffie_Hellman.Compute_Zz
