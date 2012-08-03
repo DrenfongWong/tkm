@@ -45,7 +45,7 @@ is
       if Integer (Size) > Bytes'Last then
          raise Conversion_Error with "Unable to convert bignum to bytes, "
            & "sequence size" & Bytes'Last'Img & " smaller than needed ("
-           & Size'Img & ")";
+           & Size'Img & " )";
       end if;
 
       Mpz_Export (Result => Addr,
