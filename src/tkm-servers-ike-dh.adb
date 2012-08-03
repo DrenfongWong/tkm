@@ -1,3 +1,5 @@
+with Tkmrpc.Contexts.Dh;
+
 with Tkm.Logger;
 with Tkm.Random;
 with Tkm.Diffie_Hellman;
@@ -10,11 +12,6 @@ is
    subtype Bytes is Tkmrpc.Types.Byte_Sequence (1 .. 512);
    --  Byte array needed to store DH MODP_4096 values.
 
-   Xa, Zz : Bytes;
-   --  DH secrets.
-
-   Group_Id : Tkmrpc.Types.Dh_Algorithm_Type;
-
    -------------------------------------------------------------------------
 
    function Create
@@ -22,7 +19,9 @@ is
       Group : Tkmrpc.Types.Dha_Id_Type)
       return Tkmrpc.Types.Dh_Pubvalue_Type
    is
-      Random_Chunk, Ya : Bytes;
+      Random_Chunk, Xa, Ya : Bytes;
+      Priv                 : Tkmrpc.Types.Dh_Priv_Type
+        := Tkmrpc.Types.Null_Dh_Priv_Type;
    begin
       L.Log (Message => "Creating DH context for group" & Group'Img
              & ", context" & Id'Img);
@@ -32,16 +31,21 @@ is
       --  TODO: Once cfg server is implemented do proper mapping of Dha_Id to
       --  DH group Id.
 
-      Group_Id := Group;
-
-      Diffie_Hellman.Compute_Xa_Ya (Group_Id     => Group_Id,
+      Diffie_Hellman.Compute_Xa_Ya (Group_Id     => Group,
                                     Random_Bytes => Random_Chunk,
                                     Xa           => Xa,
                                     Ya           => Ya);
 
+      Priv.Size                  := Xa'Length;
+      Priv.Data (1 .. Xa'Length) := Xa;
+      Tkmrpc.Contexts.Dh.Create (Id       => Id,
+                                 Dha_Id   => Group,
+                                 Secvalue => Priv);
+      L.Log (Message => "DH context" & Id'Img & " created");
+
       return P : Tkmrpc.Types.Dh_Pubvalue_Type do
-         P.Size := Ya'Length;
-         P.Data := Ya;
+         P.Size                  := Ya'Length;
+         P.Data (1 .. Ya'Length) := Ya;
       end return;
    end Create;
 
@@ -51,12 +55,28 @@ is
      (Id       : Tkmrpc.Types.Dh_Id_Type;
       Pubvalue : Tkmrpc.Types.Dh_Pubvalue_Type)
    is
+      Priv     : constant Tkmrpc.Types.Dh_Priv_Type
+        := Tkmrpc.Contexts.Dh.Get_Secvalue (Id => Id);
+      Zz       : Bytes;
+      Key      : Tkmrpc.Types.Dh_Key_Type := Tkmrpc.Types.Null_Dh_Key_Type;
+
+      --  TODO: Once cfg server is implemented do proper mapping of Dha_Id to
+      --  DH group Id.
+
+      Group_Id : constant Tkmrpc.Types.Dh_Algorithm_Type
+        := Tkmrpc.Contexts.Dh.Get_Dha_Id (Id => Id);
    begin
       L.Log (Message => "Generating shared secret for DH context" & Id'Img);
-      Diffie_Hellman.Compute_Zz (Group_Id => Group_Id,
-                                 Xa       => Xa,
-                                 Yb       => Pubvalue.Data,
-                                 Zz       => Zz);
+      Diffie_Hellman.Compute_Zz
+        (Group_Id => Group_Id,
+         Xa       => Priv.Data (1 .. Priv.Size),
+         Yb       => Pubvalue.Data (1 .. Pubvalue.Size),
+         Zz       => Zz);
+      Key.Size                  := Zz'Length;
+      Key.Data (1 .. Zz'Length) := Zz;
+      Tkmrpc.Contexts.Dh.Generate (Id        => Id,
+                                   Dh_Key    => Key,
+                                   Timestamp => 0);
    end Generate_Key;
 
    -------------------------------------------------------------------------
@@ -67,10 +87,7 @@ is
    is
    begin
       L.Log (Message => "Returning shared secret for DH context" & Id'Img);
-      return K : Tkmrpc.Types.Dh_Key_Type do
-         K.Size := Zz'Length;
-         K.Data := Zz;
-      end return;
+      return Tkmrpc.Contexts.Dh.Get_Shared_Secret (Id => Id);
    end Get_Shared_Secret;
 
    -------------------------------------------------------------------------
@@ -79,8 +96,7 @@ is
    is
    begin
       L.Log (Message => "Resetting DH context" & Id'Img);
-      Xa := (others => 0);
-      Zz := (others => 0);
+      Tkmrpc.Contexts.Dh.Reset (Id => Id);
    end Reset;
 
 end Tkm.Servers.Ike.DH;

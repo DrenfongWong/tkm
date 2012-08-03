@@ -8,7 +8,7 @@ project Tkm_Common is
 
    Compiler_Switches := ("-gnatygAdISuxo",
                          "-gnatVa",
-                         "-gnat05",
+                         "-gnat2012",
                          "-gnatf",
                          "-fstack-check",
                          "-gnato",
