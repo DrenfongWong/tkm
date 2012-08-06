@@ -201,12 +201,12 @@ is
    is
    begin
       case Group_Id is
-      when Tkmrpc.Constants.Modp_4096 =>
-         return Modp_4096_Prime;
-      when Tkmrpc.Constants.Modp_3072 =>
-         return Modp_3072_Prime;
-      when others =>
-         raise DH_Error with "Unsupported DH group" & Group_Id'Img;
+         when Tkmrpc.Constants.Modp_4096 =>
+            return Modp_4096_Prime;
+         when Tkmrpc.Constants.Modp_3072 =>
+            return Modp_3072_Prime;
+         when others =>
+            raise DH_Error with "Unsupported DH group" & Group_Id'Img;
       end case;
    end Get_Prime;
 
