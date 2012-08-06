@@ -3,4 +3,7 @@ TODO
 
 DH
 --
-- Check if requested group = MODP_4096
+- Implement memory locking:
+  - Lock and wipe DH values
+  - Implement GMP custom allocators
+- Implement extended public value sanity checks
