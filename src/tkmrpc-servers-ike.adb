@@ -1,3 +1,5 @@
+with Tkmrpc.Constants;
+
 with Tkm.Random;
 with Tkm.Servers.Ike.Nonce;
 with Tkm.Servers.Ike.DH;
@@ -458,18 +460,20 @@ is
       Isa_Contexts        : out Types.Isa_Id_Type;
       Esa_Contexts        : out Types.Esa_Id_Type)
    is
-      pragma Unreferenced (Max_Active_Requests);
-      pragma Unreferenced (Nc_Contexts);
-      pragma Unreferenced (Dh_Contexts);
-      pragma Unreferenced (Cc_Contexts);
-      pragma Unreferenced (Ae_Contexts);
-      pragma Unreferenced (Isa_Contexts);
-      pragma Unreferenced (Esa_Contexts);
    begin
 
-      --  Auto-generated stub.
+      --  Processing of requests in parallel is not yet supported.
 
-      Result := Results.Invalid_Operation;
+      Max_Active_Requests := 1;
+
+      Nc_Contexts  := Tkmrpc.Types.Nc_Id_Type'Last;
+      Dh_Contexts  := Tkmrpc.Types.Dh_Id_Type'Last;
+      Cc_Contexts  := Tkmrpc.Types.Cc_Id_Type'Last;
+      Ae_Contexts  := Tkmrpc.Types.Ae_Id_Type'Last;
+      Isa_Contexts := Tkmrpc.Types.Isa_Id_Type'Last;
+      Esa_Contexts := Tkmrpc.Types.Esa_Id_Type'Last;
+
+      Result := Results.Ok;
    end Tkm_Limits;
 
    -------------------------------------------------------------------------
@@ -478,12 +482,9 @@ is
      (Result  : out Results.Result_Type;
       Version : out Types.Version_Type)
    is
-      pragma Unreferenced (Version);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Version := Tkmrpc.Constants.Ike_Version;
+      Result  := Results.Ok;
    end Tkm_Version;
 
 end Tkmrpc.Servers.Ike;
