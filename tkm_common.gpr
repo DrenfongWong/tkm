@@ -7,6 +7,7 @@ project Tkm_Common is
    for Source_Dirs use ();
 
    Compiler_Switches := ("-gnatygAdISuxo",
+                         "-gnata",
                          "-gnatVa",
                          "-gnat2012",
                          "-gnatf",

@@ -3,6 +3,7 @@ with Ahven.Framework;
 
 with Tkm.Logger;
 
+with Assertion_Tests;
 with Random_Tests;
 with Locked_Mem_Tests;
 with Util_Tests;
@@ -18,6 +19,8 @@ procedure Test_Runner is
 begin
    Tkm.Logger.Use_Stdout;
 
+   Add_Test (Suite => S.all,
+             T     => new Assertion_Tests.Testcase);
    Add_Test (Suite => S.all,
              T     => new Random_Tests.Testcase);
    Add_Test (Suite => S.all,
