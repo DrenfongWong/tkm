@@ -440,12 +440,9 @@ is
      (Result : out Results.Result_Type;
       Nc_Id  : Types.Nc_Id_Type)
    is
-      pragma Unreferenced (Nc_Id);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Nonce.Reset (Id => Nc_Id);
+      Result := Results.Ok;
    end Nc_Reset;
 
    -------------------------------------------------------------------------

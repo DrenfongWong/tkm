@@ -9,4 +9,7 @@ is
       return Tkmrpc.Types.Nonce_Type;
    --  Create a new nonce with given context id and length.
 
+   procedure Reset (Id : Tkmrpc.Types.Nc_Id_Type);
+   --  Reset nonce context with given id.
+
 end Tkm.Servers.Ike.Nonce;
