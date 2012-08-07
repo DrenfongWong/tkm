@@ -60,14 +60,6 @@ package body Server_Ike_DH_Tests is
       Assert (Condition => Res = Results.Ok,
               Message   => "Dh_Reset failed");
 
-      Servers.Ike.Dh_Get_Shared_Secret (Result       => Res,
-                                        Dh_Id        => Id,
-                                        Sharedsecret => Sec);
-      Assert (Condition => Res = Results.Ok,
-              Message   => "Dh_Get_Shared_Secret failed");
-      Assert (Condition => Sec.Data = Null_Bytes,
-              Message   => "Shared secret not nil");
-
       Servers.Ike.Finalize;
 
    exception

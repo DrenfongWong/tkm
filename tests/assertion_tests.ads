@@ -11,4 +11,7 @@ is
    procedure Assertion_Policy;
    --  Assert correct assertion policy.
 
+   procedure Assertion_Policy_RPC;
+   --  Assert correct assertion policy of Tkmrpc project.
+
 end Assertion_Tests;

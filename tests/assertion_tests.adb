@@ -1,5 +1,8 @@
 with System.Assertions;
 
+with Tkmrpc.Types;
+with Tkmrpc.Contexts.Dh;
+
 with Tkm;
 
 package body Assertion_Tests
@@ -25,6 +28,21 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Assertion_Policy_RPC
+   is
+   begin
+      Tkmrpc.Contexts.Dh.Generate
+        (Id        => 12,
+         Dh_Key    => Tkmrpc.Types.Null_Dh_Key_Type,
+         Timestamp => 0);
+      Fail (Message => "Exception expected");
+
+   exception
+      when System.Assertions.Assert_Failure => null;
+   end Assertion_Policy_RPC;
+
+   -------------------------------------------------------------------------
+
    procedure Initialize (T : in out Testcase)
    is
    begin
@@ -32,6 +50,9 @@ is
       T.Add_Test_Routine
         (Routine => Assertion_Policy'Access,
          Name    => "Check assertion policy");
+      T.Add_Test_Routine
+        (Routine => Assertion_Policy_RPC'Access,
+         Name    => "Check assertion policy (RPC)");
    end Initialize;
 
 end Assertion_Tests;
