@@ -13,4 +13,7 @@ package Util_Tests is
    procedure Convert_Bignum_To_Bytes;
    --  Convert GMP bignum to byte sequence.
 
+   procedure Convert_Hex_To_Bytes;
+   --  Convert hex strings to byte sequences.
+
 end Util_Tests;

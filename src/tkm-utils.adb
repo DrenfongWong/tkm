@@ -69,6 +69,41 @@ is
 
    ------------------------------------------------------------------------
 
+   function To_Bytes (Input : String) return Tkmrpc.Types.Byte_Sequence
+   is
+      use type Tkmrpc.Types.Byte_Sequence;
+   begin
+      if Input = "" then
+         return (1 => 0);
+      end if;
+
+      declare
+         Result : Tkmrpc.Types.Byte_Sequence
+           (1 .. Tkmrpc.Types.Byte_Sequence_Range
+              (Float'Ceiling (Float (Input'Length) / 2.0)))
+           := (others => 0);
+      begin
+         for Index in Result'Range loop
+            declare
+               Hex_Byte : String (1 .. 2) := "00";
+            begin
+               Hex_Byte (1) := Input (Index * 2 - 1);
+               if Index * 2 <= Input'Last then
+                  Hex_Byte (2) := Input (Index * 2);
+               end if;
+
+               Result (Index) := Tkmrpc.Types.Byte'Value
+                 ("16#" & Hex_Byte & "#");
+            end;
+            exit when Index * 2 - 1 > Input'Last;
+         end loop;
+
+         return Result;
+      end;
+   end To_Bytes;
+
+   ------------------------------------------------------------------------
+
    function To_Hex_String (Input : Tkmrpc.Types.Byte_Sequence) return String
    is
       use type Interfaces.Unsigned_8;

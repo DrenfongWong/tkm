@@ -97,6 +97,28 @@ package body Util_Tests is
 
    -------------------------------------------------------------------------
 
+   procedure Convert_Hex_To_Bytes
+   is
+      use type Tkmrpc.Types.Byte_Sequence;
+
+      Null_Bytes : constant Tkmrpc.Types.Byte_Sequence (1 .. 1)
+        := (1 => 0);
+      One_Byte   : constant Tkmrpc.Types.Byte_Sequence (1 .. 1)
+        := (1 => 16#02#);
+      Bytes      : constant Tkmrpc.Types.Byte_Sequence
+        := (16#52#, 16#41#, 16#06#, 16#be#, 16#6a#, 16#65#, 16#0a#, 16#9c#);
+   begin
+      Assert (Condition => Utils.To_Bytes (Input => "0") = Null_Bytes,
+              Message   => "Null bytes mismatch");
+      Assert (Condition => Utils.To_Bytes (Input => "02") = One_Byte,
+              Message   => "One byte mismatch");
+      Assert (Condition => Utils.To_Bytes
+              (Input => "524106be6a650a9c") = Bytes,
+              Message   => "Bytes mismatch");
+   end Convert_Hex_To_Bytes;
+
+   -------------------------------------------------------------------------
+
    procedure Initialize (T : in out Testcase)
    is
    begin
@@ -107,6 +129,9 @@ package body Util_Tests is
       T.Add_Test_Routine
         (Routine => Convert_Bignum_To_Bytes'Access,
          Name    => "Convert bignum to byte sequence");
+      T.Add_Test_Routine
+        (Routine => Convert_Hex_To_Bytes'Access,
+         Name    => "Convert hex strings to byte sequences");
    end Initialize;
 
 end Util_Tests;
