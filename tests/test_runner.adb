@@ -8,6 +8,7 @@ with Random_Tests;
 with Locked_Mem_Tests;
 with Util_Tests;
 with Diffie_Hellman_Tests;
+with Hmac_Tests;
 with Server_Ike_Nonce_Tests;
 with Server_Ike_DH_Tests;
 with Server_Ike_Tkm_Tests;
@@ -29,6 +30,8 @@ begin
              T     => new Util_Tests.Testcase);
    Add_Test (Suite => S.all,
              T     => new Diffie_Hellman_Tests.Testcase);
+   Add_Test (Suite => S.all,
+             T     => new Hmac_Tests.Testcase);
    Add_Test (Suite => S.all,
              T     => new Server_Ike_Nonce_Tests.Testcase);
    Add_Test (Suite => S.all,
