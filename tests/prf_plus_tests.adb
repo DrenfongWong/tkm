@@ -1,20 +1,12 @@
 with Tkmrpc.Types;
 
-with Tkm.Crypto.Hmac_Sha512;
-with Tkm.Crypto.Prf_Plus;
-
-pragma Elaborate_All (Tkm.Crypto.Prf_Plus);
+with Tkm.Crypto.Prf_Plus_Hmac_Sha512;
 
 package body Prf_Plus_Tests is
 
    use Ahven;
    use Tkm;
-
-   package Prf_Plus_Hmac_Sha512 is new Tkm.Crypto.Prf_Plus
-     (Prf_Length   => Crypto.Hmac_Sha512.Hash_Output_Length,
-      Prf_Ctx_Type => Crypto.Hmac_Sha512.Context_Type,
-      Init         => Crypto.Hmac_Sha512.Init,
-      Generate     => Crypto.Hmac_Sha512.Generate);
+   use Tkm.Crypto;
 
    -------------------------------------------------------------------------
 
