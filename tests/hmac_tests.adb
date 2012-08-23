@@ -1,24 +1,13 @@
-with GNAT.SHA512;
-
 with Tkmrpc.Types;
 
-with Tkm.Crypto.Hmac;
-
-pragma Elaborate_All (Tkm.Crypto.Hmac);
+with Tkm.Crypto.Hmac_Sha512;
 
 package body Hmac_Tests is
 
    use Ahven;
    use Tkm;
+   use Tkm.Crypto;
    use type Tkmrpc.Types.Byte_Sequence;
-
-   package Hmac_Sha512 is new Tkm.Crypto.Hmac
-     (Hash_Block_Size => 128,
-      Hash_Length     => 64,
-      Hash_Ctx_Type   => GNAT.SHA512.Context,
-      Initial_Ctx     => GNAT.SHA512.Initial_Context,
-      Update          => GNAT.SHA512.Update,
-      Digest          => GNAT.SHA512.Digest);
 
    -------------------------------------------------------------------------
 
