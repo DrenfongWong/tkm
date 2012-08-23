@@ -140,4 +140,18 @@ is
       end;
    end To_Hex_String;
 
+   -------------------------------------------------------------------------
+
+   function To_String (Input : Tkmrpc.Types.Byte_Sequence) return String
+   is
+      Result   : String (1 .. Input'Length);
+      Idx_Diff : constant Integer := Result'First - Input'First;
+   begin
+      for I in Result'Range loop
+         Result (I) := Character'Val (Input (I - Idx_Diff));
+      end loop;
+
+      return Result;
+   end To_String;
+
 end Tkm.Utils;

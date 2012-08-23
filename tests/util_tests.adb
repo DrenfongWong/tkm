@@ -97,6 +97,22 @@ package body Util_Tests is
 
    -------------------------------------------------------------------------
 
+   procedure Convert_Bytes_To_String
+   is
+      Empty : Tkmrpc.Types.Byte_Sequence (1 .. 0);
+      Idx   : constant Tkmrpc.Types.Byte_Sequence (5 .. 7) := (others => 65);
+   begin
+      Assert (Condition => Utils.To_String
+              (Input => (65, 66, 67, 68, 69)) = "ABCDE",
+              Message   => "String 1 mismatch");
+      Assert (Condition => Utils.To_String (Input => Empty) = "",
+              Message   => "String 2 mismatch");
+      Assert (Condition => Utils.To_String (Input => Idx) = "AAA",
+              Message   => "String 3 mismatch");
+   end Convert_Bytes_To_String;
+
+   -------------------------------------------------------------------------
+
    procedure Convert_Hex_To_Bytes
    is
       use type Tkmrpc.Types.Byte_Sequence;
@@ -123,6 +139,9 @@ package body Util_Tests is
    is
    begin
       T.Set_Name (Name => "Util tests");
+      T.Add_Test_Routine
+        (Routine => Convert_Bytes_To_String'Access,
+         Name    => "Convert bytes to string");
       T.Add_Test_Routine
         (Routine => Convert_Byte_Sequence_To_Hex'Access,
          Name    => "Convert byte sequence to hex string");

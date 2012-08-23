@@ -7,6 +7,9 @@ package Util_Tests is
    procedure Initialize (T : in out Testcase);
    --  Initialize testcase.
 
+   procedure Convert_Bytes_To_String;
+   --  Convert bytes to string.
+
    procedure Convert_Byte_Sequence_To_Hex;
    --  Convert byte sequences to hex strings.
 

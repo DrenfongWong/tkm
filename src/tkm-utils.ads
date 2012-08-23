@@ -5,6 +5,9 @@ with Tkmrpc.Types;
 package Tkm.Utils
 is
 
+   function To_String (Input : Tkmrpc.Types.Byte_Sequence) return String;
+   --  Convert given byte sequence to string.
+
    function To_Hex_String (Input : Tkmrpc.Types.Byte_Sequence) return String;
    --  Return hex string represenation of byte sequence.
 
