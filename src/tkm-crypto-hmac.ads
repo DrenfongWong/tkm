@@ -27,6 +27,9 @@ is
    type Context_Type is private;
    --  HMAC context.
 
+   Hash_Output_Length : constant Positive;
+   --  Hash output length.
+
    procedure Init
      (Ctx : in out Context_Type;
       Key :        Tkmrpc.Types.Byte_Sequence);
@@ -39,6 +42,8 @@ is
    --  Generate MAC for given data bytes.
 
 private
+
+   Hash_Output_Length : constant Positive := Hash_Length;
 
    type Context_Type is record
       Hasher     : Hash_Ctx_Type := Initial_Ctx;
