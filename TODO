@@ -1,6 +1,11 @@
 TODO
 ====
 
+General
+-------
+- Add Get_Data getter to variable-length data types
+- Add util function to concatenate byte sequences
+
 DH
 --
 - Implement memory locking:
