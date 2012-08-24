@@ -3,6 +3,7 @@ with Tkmrpc.Constants;
 with Tkm.Random;
 with Tkm.Servers.Ike.Nonce;
 with Tkm.Servers.Ike.DH;
+with Tkm.Servers.Ike.Isa;
 
 pragma Elaborate_All (Tkm.Random);
 
@@ -313,24 +314,22 @@ is
       Sk_Ei     : out Types.Key_Type;
       Sk_Er     : out Types.Key_Type)
    is
-      pragma Unreferenced (Isa_Id);
-      pragma Unreferenced (Ae_Id);
-      pragma Unreferenced (Ia_Id);
-      pragma Unreferenced (Dh_Id);
-      pragma Unreferenced (Nc_Loc_Id);
-      pragma Unreferenced (Nonce_Rem);
-      pragma Unreferenced (Initiator);
-      pragma Unreferenced (Spi_Loc);
-      pragma Unreferenced (Spi_Rem);
-      pragma Unreferenced (Sk_Ai);
-      pragma Unreferenced (Sk_Ar);
-      pragma Unreferenced (Sk_Ei);
-      pragma Unreferenced (Sk_Er);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Isa.Create
+        (Isa_Id    => Isa_Id,
+         Ae_Id     => Ae_Id,
+         Ia_Id     => Ia_Id,
+         Dh_Id     => Dh_Id,
+         Nc_Loc_Id => Nc_Loc_Id,
+         Nonce_Rem => Nonce_Rem,
+         Initiator => Initiator,
+         Spi_Loc   => Spi_Loc,
+         Spi_Rem   => Spi_Rem,
+         Sk_Ai     => Sk_Ai,
+         Sk_Ar     => Sk_Ar,
+         Sk_Ei     => Sk_Ei,
+         Sk_Er     => Sk_Er);
+      Result := Results.Ok;
    end Isa_Create;
 
    -------------------------------------------------------------------------
