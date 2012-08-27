@@ -1,3 +1,5 @@
+with Interfaces;
+
 with GMP.Binding;
 
 with Tkmrpc.Types;
@@ -21,6 +23,11 @@ is
    --  be big enough to hold the result or else Conversion_Error is raised. If
    --  the given byte sequence is bigger than needed, the result is prepended
    --  with zeros.
+
+   function To_Bytes
+     (Input : Interfaces.Unsigned_64)
+      return Tkmrpc.Types.Byte_Sequence;
+   --  Return byte sequence for given unsigned 64-bit number.
 
    Conversion_Error : exception;
 

@@ -1,3 +1,5 @@
+with Ada.Unchecked_Conversion;
+
 with System;
 
 with Interfaces.C;
@@ -100,6 +102,22 @@ is
 
          return Result;
       end;
+   end To_Bytes;
+
+   -------------------------------------------------------------------------
+
+   function To_Bytes
+     (Input : Interfaces.Unsigned_64)
+      return Tkmrpc.Types.Byte_Sequence
+   is
+      subtype U64_Bytes is Tkmrpc.Types.Byte_Sequence (1 .. 8);
+
+      function To_Bytes is new Ada.Unchecked_Conversion
+        (Source => Interfaces.Unsigned_64,
+         Target => U64_Bytes);
+
+   begin
+      return To_Bytes (Input);
    end To_Bytes;
 
    ------------------------------------------------------------------------

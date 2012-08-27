@@ -19,4 +19,7 @@ package Util_Tests is
    procedure Convert_Hex_To_Bytes;
    --  Convert hex strings to byte sequences.
 
+   procedure Convert_U64_To_Bytes;
+   --  Convert unsigned 64 to byte sequence.
+
 end Util_Tests;

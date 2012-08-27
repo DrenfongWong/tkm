@@ -1,3 +1,5 @@
+with Interfaces;
+
 with GMP.Binding;
 
 with Tkmrpc.Types;
@@ -135,6 +137,34 @@ package body Util_Tests is
 
    -------------------------------------------------------------------------
 
+   procedure Convert_U64_To_Bytes
+   is
+      use type Tkmrpc.Types.Byte_Sequence;
+
+      Ref_Seq1 : constant Tkmrpc.Types.Byte_Sequence (1 .. 8)
+        := (others => 0);
+      Ref_Seq2 : constant Tkmrpc.Types.Byte_Sequence (1 .. 8)
+        := (others => 255);
+      Ref_Seq3 : constant Tkmrpc.Types.Byte_Sequence (1 .. 8)
+        := (16#28#, 16#04#, 16#44#, others => 0);
+      Ref_Seq4 : constant Tkmrpc.Types.Byte_Sequence (1 .. 8)
+        := (16#5b#, 16#3a#, 16#66#, 16#5c#, 16#32#, 16#51#, 16#95#, 16#98#);
+   begin
+      Assert (Condition => Utils.To_Bytes (Input => 0) = Ref_Seq1,
+              Message   => "Bytes mismatch (1)");
+      Assert (Condition => Utils.To_Bytes
+              (Input => Interfaces.Unsigned_64'Last) = Ref_Seq2,
+              Message   => "Bytes mismatch (2)");
+      Assert (Condition => Utils.To_Bytes
+              (Input => 4457512) = Ref_Seq3,
+              Message   => "Bytes mismatch (3)");
+      Assert (Condition => Utils.To_Bytes
+              (Input => 10994783342035352155) = Ref_Seq4,
+              Message   => "Bytes mismatch (4)");
+   end Convert_U64_To_Bytes;
+
+   -------------------------------------------------------------------------
+
    procedure Initialize (T : in out Testcase)
    is
    begin
@@ -151,6 +181,9 @@ package body Util_Tests is
       T.Add_Test_Routine
         (Routine => Convert_Hex_To_Bytes'Access,
          Name    => "Convert hex strings to byte sequences");
+      T.Add_Test_Routine
+        (Routine => Convert_U64_To_Bytes'Access,
+         Name    => "Convert unsigned 64 to byte sequences");
    end Initialize;
 
 end Util_Tests;
