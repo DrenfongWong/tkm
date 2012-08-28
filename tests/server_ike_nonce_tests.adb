@@ -35,10 +35,17 @@ package body Server_Ike_Nonce_Tests is
                  Message   => "Byte" & B'Img & " not zero");
       end loop;
 
+      Servers.Ike.Nc_Reset (Result => Res,
+                            Nc_Id  => 1);
+      Assert (Condition => Res = Results.Ok,
+              Message   => "Nc_Reset failed");
+
       Servers.Ike.Finalize;
 
    exception
       when others =>
+         Servers.Ike.Nc_Reset (Result => Res,
+                               Nc_Id  => 1);
          Servers.Ike.Finalize;
          raise;
    end Check_Nc_Create;

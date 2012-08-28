@@ -64,6 +64,8 @@ package body Server_Ike_DH_Tests is
 
    exception
       when others =>
+         Servers.Ike.Dh_Reset (Result => Res,
+                               Dh_Id  => Id);
          Servers.Ike.Finalize;
          raise;
    end Check_DH_Operations;
