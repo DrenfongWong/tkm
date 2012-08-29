@@ -149,6 +149,24 @@ package body Util_Tests is
 
    -------------------------------------------------------------------------
 
+   procedure Convert_String_To_Bytes
+   is
+      use type Tkmrpc.Types.Byte_Sequence;
+
+      Empty : Tkmrpc.Types.Byte_Sequence (1 .. 0);
+      Idx   : constant String (5 .. 7) := (others => 'A');
+   begin
+      Assert (Condition => Utils.To_Bytes
+              (Input => "ABCDE") = (65, 66, 67, 68, 69),
+              Message   => "String 1 mismatch");
+      Assert (Condition => Utils.To_Bytes (Input => "") = Empty,
+              Message   => "String 2 mismatch");
+      Assert (Condition => Utils.To_Bytes (Input => Idx) = (65, 65, 65),
+              Message   => "String 3 mismatch");
+   end Convert_String_To_Bytes;
+
+   -------------------------------------------------------------------------
+
    procedure Convert_U64_To_Bytes
    is
       use type Tkmrpc.Types.Byte_Sequence;
@@ -196,6 +214,9 @@ package body Util_Tests is
       T.Add_Test_Routine
         (Routine => Convert_U64_To_Bytes'Access,
          Name    => "Convert unsigned 64 to byte sequences");
+      T.Add_Test_Routine
+        (Routine => Convert_String_To_Bytes'Access,
+         Name    => "Convert string to byte sequences");
    end Initialize;
 
 end Util_Tests;

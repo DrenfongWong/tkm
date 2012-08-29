@@ -22,4 +22,7 @@ package Util_Tests is
    procedure Convert_U64_To_Bytes;
    --  Convert unsigned 64 to byte sequence.
 
+   procedure Convert_String_To_Bytes;
+   --  Convert string to byte sequence.
+
 end Util_Tests;

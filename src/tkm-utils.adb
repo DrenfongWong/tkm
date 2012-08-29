@@ -126,6 +126,20 @@ is
 
    ------------------------------------------------------------------------
 
+   function To_Bytes (Input : String) return Tkmrpc.Types.Byte_Sequence
+   is
+      Result   : Tkmrpc.Types.Byte_Sequence (1 .. Input'Length);
+      Idx_Diff : constant Integer := Result'First - Input'First;
+   begin
+      for I in Result'Range loop
+         Result (I) := Character'Pos (Input (I - Idx_Diff));
+      end loop;
+
+      return Result;
+   end To_Bytes;
+
+   ------------------------------------------------------------------------
+
    function To_Hex_String (Input : Tkmrpc.Types.Byte_Sequence) return String
    is
       use type Interfaces.Unsigned_8;

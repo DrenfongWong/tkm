@@ -16,6 +16,9 @@ is
    function Hex_To_Bytes (Input : String) return Tkmrpc.Types.Byte_Sequence;
    --  Return byte sequence of hex string.
 
+   function To_Bytes (Input : String) return Tkmrpc.Types.Byte_Sequence;
+   --  Return byte sequence of given string.
+
    procedure To_Bytes
      (Bignum :     GMP.Binding.Mpz_T;
       Bytes  : out Tkmrpc.Types.Byte_Sequence);
