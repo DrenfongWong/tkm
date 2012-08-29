@@ -13,7 +13,7 @@ is
    function To_Hex_String (Input : Tkmrpc.Types.Byte_Sequence) return String;
    --  Return hex string represenation of byte sequence.
 
-   function To_Bytes (Input : String) return Tkmrpc.Types.Byte_Sequence;
+   function Hex_To_Bytes (Input : String) return Tkmrpc.Types.Byte_Sequence;
    --  Return byte sequence of hex string.
 
    procedure To_Bytes

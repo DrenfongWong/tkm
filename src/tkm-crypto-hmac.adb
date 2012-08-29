@@ -25,7 +25,7 @@ is
                  Input => Utils.To_String (Input => Ctx.Opaded_Key));
          Update (Ctx   => Hash,
                  Input => Utils.To_String
-                   (Input => Utils.To_Bytes
+                   (Input => Utils.Hex_To_Bytes
                       (Input => Buffer)));
 
          --  Reinit for next call
@@ -34,7 +34,7 @@ is
          Update (Ctx   => Ctx.Hasher,
                  Input => Utils.To_String (Input => Ctx.Ipaded_Key));
 
-         return Utils.To_Bytes (Input => Digest (Ctx => Hash));
+         return Utils.Hex_To_Bytes (Input => Digest (Ctx => Hash));
       end;
    end Generate;
 
@@ -58,7 +58,7 @@ is
          begin
             Update (Ctx   => H,
                     Input => Utils.To_String (Input => Key));
-            Buffer (1 .. Hash_Length) := Utils.To_Bytes
+            Buffer (1 .. Hash_Length) := Utils.Hex_To_Bytes
               (Input => Digest (Ctx => H));
          end;
       else
