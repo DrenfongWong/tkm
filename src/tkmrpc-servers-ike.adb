@@ -298,6 +298,26 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Isa_Auth_Psk
+     (Result       : out Results.Result_Type;
+      Isa_Id       : Types.Isa_Id_Type;
+      Init_Message : Types.Init_Message_Type;
+      Idx          : Types.Idx_Type;
+      Signature    : out Types.Signature_Type)
+   is
+      pragma Unreferenced (Isa_Id);
+      pragma Unreferenced (Init_Message);
+      pragma Unreferenced (Idx);
+      pragma Unreferenced (Signature);
+   begin
+
+      --  Auto-generated stub.
+
+      Result := Results.Invalid_Operation;
+   end Isa_Auth_Psk;
+
+   -------------------------------------------------------------------------
+
    procedure Isa_Create
      (Result    : out Results.Result_Type;
       Isa_Id    : Types.Isa_Id_Type;
@@ -406,6 +426,26 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Isa_Sign_Psk
+     (Result       : out Results.Result_Type;
+      Isa_Id       : Types.Isa_Id_Type;
+      Init_Message : Types.Init_Message_Type;
+      Idx          : Types.Idx_Type;
+      Signature    : out Types.Signature_Type)
+   is
+      pragma Unreferenced (Isa_Id);
+      pragma Unreferenced (Init_Message);
+      pragma Unreferenced (Idx);
+      pragma Unreferenced (Signature);
+   begin
+
+      --  Auto-generated stub.
+
+      Result := Results.Invalid_Operation;
+   end Isa_Sign_Psk;
+
+   -------------------------------------------------------------------------
+
    procedure Isa_Skip_Create_First
      (Result : out Results.Result_Type;
       Isa_Id : Types.Isa_Id_Type)
@@ -471,6 +511,17 @@ is
 
       Result := Results.Ok;
    end Tkm_Limits;
+
+   -------------------------------------------------------------------------
+
+   procedure Tkm_Reset (Result : out Results.Result_Type)
+   is
+   begin
+
+      --  Auto-generated stub.
+
+      Result := Results.Invalid_Operation;
+   end Tkm_Reset;
 
    -------------------------------------------------------------------------
 
