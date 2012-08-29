@@ -433,15 +433,13 @@ is
       Idx          : Types.Idx_Type;
       Signature    : out Types.Signature_Type)
    is
-      pragma Unreferenced (Isa_Id);
-      pragma Unreferenced (Init_Message);
-      pragma Unreferenced (Idx);
-      pragma Unreferenced (Signature);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Isa.Sign_Psk
+        (Isa_Id       => Isa_Id,
+         Init_Message => Init_Message,
+         Idx          => Idx,
+         Signature    => Signature);
+      Result := Results.Ok;
    end Isa_Sign_Psk;
 
    -------------------------------------------------------------------------

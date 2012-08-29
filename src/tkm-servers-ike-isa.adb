@@ -11,8 +11,13 @@ is
 
    package L renames Tkm.Logger;
 
+   Shared_Secret : constant String := "foobar";
+   Key_Pad       : constant String := "Key Pad for IKEv2";
+
    Sk_d, Sk_Pi, Sk_Pr : Tkmrpc.Types.Byte_Sequence
      (1 .. Crypto.Hmac_Sha512.Hash_Output_Length);
+
+   Nonce_R : Tkmrpc.Types.Nonce_Type;
 
    -------------------------------------------------------------------------
 
@@ -169,7 +174,67 @@ is
             Length => Sk_Pr'Length);
          L.Log (Message => "Sk_Pi " & Utils.To_Hex_String (Input => Sk_Pi));
          L.Log (Message => "Sk_Pr " & Utils.To_Hex_String (Input => Sk_Pr));
+
+         --  Store Nonces for authentication steps
+
+         Nonce_R := Nonce_Rem;
       end;
    end Create;
+
+   -------------------------------------------------------------------------
+
+   procedure Sign_Psk
+     (Isa_Id       :     Tkmrpc.Types.Isa_Id_Type;
+      Init_Message :     Tkmrpc.Types.Init_Message_Type;
+      Idx          :     Tkmrpc.Types.Idx_Type;
+      Signature    : out Tkmrpc.Types.Signature_Type)
+   is
+      pragma Unreferenced (Isa_Id);
+
+      Prf    : Crypto.Hmac_Sha512.Context_Type;
+      Octets : Tkmrpc.Types.Byte_Sequence
+        (1 .. Init_Message.Size + Nonce_R.Size +
+           Crypto.Hmac_Sha512.Hash_Output_Length);
+   begin
+      Crypto.Hmac_Sha512.Init (Ctx => Prf,
+                               Key => Sk_Pi);
+
+      --  Octets = Init_Message | nonce_rem | prf(Sk_pi, Idx)
+
+      Octets (1 .. Init_Message.Size)
+        := Init_Message.Data (Init_Message.Data'First .. Init_Message.Size);
+      Octets (Init_Message.Size + 1 .. Init_Message.Size + Nonce_R.Size)
+        := Nonce_R.Data (Nonce_R.Data'First .. Nonce_R.Size);
+      Octets (Init_Message.Size + Nonce_R.Size + 1 .. Octets'Last)
+        := Crypto.Hmac_Sha512.Generate
+          (Ctx  => Prf,
+           Data => Idx.Data (Idx.Data'First .. Idx.Size));
+
+      L.Log (Message => "AUTH Octets " & Utils.To_Hex_String
+             (Input => Octets));
+
+      --  Signature = prf(prf(Shared Secret,"Key Pad for IKEv2"), octets)
+
+      Crypto.Hmac_Sha512.Init
+        (Ctx => Prf,
+         Key => Utils.To_Bytes (Input => Shared_Secret));
+      Crypto.Hmac_Sha512.Init
+        (Ctx => Prf,
+         Key => Crypto.Hmac_Sha512.Generate
+           (Ctx  => Prf,
+            Data => Utils.To_Bytes (Input => Key_Pad)));
+
+      declare
+         Sig : constant Tkmrpc.Types.Byte_Sequence
+           := Crypto.Hmac_Sha512.Generate (Ctx  => Prf,
+                                           Data => Octets);
+      begin
+         Signature.Data (1 .. Sig'Length) := Sig;
+         Signature.Size                   := Sig'Length;
+
+         L.Log (Message => "PSK Signature " & Utils.To_Hex_String
+                (Input => Sig));
+      end;
+   end Sign_Psk;
 
 end Tkm.Servers.Ike.Isa;

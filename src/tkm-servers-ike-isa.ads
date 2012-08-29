@@ -20,4 +20,12 @@ is
    --  Create a new ISA context with given id and parameters. Return the
    --  computed authentication and encryption keys.
 
+   procedure Sign_Psk
+     (Isa_Id       :     Tkmrpc.Types.Isa_Id_Type;
+      Init_Message :     Tkmrpc.Types.Init_Message_Type;
+      Idx          :     Tkmrpc.Types.Idx_Type;
+      Signature    : out Tkmrpc.Types.Signature_Type);
+   --  Create PSK signature of local authentication octets using given message
+   --  and identification payload.
+
 end Tkm.Servers.Ike.Isa;
