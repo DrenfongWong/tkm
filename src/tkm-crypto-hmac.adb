@@ -49,6 +49,8 @@ is
       Buffer : Tkmrpc.Types.Byte_Sequence (Ctx.Ipaded_Key'Range)
         := (others => 0);
    begin
+      Ctx.Hasher := Initial_Ctx;
+
       if Key'Length > Buffer'Length then
 
          --  Hash key if it is too long
