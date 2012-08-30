@@ -207,6 +207,18 @@ is
    procedure Reset (Isa_Id : Tkmrpc.Types.Isa_Id_Type)
    is
    begin
+      if Tkmrpc.Contexts.isa.Has_State
+        (Id    => Isa_Id,
+         State => Tkmrpc.Contexts.isa.active)
+        and then not Tkmrpc.Contexts.ae.Has_State
+          (Id    => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
+           State => Tkmrpc.Contexts.ae.clean)
+      then
+         L.Log (Message => "Resetting AE context"
+                & Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id)'Img);
+         Tkmrpc.Contexts.ae.reset (Id => Tkmrpc.Contexts.isa.get_ae_id
+                                   (Id => Isa_Id));
+      end if;
       L.Log (Message => "Resetting ISA context" & Isa_Id'Img);
       Tkmrpc.Contexts.isa.reset (Id => Isa_Id);
    end Reset;

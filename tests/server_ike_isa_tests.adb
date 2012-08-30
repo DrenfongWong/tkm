@@ -211,6 +211,10 @@ package body Server_Ike_Isa_Tests is
               (Id    => 1,
                State => Contexts.isa.clean),
               Message   => "ISA context not 'clean'");
+      Assert (Condition => Contexts.ae.Has_State
+              (Id    => 1,
+               State => Contexts.ae.clean),
+              Message   => "AE context not 'clean'");
 
       --  DH context must be reset explicitly since it is currently not
       --  consumed.
