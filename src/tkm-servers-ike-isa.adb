@@ -15,7 +15,7 @@ is
    Shared_Secret : constant String := "foobar";
    Key_Pad       : constant String := "Key Pad for IKEv2";
 
-   Sk_d, Sk_Pi, Sk_Pr : Tkmrpc.Types.Byte_Sequence
+   Sk_Pi, Sk_Pr : Tkmrpc.Types.Byte_Sequence
      (1 .. Crypto.Hmac_Sha512.Hash_Output_Length);
 
    Nonce_R, Nonce_L : Tkmrpc.Types.Nonce_Type;
@@ -37,12 +37,13 @@ is
       Sk_Ei     : out Tkmrpc.Types.Key_Type;
       Sk_Er     : out Tkmrpc.Types.Key_Type)
    is
-      pragma Unreferenced (Ae_Id, Ia_Id);
-
       Int_Key_Len : constant := 64;
       Enc_Key_Len : constant := 32;
       Secret      : Tkmrpc.Types.Dh_Key_Type;
       Nonce_Loc   : Tkmrpc.Types.Nonce_Type;
+      Sk_D        : Tkmrpc.Types.Key_Type :=
+        (Size => Crypto.Hmac_Sha512.Hash_Output_Length,
+         Data => (others => 0));
    begin
       Sk_Ai := Tkmrpc.Types.Null_Key_Type;
       Sk_Ar := Tkmrpc.Types.Null_Key_Type;
@@ -130,10 +131,12 @@ is
 
          --  Key for derivation of further (child) key material
 
-         Sk_d := Crypto.Prf_Plus_Hmac_Sha512.Generate
-           (Ctx    => Prf_Plus,
-            Length => Sk_d'Length);
-         L.Log (Message => "Sk_d  " & Utils.To_Hex_String (Input => Sk_d));
+         Sk_D.Data (Sk_D.Data'First .. Sk_D.Size)
+           := Crypto.Prf_Plus_Hmac_Sha512.Generate
+             (Ctx    => Prf_Plus,
+              Length => Sk_D.Size);
+         L.Log (Message => "Sk_D  " & Utils.To_Hex_String
+                (Input => Sk_D.Data (Sk_D.Data'First .. Sk_D.Size)));
 
          --  IKE authentication keys
 
@@ -176,7 +179,13 @@ is
          L.Log (Message => "Sk_Pi " & Utils.To_Hex_String (Input => Sk_Pi));
          L.Log (Message => "Sk_Pr " & Utils.To_Hex_String (Input => Sk_Pr));
 
-         --  Store Nonces for authentication steps
+         --  Create isa context
+
+         Tkmrpc.Contexts.isa.create (Id            => Isa_Id,
+                                     ae_id         => Ae_Id,
+                                     ia_id         => Ia_Id,
+                                     sk_d          => Sk_D,
+                                     creation_time => 0);
 
          Nonce_L := Nonce_Loc;
          Nonce_R := Nonce_Rem;

@@ -1,6 +1,7 @@
 with Tkmrpc.Types;
 with Tkmrpc.Results;
 with Tkmrpc.Constants;
+with Tkmrpc.Contexts.isa;
 with Tkmrpc.Contexts.Dh;
 with Tkmrpc.Contexts.Nc;
 with Tkmrpc.Servers.Ike;
@@ -14,6 +15,8 @@ package body Server_Ike_Isa_Tests is
 
    procedure Check_Isa_Create
    is
+      use type Tkmrpc.Results.Result_Type;
+
       Nonce_Loc     : constant Types.Nonce_Type
         := (Size => 32,
             Data =>
@@ -142,7 +145,7 @@ package body Server_Ike_Isa_Tests is
    begin
       Servers.Ike.Init;
       Contexts.Dh.Create (Id       => 1,
-                          Dha_Id   => Tkmrpc.Constants.Modp_4096,
+                          Dha_Id   => Constants.Modp_4096,
                           Secvalue => Types.Null_Dh_Priv_Type);
       Contexts.Dh.Generate (Id        => 1,
                             Dh_Key    => Shared_Secret,
@@ -169,6 +172,8 @@ package body Server_Ike_Isa_Tests is
             Sk_Ar     => Sk_Ar,
             Sk_Ei     => Sk_Ei,
             Sk_Er     => Sk_Er);
+         Assert (Condition => Res = Results.Ok,
+                 Message   => "Isa_Create failed");
 
          Assert (Condition => Sk_Ai = Ref_Sk_Ai,
                  Message   => "Sk_Ai mismatch");
@@ -178,16 +183,29 @@ package body Server_Ike_Isa_Tests is
                  Message   => "Sk_Ei mismatch");
          Assert (Condition => Sk_Er = Ref_Sk_Er,
                  Message   => "Sk_Er mismatch");
-
-         Assert (Condition => Contexts.Nc.Has_State
-                 (Id    => 1,
-                  State => Contexts.Nc.Clean),
-                 Message   => "Nc context state mismatch");
---           Assert (Condition => Contexts.Dh.Has_State
---                   (Id    => 1,
---                    State => Contexts.Dh.Clean),
---                   Message   => "Dh context state mismatch");
       end;
+
+      Assert (Condition => Contexts.isa.Has_State
+              (Id    => 1,
+               State => Contexts.isa.active),
+              Message   => "ISA context not active");
+      Assert (Condition => Contexts.Nc.Has_State
+              (Id    => 1,
+               State => Contexts.Nc.Clean),
+              Message   => "Nc context state mismatch");
+      --           Assert (Condition => Contexts.Dh.Has_State
+      --                   (Id    => 1,
+      --                    State => Contexts.Dh.Clean),
+      --                   Message   => "Dh context state mismatch");
+
+      Servers.Ike.Isa_Reset (Result => Res,
+                             Isa_Id => 1);
+      Assert (Condition => Res = Results.Ok,
+              Message   => "Isa_Reset failed");
+      Assert (Condition => Contexts.isa.Has_State
+              (Id    => 1,
+               State => Contexts.isa.clean),
+              Message   => "ISA context not clean");
 
       --  DH context must be reset explicitly since it is currently not
       --  consumed.
@@ -198,6 +216,8 @@ package body Server_Ike_Isa_Tests is
 
    exception
       when others =>
+         Servers.Ike.Isa_Reset (Result => Res,
+                                Isa_Id => 1);
          Servers.Ike.Nc_Reset (Result => Res,
                                Nc_Id  => 1);
          Servers.Ike.Dh_Reset (Result => Res,
