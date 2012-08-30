@@ -24,6 +24,7 @@ is
      (Isa_Id       :     Tkmrpc.Types.Isa_Id_Type;
       Init_Message :     Tkmrpc.Types.Init_Message_Type;
       Idx          :     Tkmrpc.Types.Idx_Type;
+      Verify       :     Tkmrpc.Types.Verify_Type;
       Signature    : out Tkmrpc.Types.Signature_Type);
    --  Create PSK signature of local authentication octets using given message
    --  and identification payload.

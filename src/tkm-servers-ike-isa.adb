@@ -187,9 +187,10 @@ is
      (Isa_Id       :     Tkmrpc.Types.Isa_Id_Type;
       Init_Message :     Tkmrpc.Types.Init_Message_Type;
       Idx          :     Tkmrpc.Types.Idx_Type;
+      Verify       :     Tkmrpc.Types.Verify_Type;
       Signature    : out Tkmrpc.Types.Signature_Type)
    is
-      pragma Unreferenced (Isa_Id);
+      pragma Unreferenced (Isa_Id, Verify);
 
       Prf    : Crypto.Hmac_Sha512.Context_Type;
       Octets : Tkmrpc.Types.Byte_Sequence
