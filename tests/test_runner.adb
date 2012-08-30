@@ -1,3 +1,5 @@
+with Ada.Command_Line;
+
 with Ahven.Text_Runner;
 with Ahven.Framework;
 
@@ -20,7 +22,7 @@ procedure Test_Runner is
 
    S : constant Test_Suite_Access := Create_Suite (Suite_Name => "TKM tests");
 begin
-   Tkm.Logger.Use_Stdout;
+   Tkm.Logger.Use_File (Path => Ada.Command_Line.Command_Name & ".log");
 
    Add_Test (Suite => S.all,
              T     => new Assertion_Tests.Testcase);

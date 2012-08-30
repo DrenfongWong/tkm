@@ -14,7 +14,7 @@ is
    IKE_Socket : constant String := "/tmp/tkm.rpc.ike";
    RPC_Server : Transport.Servers.Server_Type;
 begin
-   L.Use_Stdout;
+   L.Use_File;
    L.Log (Message => "Trusted Key Manager (TKM) starting ("
           & Tkm.Version.Version_String & ")");
 

@@ -44,15 +44,21 @@ is
 
    -------------------------------------------------------------------------
 
-   procedure Use_Stdout
+   procedure Use_File (Path : String := "")
    is
       use Alog.Facilities;
 
       F : constant Handle := new File_Descriptor.Instance;
    begin
+      if Path'Length > 0 then
+         File_Descriptor.Handle (F).Set_Logfile
+           (Path   => Path,
+            Append => False);
+      end if;
+
       Instance.Clear;
       Instance.Attach_Facility (Facility => F);
-   end Use_Stdout;
+   end Use_File;
 
    -------------------------------------------------------------------------
 

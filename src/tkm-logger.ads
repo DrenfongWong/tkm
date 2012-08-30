@@ -15,8 +15,8 @@ is
       Message : String);
    --  Log the specified message with given loglevel.
 
-   procedure Use_Stdout;
-   --  Switch to console based logging.
+   procedure Use_File (Path : String := "");
+   --  Switch to file based logging. If no file is given, stdout is used.
 
    procedure Stop;
    --  Stop TKM logger.
