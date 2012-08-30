@@ -1,6 +1,7 @@
 with Tkmrpc.Contexts.Dh;
 with Tkmrpc.Contexts.Nc;
 with Tkmrpc.Contexts.isa;
+with Tkmrpc.Contexts.ae;
 
 with Tkm.Utils;
 with Tkm.Logger;
@@ -14,11 +15,6 @@ is
 
    Shared_Secret : constant String := "foobar";
    Key_Pad       : constant String := "Key Pad for IKEv2";
-
-   Sk_Pi, Sk_Pr : Tkmrpc.Types.Byte_Sequence
-     (1 .. Crypto.Hmac_Sha512.Hash_Output_Length);
-
-   Nonce_R, Nonce_L : Tkmrpc.Types.Nonce_Type;
 
    -------------------------------------------------------------------------
 
@@ -41,7 +37,8 @@ is
       Enc_Key_Len : constant := 32;
       Secret      : Tkmrpc.Types.Dh_Key_Type;
       Nonce_Loc   : Tkmrpc.Types.Nonce_Type;
-      Sk_D        : Tkmrpc.Types.Key_Type :=
+
+      Sk_D, Sk_Pi, Sk_Pr : Tkmrpc.Types.Key_Type :=
         (Size => Crypto.Hmac_Sha512.Hash_Output_Length,
          Data => (others => 0));
    begin
@@ -170,25 +167,38 @@ is
 
          --  Keys used for AUTH payload generation
 
-         Sk_Pi := Crypto.Prf_Plus_Hmac_Sha512.Generate
-           (Ctx    => Prf_Plus,
-            Length => Sk_Pi'Length);
-         Sk_Pr := Crypto.Prf_Plus_Hmac_Sha512.Generate
-           (Ctx    => Prf_Plus,
-            Length => Sk_Pr'Length);
-         L.Log (Message => "Sk_Pi " & Utils.To_Hex_String (Input => Sk_Pi));
-         L.Log (Message => "Sk_Pr " & Utils.To_Hex_String (Input => Sk_Pr));
+         Sk_Pi.Data (Sk_Pi.Data'First .. Sk_Pi.Size)
+           := Crypto.Prf_Plus_Hmac_Sha512.Generate
+             (Ctx    => Prf_Plus,
+              Length => Sk_Pi.Size);
+         Sk_Pr.Data (Sk_Pr.Data'First .. Sk_Pr.Size)
+           := Crypto.Prf_Plus_Hmac_Sha512.Generate
+             (Ctx    => Prf_Plus,
+              Length => Sk_Pr.Size);
+         L.Log (Message => "Sk_Pi " & Utils.To_Hex_String
+                (Input => Sk_Pi.Data (Sk_Pi.Data'First .. Sk_Pi.Size)));
+         L.Log (Message => "Sk_Pr " & Utils.To_Hex_String
+                (Input => Sk_Pr.Data (Sk_Pr.Data'First .. Sk_Pr.Size)));
 
-         --  Create isa context
+         --  Create ae and isa contexts
 
-         Tkmrpc.Contexts.isa.create (Id            => Isa_Id,
-                                     ae_id         => Ae_Id,
-                                     ia_id         => Ia_Id,
-                                     sk_d          => Sk_D,
-                                     creation_time => 0);
-
-         Nonce_L := Nonce_Loc;
-         Nonce_R := Nonce_Rem;
+         L.Log (Message => "Creating new AE context with ID" & Ae_Id'Img);
+         Tkmrpc.Contexts.ae.create
+           (Id              => Ae_Id,
+            iag_id          => 1,
+            dhag_id         => 1,
+            creation_time   => 0,
+            initiator       => Initiator,
+            sk_ike_auth_loc => (if Initiator = 1 then Sk_Pi else Sk_Pr),
+            sk_ike_auth_rem => (if Initiator = 0 then Sk_Pi else Sk_Pr),
+            nonce_loc       => Nonce_Loc,
+            nonce_rem       => Nonce_Rem);
+         Tkmrpc.Contexts.isa.create
+           (Id            => Isa_Id,
+            ae_id         => Ae_Id,
+            ia_id         => Ia_Id,
+            sk_d          => Sk_D,
+            creation_time => 0);
       end;
    end Create;
 
@@ -210,27 +220,28 @@ is
       Verify       :     Tkmrpc.Types.Verify_Type;
       Signature    : out Tkmrpc.Types.Signature_Type)
    is
-      pragma Unreferenced (Isa_Id);
-
       use type Tkmrpc.Types.Verify_Type;
 
-      Sk_P  : Tkmrpc.Types.Byte_Sequence
-        (1 .. Crypto.Hmac_Sha512.Hash_Output_Length);
+      Sk_P  : Tkmrpc.Types.Key_Type;
       Nonce : Tkmrpc.Types.Nonce_Type;
       Prf   : Crypto.Hmac_Sha512.Context_Type;
+      Ae_Id : constant Tkmrpc.Types.Ae_Id_Type
+        := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
    begin
       if Verify = 0 then
          L.Log (Message => "Generating local PSK signature");
-         Sk_P  := Sk_Pi;
-         Nonce := Nonce_R;
+         Sk_P  := Tkmrpc.Contexts.ae.get_sk_ike_auth_loc (Id => Ae_Id);
+         Nonce := Tkmrpc.Contexts.ae.get_nonce_rem (Id => Ae_Id);
       else
          L.Log (Message => "Generating remote PSK signature");
-         Sk_P  := Sk_Pr;
-         Nonce := Nonce_L;
+         Sk_P  := Tkmrpc.Contexts.ae.get_sk_ike_auth_rem (Id => Ae_Id);
+         Nonce := Tkmrpc.Contexts.ae.get_nonce_loc (Id => Ae_Id);
       end if;
 
-      Crypto.Hmac_Sha512.Init (Ctx => Prf,
-                               Key => Sk_P);
+      Crypto.Hmac_Sha512.Init
+        (Ctx => Prf,
+         Key => Sk_P.Data
+           (Sk_P.Data'First .. Sk_P.Size));
 
       declare
          Octets : Tkmrpc.Types.Byte_Sequence

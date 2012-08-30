@@ -2,6 +2,7 @@ with Tkmrpc.Types;
 with Tkmrpc.Results;
 with Tkmrpc.Constants;
 with Tkmrpc.Contexts.isa;
+with Tkmrpc.Contexts.ae;
 with Tkmrpc.Contexts.Dh;
 with Tkmrpc.Contexts.Nc;
 with Tkmrpc.Servers.Ike;
@@ -188,11 +189,15 @@ package body Server_Ike_Isa_Tests is
       Assert (Condition => Contexts.isa.Has_State
               (Id    => 1,
                State => Contexts.isa.active),
-              Message   => "ISA context not active");
+              Message   => "ISA context not 'active'");
+      Assert (Condition => Contexts.ae.Has_State
+              (Id    => 1,
+               State => Contexts.ae.unauth),
+              Message   => "AE context not 'unauth'");
       Assert (Condition => Contexts.Nc.Has_State
               (Id    => 1,
                State => Contexts.Nc.Clean),
-              Message   => "Nc context state mismatch");
+              Message   => "Nc context not 'clean'");
       --           Assert (Condition => Contexts.Dh.Has_State
       --                   (Id    => 1,
       --                    State => Contexts.Dh.Clean),
@@ -205,7 +210,7 @@ package body Server_Ike_Isa_Tests is
       Assert (Condition => Contexts.isa.Has_State
               (Id    => 1,
                State => Contexts.isa.clean),
-              Message   => "ISA context not clean");
+              Message   => "ISA context not 'clean'");
 
       --  DH context must be reset explicitly since it is currently not
       --  consumed.
