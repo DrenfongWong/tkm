@@ -1,5 +1,6 @@
 with Tkmrpc.Contexts.Dh;
 with Tkmrpc.Contexts.Nc;
+with Tkmrpc.Contexts.isa;
 
 with Tkm.Utils;
 with Tkm.Logger;
@@ -181,6 +182,15 @@ is
          Nonce_R := Nonce_Rem;
       end;
    end Create;
+
+   -------------------------------------------------------------------------
+
+   procedure Reset (Isa_Id : Tkmrpc.Types.Isa_Id_Type)
+   is
+   begin
+      L.Log (Message => "Resetting ISA context" & Isa_Id'Img);
+      Tkmrpc.Contexts.isa.reset (Id => Isa_Id);
+   end Reset;
 
    -------------------------------------------------------------------------
 
