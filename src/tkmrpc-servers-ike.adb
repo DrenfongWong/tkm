@@ -303,13 +303,10 @@ is
       Isa_Id    : Types.Isa_Id_Type;
       Signature : Types.Signature_Type)
    is
-      pragma Unreferenced (Isa_Id);
-      pragma Unreferenced (Signature);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Isa.Auth_Psk (Isa_Id    => Isa_Id,
+                                    Signature => Signature);
+      Result := Results.Ok;
    end Isa_Auth_Psk;
 
    -------------------------------------------------------------------------

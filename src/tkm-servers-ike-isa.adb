@@ -15,6 +15,27 @@ is
 
    Shared_Secret : constant String := "foobar";
    Key_Pad       : constant String := "Key Pad for IKEv2";
+   Sig_Rem       : Tkmrpc.Types.Signature_Type;
+
+   -------------------------------------------------------------------------
+
+   procedure Auth_Psk
+     (Isa_Id    : Tkmrpc.Types.Isa_Id_Type;
+      Signature : Tkmrpc.Types.Signature_Type)
+   is
+      use type Tkmrpc.Types.Byte_Sequence;
+   begin
+      L.Log (Message => "Authenticating ISA context with ID" & Isa_Id'Img);
+      if Signature.Data (Signature.Data'First .. Signature.Size)
+        /= Sig_Rem.Data (Sig_Rem.Data'First .. Sig_Rem.Size)
+      then
+         raise Authentication_Failure with "Authentication failed for ISA"
+           & " context" & Isa_Id'Img;
+      end if;
+
+      L.Log (Message => "Authentication of ISA context" & Isa_Id'Img
+             & " successful");
+   end Auth_Psk;
 
    -------------------------------------------------------------------------
 
@@ -296,6 +317,12 @@ is
 
             L.Log (Message => "PSK Signature " & Utils.To_Hex_String
                    (Input => Sig));
+            if Verify = 1 then
+
+               --  Store remote signature for AUTH step.
+
+               Sig_Rem := Signature;
+            end if;
          end;
       end;
    end Sign_Psk;

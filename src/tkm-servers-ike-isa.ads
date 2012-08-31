@@ -29,7 +29,14 @@ is
    --  Create PSK signature of local authentication octets using given message
    --  and identification payload.
 
+   procedure Auth_Psk
+     (Isa_Id    : Tkmrpc.Types.Isa_Id_Type;
+      Signature : Tkmrpc.Types.Signature_Type);
+   --  Authenticate ISA context identified by id.
+
    procedure Reset (Isa_Id : Tkmrpc.Types.Isa_Id_Type);
    --  Reset ISA context with given id.
+
+   Authentication_Failure : exception;
 
 end Tkm.Servers.Ike.Isa;
