@@ -4,6 +4,7 @@ with Tkm.Random;
 with Tkm.Servers.Ike.Nonce;
 with Tkm.Servers.Ike.DH;
 with Tkm.Servers.Ike.Isa;
+with Tkm.Servers.Ike.Esa;
 
 pragma Elaborate_All (Tkm.Random);
 
@@ -189,17 +190,15 @@ is
       Esp_Spi_Loc : Types.Esp_Spi_Type;
       Esp_Spi_Rem : Types.Esp_Spi_Type)
    is
-      pragma Unreferenced (Esa_Id);
-      pragma Unreferenced (Isa_Id);
-      pragma Unreferenced (Sp_Id);
-      pragma Unreferenced (Ea_Id);
-      pragma Unreferenced (Esp_Spi_Loc);
-      pragma Unreferenced (Esp_Spi_Rem);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Esa.Create_First
+        (Esa_Id      => Esa_Id,
+         Isa_Id      => Isa_Id,
+         Sp_Id       => Sp_Id,
+         Ea_Id       => Ea_Id,
+         Esp_Spi_Loc => Esp_Spi_Loc,
+         Esp_Spi_Rem => Esp_Spi_Rem);
+      Result := Results.Ok;
    end Esa_Create_First;
 
    -------------------------------------------------------------------------
