@@ -20,6 +20,10 @@ is
       Esp_Spi_Loc : Tkmrpc.Types.Esp_Spi_Type;
       Esp_Spi_Rem : Tkmrpc.Types.Esp_Spi_Type)
    is
+      pragma Precondition (Tkmrpc.Contexts.ae.Has_State
+        (Id    => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
+         State => Tkmrpc.Contexts.ae.authenticated));
+
       Ae_Id     : constant Tkmrpc.Types.Ae_Id_Type
         := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
       Initiator : constant Boolean := Tkmrpc.Contexts.ae.Has_initiator

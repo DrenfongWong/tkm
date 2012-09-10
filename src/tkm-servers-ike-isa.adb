@@ -33,6 +33,13 @@ is
            & " context" & Isa_Id'Img;
       end if;
 
+      Tkmrpc.Contexts.ae.authenticate
+        (Id              => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
+         ca_context      => 1,
+         ra_id           => 1,
+         remote_identity => 1,
+         not_before      => 1,
+         not_after       => 1);
       L.Log (Message => "Authentication of ISA context" & Isa_Id'Img
              & " successful");
    end Auth_Psk;
@@ -322,6 +329,10 @@ is
                --  Store remote signature for AUTH step.
 
                Sig_Rem := Signature;
+            else
+               Tkmrpc.Contexts.ae.sign
+                 (Id    => Ae_Id,
+                  lc_id => 1);
             end if;
          end;
       end;
