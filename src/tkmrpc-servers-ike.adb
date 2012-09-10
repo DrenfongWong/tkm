@@ -1,5 +1,10 @@
 with Tkmrpc.Constants;
+with Tkmrpc.Contexts.ae;
+with Tkmrpc.Contexts.Dh;
+with Tkmrpc.Contexts.isa;
+with Tkmrpc.Contexts.Nc;
 
+with Tkm.Logger;
 with Tkm.Random;
 with Tkm.Servers.Ike.Nonce;
 with Tkm.Servers.Ike.DH;
@@ -12,6 +17,8 @@ package body Tkmrpc.Servers.Ike
 is
 
    use Tkm;
+
+   package L renames Tkm.Logger;
 
    -------------------------------------------------------------------------
 
@@ -506,10 +513,22 @@ is
    procedure Tkm_Reset (Result : out Results.Result_Type)
    is
    begin
+      L.Log (Message => "Resetting all contexts");
 
-      --  Auto-generated stub.
+      for I in Tkmrpc.Types.Nc_Id_Type'Range loop
+         Tkmrpc.Contexts.Nc.Reset (Id => I);
+      end loop;
+      for I in Tkmrpc.Types.Dh_Id_Type'Range loop
+         Tkmrpc.Contexts.Dh.Reset (Id => I);
+      end loop;
+      for I in Tkmrpc.Types.Ae_Id_Type'Range loop
+         Tkmrpc.Contexts.ae.reset (Id => I);
+      end loop;
+      for I in Tkmrpc.Types.Isa_Id_Type'Range loop
+         Tkmrpc.Contexts.isa.reset (Id => I);
+      end loop;
 
-      Result := Results.Invalid_Operation;
+      Result := Results.Ok;
    end Tkm_Reset;
 
    -------------------------------------------------------------------------

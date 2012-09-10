@@ -2,6 +2,8 @@ with Tkmrpc.Results;
 with Tkmrpc.Types;
 with Tkmrpc.Constants;
 with Tkmrpc.Servers.Ike;
+with Tkmrpc.Contexts.Nc;
+with Tkmrpc.Contexts.Dh;
 
 package body Server_Ike_Tkm_Tests is
 
@@ -60,6 +62,44 @@ package body Server_Ike_Tkm_Tests is
 
    -------------------------------------------------------------------------
 
+   procedure Check_Reset
+   is
+      use type Tkmrpc.Results.Result_Type;
+      use type Tkmrpc.Contexts.Nc.Nc_State_Type;
+      use type Tkmrpc.Contexts.Dh.Dh_State_Type;
+
+      Res : Results.Result_Type;
+   begin
+      Contexts.Nc.Create
+        (Id    => 1,
+         Nonce => Types.Null_Nonce_Type);
+      Contexts.Dh.Create
+        (Id       => 1,
+         Dha_Id   => 1,
+         Secvalue => Types.Null_Dh_Priv_Type);
+
+      Servers.Ike.Init;
+      Servers.Ike.Tkm_Reset (Result => Res);
+
+      Assert (Condition => Res = Results.Ok,
+              Message   => "TKM reset failed");
+      Assert (Condition => Contexts.Nc.Get_State
+              (Id => 1) = Contexts.Nc.Clean,
+              Message   => "Nc context not reset");
+      Assert (Condition => Contexts.Dh.Get_State
+              (Id => 1) = Contexts.Dh.Clean,
+              Message   => "Dh context not reset");
+
+      Servers.Ike.Finalize;
+
+   exception
+      when others =>
+         Servers.Ike.Finalize;
+         raise;
+   end Check_Reset;
+
+   -------------------------------------------------------------------------
+
    procedure Check_Version
    is
       use type Types.Version_Type;
@@ -96,6 +136,9 @@ package body Server_Ike_Tkm_Tests is
       T.Add_Test_Routine
         (Routine => Check_Version'Access,
          Name    => "Check Tkm_Version");
+      T.Add_Test_Routine
+        (Routine => Check_Reset'Access,
+         Name    => "Check Tkm_Reset");
    end Initialize;
 
 end Server_Ike_Tkm_Tests;

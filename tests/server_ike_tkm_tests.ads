@@ -13,4 +13,7 @@ package Server_Ike_Tkm_Tests is
    procedure Check_Version;
    --  Check TKM version operation.
 
+   procedure Check_Reset;
+   --  Check TKM reset operation.
+
 end Server_Ike_Tkm_Tests;
