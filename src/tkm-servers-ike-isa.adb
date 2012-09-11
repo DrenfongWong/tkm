@@ -3,6 +3,7 @@ with Tkmrpc.Contexts.Nc;
 with Tkmrpc.Contexts.isa;
 with Tkmrpc.Contexts.ae;
 
+with Tkm.Config;
 with Tkm.Utils;
 with Tkm.Logger;
 with Tkm.Crypto.Hmac_Sha512;
@@ -13,9 +14,8 @@ is
 
    package L renames Tkm.Logger;
 
-   Shared_Secret : constant String := "foobar";
-   Key_Pad       : constant String := "Key Pad for IKEv2";
-   Sig_Rem       : Tkmrpc.Types.Signature_Type;
+   Key_Pad : constant String := "Key Pad for IKEv2";
+   Sig_Rem : Tkmrpc.Types.Signature_Type;
 
    -------------------------------------------------------------------------
 
@@ -307,7 +307,7 @@ is
 
          Crypto.Hmac_Sha512.Init
            (Ctx => Prf,
-            Key => Utils.To_Bytes (Input => Shared_Secret));
+            Key => Utils.To_Bytes (Input => Config.Pre_Shared_Key));
          Crypto.Hmac_Sha512.Init
            (Ctx => Prf,
             Key => Crypto.Hmac_Sha512.Generate
