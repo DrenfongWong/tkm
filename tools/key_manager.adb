@@ -6,6 +6,8 @@ with Tkmrpc.Servers.Ike;
 with Tkm.Logger;
 with Tkm.Version;
 with Tkm.Dispatchers;
+with Tkm.Xfrm;
+with Tkm.Config;
 
 procedure Key_Manager
 is
@@ -19,6 +21,15 @@ begin
    L.Use_File;
    L.Log (Message => "Trusted Key Manager (TKM) starting ("
           & Tkm.Version.Version_String & ")");
+
+   --  Install test policies
+
+   Tkm.Xfrm.Flush;
+   Tkm.Xfrm.Add_Policy (Source      => Tkm.Config.Local_Addr,
+                        Destination => Tkm.Config.Peer_Addr);
+   Tkm.Xfrm.Add_Policy (Source      => Tkm.Config.Peer_Addr,
+                        Destination => Tkm.Config.Local_Addr);
+   L.Log (Message => "XFRM test policies installed");
 
    Servers.Ike.Init;
    Transport.Servers.Listen
