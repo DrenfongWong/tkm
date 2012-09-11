@@ -4,6 +4,8 @@ with Tkmrpc.Contexts.isa;
 with Tkm.Logger;
 with Tkm.Utils;
 with Tkm.Key_Derivation;
+with Tkm.Config;
+with Tkm.Xfrm;
 
 package body Tkm.Servers.Ike.Esa
 is
@@ -67,6 +69,33 @@ is
              (Input => Int_I.Data (Int_I.Data'First .. Int_I.Size)));
       L.Log (Message => "Int_R " & Utils.To_Hex_String
              (Input => Int_R.Data (Int_R.Data'First .. Int_R.Size)));
+
+      Xfrm.Add_State
+        (Source      => Config.Local_Addr,
+         Destination => Config.Peer_Addr,
+         SPI         => Esp_Spi_Rem,
+         Enc_Key     => (if Initiator then
+                         Enc_I.Data (Enc_I.Data'First .. Enc_I.Size)
+                         else
+                         Enc_R.Data (Enc_R.Data'First .. Enc_R.Size)),
+         Auth_Key    => (if Initiator then
+                         Int_I.Data (Int_I.Data'First .. Int_I.Size)
+                         else
+                         Int_R.Data (Int_R.Data'First .. Int_R.Size)),
+         Lifetime    => Config.Lifetime);
+      Xfrm.Add_State
+        (Source      => Config.Peer_Addr,
+         Destination => Config.Local_Addr,
+         SPI         => Esp_Spi_Loc,
+         Enc_Key     => (if Initiator then
+                         Enc_R.Data (Enc_R.Data'First .. Enc_R.Size)
+                         else
+                         Enc_I.Data (Enc_I.Data'First .. Enc_I.Size)),
+         Auth_Key    => (if Initiator then
+                         Int_R.Data (Int_R.Data'First .. Int_R.Size)
+                         else
+                         Int_I.Data (Int_I.Data'First .. Int_I.Size)),
+         Lifetime    => Config.Lifetime);
    end Create_First;
 
 end Tkm.Servers.Ike.Esa;
