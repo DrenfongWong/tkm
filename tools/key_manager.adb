@@ -1,3 +1,5 @@
+with Ada.Exceptions;
+
 with Tkmrpc.Transport.Servers;
 with Tkmrpc.Servers.Ike;
 
@@ -23,4 +25,12 @@ begin
      (Server  => RPC_Server,
       Address => IKE_Socket,
       Process => Tkm.Dispatchers.Dispatch_Ike_Request'Access);
+
+exception
+   when E : others =>
+      L.Log (Level   => L.Error,
+             Message => "Terminating due to error");
+      L.Log (Level   => L.Error,
+             Message => Ada.Exceptions.Exception_Information (X => E));
+      L.Stop;
 end Key_Manager;
