@@ -3,6 +3,7 @@ with Tkmrpc.Contexts.ae;
 with Tkmrpc.Contexts.dh;
 with Tkmrpc.Contexts.isa;
 with Tkmrpc.Contexts.nc;
+with Tkmrpc.Contexts.esa;
 
 with Tkm.Logger;
 with Tkm.Random;
@@ -511,6 +512,9 @@ is
       end loop;
       for I in Tkmrpc.Types.Isa_Id_Type'Range loop
          Tkmrpc.Contexts.isa.reset (Id => I);
+      end loop;
+      for I in Tkmrpc.Types.Esa_Id_Type'Range loop
+         Tkmrpc.Contexts.esa.reset (Id => I);
       end loop;
 
       Result := Results.Ok;
