@@ -1,5 +1,5 @@
-with Tkmrpc.Contexts.Dh;
-with Tkmrpc.Contexts.Nc;
+with Tkmrpc.Contexts.dh;
+with Tkmrpc.Contexts.nc;
 with Tkmrpc.Contexts.isa;
 with Tkmrpc.Contexts.ae;
 
@@ -79,17 +79,12 @@ is
              & " (DH" & Dh_Id'Img & ", nonce" & Nc_Loc_Id'Img & ", spi_loc"
              & Spi_Loc'Img & ", spi_rem" & Spi_Rem'Img & ")");
 
-      --  TODO: Use DH consume here, but this is not yet possible because
-      --        charon does key derivation twice at the moment (using the
-      --        ikev2 keymat proxy).
+      Tkmrpc.Contexts.dh.consume (Id     => Dh_Id,
+                                  dh_key => Secret);
+      L.Log (Message => "DH context" & Dh_Id'Img & " consumed");
 
-      Secret := Tkmrpc.Contexts.Dh.Get_Shared_Secret (Id => Dh_Id);
-      --        Tkmrpc.Contexts.Dh.Consume (Id     => Dh_Id,
-      --                                    Dh_Key => Secret);
-      --        L.Log (Message => "DH context" & Dh_Id'Img & " consumed");
-
-      Tkmrpc.Contexts.Nc.Consume (Id    => Nc_Loc_Id,
-                                  Nonce => Nonce_Loc);
+      Tkmrpc.Contexts.nc.consume (Id    => Nc_Loc_Id,
+                                  nonce => Nonce_Loc);
       L.Log (Message => "Nonce context" & Nc_Loc_Id'Img & " consumed");
 
       --  Use PRF-HMAC-SHA512 for now.

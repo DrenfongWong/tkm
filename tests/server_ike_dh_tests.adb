@@ -18,10 +18,9 @@ package body Server_Ike_DH_Tests is
       use type Tkmrpc.Results.Result_Type;
       use type Tkmrpc.Types.Byte_Sequence;
 
-      Id    : constant := 11;
-      Res   : Results.Result_Type;
-      Pub   : Types.Dh_Pubvalue_Type;
-      Sec   : Types.Dh_Key_Type;
+      Id  : constant := 11;
+      Res : Results.Result_Type;
+      Pub : Types.Dh_Pubvalue_Type;
 
       Null_Bytes : constant Types.Byte_Sequence (1 .. 512) := (others => 0);
    begin
@@ -44,16 +43,6 @@ package body Server_Ike_DH_Tests is
                                    Pubvalue => Pub);
       Assert (Condition => Res = Results.Ok,
               Message   => "Dh_Generate_Key failed");
-
-      Servers.Ike.Dh_Get_Shared_Secret (Result       => Res,
-                                        Dh_Id        => Id,
-                                        Sharedsecret => Sec);
-      Assert (Condition => Res = Results.Ok,
-              Message   => "Dh_Get_Shared_Secret failed");
-      Assert (Condition => Sec.Size = 512,
-              Message   => "Shared secret size mismatch");
-      Assert (Condition => Sec.Data /= Null_Bytes,
-              Message   => "Shared secret data is nil");
 
       Servers.Ike.Dh_Reset (Result => Res,
                             Dh_Id  => Id);

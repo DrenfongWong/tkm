@@ -1,7 +1,7 @@
 with System.Assertions;
 
 with Tkmrpc.Types;
-with Tkmrpc.Contexts.Dh;
+with Tkmrpc.Contexts.dh;
 
 with Tkm;
 
@@ -31,10 +31,10 @@ is
    procedure Assertion_Policy_RPC
    is
    begin
-      Tkmrpc.Contexts.Dh.Generate
+      Tkmrpc.Contexts.dh.generate
         (Id        => 12,
-         Dh_Key    => Tkmrpc.Types.Null_Dh_Key_Type,
-         Timestamp => 0);
+         dh_key    => Tkmrpc.Types.Null_Dh_Key_Type,
+         timestamp => 0);
       Fail (Message => "Exception expected");
 
    exception

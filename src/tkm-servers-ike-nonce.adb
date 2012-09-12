@@ -1,4 +1,4 @@
-with Tkmrpc.Contexts.Nc;
+with Tkmrpc.Contexts.nc;
 
 with Tkm.Random;
 with Tkm.Logger;
@@ -25,8 +25,8 @@ is
       Nonce.Size             := Tkmrpc.Types.Nonce_Type_Range (Length);
       Nonce.Data (1 .. Size) := Random.Get (Size => Size);
 
-      Tkmrpc.Contexts.Nc.Create (Id    => Id,
-                                 Nonce => Nonce);
+      Tkmrpc.Contexts.nc.create (Id    => Id,
+                                 nonce => Nonce);
       return Nonce;
    end Create;
 
@@ -36,7 +36,7 @@ is
    is
    begin
       L.Log (Message => "Resetting nonce context" & Id'Img);
-      Tkmrpc.Contexts.Nc.Reset (Id => Id);
+      Tkmrpc.Contexts.nc.reset (Id => Id);
    end Reset;
 
 end Tkm.Servers.Ike.Nonce;

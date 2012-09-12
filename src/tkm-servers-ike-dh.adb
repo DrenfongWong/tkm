@@ -1,4 +1,4 @@
-with Tkmrpc.Contexts.Dh;
+with Tkmrpc.Contexts.dh;
 
 with Tkm.Logger;
 with Tkm.Random;
@@ -37,9 +37,9 @@ is
 
       Priv.Size                  := Xa'Length;
       Priv.Data (1 .. Xa'Length) := Xa;
-      Tkmrpc.Contexts.Dh.Create (Id       => Id,
-                                 Dha_Id   => Group,
-                                 Secvalue => Priv);
+      Tkmrpc.Contexts.dh.create (Id       => Id,
+                                 dha_id   => Group,
+                                 secvalue => Priv);
       L.Log (Message => "DH context" & Id'Img & " created");
 
       return P : Tkmrpc.Types.Dh_Pubvalue_Type do
@@ -59,11 +59,11 @@ is
       --  DH group Id.
 
       Group_Id   : constant Tkmrpc.Types.Dh_Algorithm_Type
-        := Tkmrpc.Contexts.Dh.Get_Dha_Id (Id => Id);
+        := Tkmrpc.Contexts.dh.get_dha_id (Id => Id);
       Group_Size : constant Tkmrpc.Types.Byte_Sequence_Range
         := Diffie_Hellman.Get_Group_Size (Group_Id => Group_Id);
       Priv       : constant Tkmrpc.Types.Dh_Priv_Type
-        := Tkmrpc.Contexts.Dh.Get_Secvalue (Id => Id);
+        := Tkmrpc.Contexts.dh.get_secvalue (Id => Id);
       Zz         : Tkmrpc.Types.Byte_Sequence (1 .. Group_Size);
       Key        : Tkmrpc.Types.Dh_Key_Type
         := Tkmrpc.Types.Null_Dh_Key_Type;
@@ -76,21 +76,10 @@ is
          Zz       => Zz);
       Key.Size                  := Zz'Length;
       Key.Data (1 .. Zz'Length) := Zz;
-      Tkmrpc.Contexts.Dh.Generate (Id        => Id,
-                                   Dh_Key    => Key,
-                                   Timestamp => 0);
+      Tkmrpc.Contexts.dh.generate (Id        => Id,
+                                   dh_key    => Key,
+                                   timestamp => 0);
    end Generate_Key;
-
-   -------------------------------------------------------------------------
-
-   function Get_Shared_Secret
-     (Id : Tkmrpc.Types.Dh_Id_Type)
-      return Tkmrpc.Types.Dh_Key_Type
-   is
-   begin
-      L.Log (Message => "Returning shared secret for DH context" & Id'Img);
-      return Tkmrpc.Contexts.Dh.Get_Shared_Secret (Id => Id);
-   end Get_Shared_Secret;
 
    -------------------------------------------------------------------------
 
@@ -98,7 +87,7 @@ is
    is
    begin
       L.Log (Message => "Resetting DH context" & Id'Img);
-      Tkmrpc.Contexts.Dh.Reset (Id => Id);
+      Tkmrpc.Contexts.dh.reset (Id => Id);
    end Reset;
 
 end Tkm.Servers.Ike.DH;

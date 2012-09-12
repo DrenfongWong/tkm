@@ -3,8 +3,8 @@ with Tkmrpc.Results;
 with Tkmrpc.Constants;
 with Tkmrpc.Contexts.isa;
 with Tkmrpc.Contexts.ae;
-with Tkmrpc.Contexts.Dh;
-with Tkmrpc.Contexts.Nc;
+with Tkmrpc.Contexts.dh;
+with Tkmrpc.Contexts.nc;
 with Tkmrpc.Servers.Ike;
 
 package body Server_Ike_Isa_Tests is
@@ -145,14 +145,14 @@ package body Server_Ike_Isa_Tests is
       Res           : Results.Result_Type;
    begin
       Servers.Ike.Init;
-      Contexts.Dh.Create (Id       => 1,
-                          Dha_Id   => Constants.Modp_4096,
-                          Secvalue => Types.Null_Dh_Priv_Type);
-      Contexts.Dh.Generate (Id        => 1,
-                            Dh_Key    => Shared_Secret,
-                            Timestamp => 0);
-      Contexts.Nc.Create (Id    => 1,
-                          Nonce => Nonce_Loc);
+      Contexts.dh.create (Id       => 1,
+                          dha_id   => Constants.Modp_4096,
+                          secvalue => Types.Null_Dh_Priv_Type);
+      Contexts.dh.generate (Id        => 1,
+                            dh_key    => Shared_Secret,
+                            timestamp => 0);
+      Contexts.nc.create (Id    => 1,
+                          nonce => Nonce_Loc);
       declare
          use type Tkmrpc.Types.Key_Type;
 
@@ -194,14 +194,14 @@ package body Server_Ike_Isa_Tests is
               (Id    => 1,
                State => Contexts.ae.unauth),
               Message   => "AE context not 'unauth'");
-      Assert (Condition => Contexts.Nc.Has_State
+      Assert (Condition => Contexts.nc.Has_State
               (Id    => 1,
-               State => Contexts.Nc.Clean),
+               State => Contexts.nc.clean),
               Message   => "Nc context not 'clean'");
-      --           Assert (Condition => Contexts.Dh.Has_State
-      --                   (Id    => 1,
-      --                    State => Contexts.Dh.Clean),
-      --                   Message   => "Dh context state mismatch");
+      Assert (Condition => Contexts.dh.Has_State
+              (Id    => 1,
+               State => Contexts.dh.clean),
+              Message   => "Dh context state mismatch");
 
       Servers.Ike.Isa_Reset (Result => Res,
                              Isa_Id => 1);
@@ -216,11 +216,6 @@ package body Server_Ike_Isa_Tests is
                State => Contexts.ae.clean),
               Message   => "AE context not 'clean'");
 
-      --  DH context must be reset explicitly since it is currently not
-      --  consumed.
-
-      Servers.Ike.Dh_Reset (Result => Res,
-                            Dh_Id  => 1);
       Servers.Ike.Finalize;
 
    exception

@@ -16,12 +16,6 @@ is
    --  Calculate shared secret using DH context given by id and 'other'
    --  pubvalue (yb).
 
-   function Get_Shared_Secret
-     (Id : Tkmrpc.Types.Dh_Id_Type)
-      return Tkmrpc.Types.Dh_Key_Type;
-   --  DEBUG : Return shared secret (zz) of given DH context.
-   --  TODO  : Remove this function as soon as key derivation is implemented.
-
    procedure Reset (Id : Tkmrpc.Types.Dh_Id_Type);
    --  Reset DH context with given id.
 

@@ -1,8 +1,8 @@
 with Tkmrpc.Constants;
 with Tkmrpc.Contexts.ae;
-with Tkmrpc.Contexts.Dh;
+with Tkmrpc.Contexts.dh;
 with Tkmrpc.Contexts.isa;
-with Tkmrpc.Contexts.Nc;
+with Tkmrpc.Contexts.nc;
 
 with Tkm.Logger;
 with Tkm.Random;
@@ -130,18 +130,6 @@ is
          Pubvalue => Pubvalue);
       Result := Results.Ok;
    end Dh_Generate_Key;
-
-   -------------------------------------------------------------------------
-
-   procedure Dh_Get_Shared_Secret
-     (Result       : out Results.Result_Type;
-      Dh_Id        : Types.Dh_Id_Type;
-      Sharedsecret : out Types.Dh_Key_Type)
-   is
-   begin
-      Sharedsecret := Tkm.Servers.Ike.DH.Get_Shared_Secret (Id => Dh_Id);
-      Result       := Results.Ok;
-   end Dh_Get_Shared_Secret;
 
    -------------------------------------------------------------------------
 
@@ -516,10 +504,10 @@ is
       L.Log (Message => "Resetting all contexts");
 
       for I in Tkmrpc.Types.Nc_Id_Type'Range loop
-         Tkmrpc.Contexts.Nc.Reset (Id => I);
+         Tkmrpc.Contexts.nc.reset (Id => I);
       end loop;
       for I in Tkmrpc.Types.Dh_Id_Type'Range loop
-         Tkmrpc.Contexts.Dh.Reset (Id => I);
+         Tkmrpc.Contexts.dh.reset (Id => I);
       end loop;
       for I in Tkmrpc.Types.Ae_Id_Type'Range loop
          Tkmrpc.Contexts.ae.reset (Id => I);
