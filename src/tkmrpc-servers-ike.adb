@@ -232,12 +232,9 @@ is
      (Result : out Results.Result_Type;
       Esa_Id : Types.Esa_Id_Type)
    is
-      pragma Unreferenced (Esa_Id);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Esa.Reset (Esa_Id => Esa_Id);
+      Result := Results.Ok;
    end Esa_Reset;
 
    -------------------------------------------------------------------------

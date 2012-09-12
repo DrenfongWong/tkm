@@ -104,4 +104,13 @@ is
                                   sp_id => Sp_Id);
    end Create_First;
 
+   -------------------------------------------------------------------------
+
+   procedure Reset (Esa_Id : Tkmrpc.Types.Esa_Id_Type)
+   is
+   begin
+      L.Log (Message => "Resetting ESA context" & Esa_Id'Img);
+      Tkmrpc.Contexts.esa.reset (Id => Esa_Id);
+   end Reset;
+
 end Tkm.Servers.Ike.Esa;

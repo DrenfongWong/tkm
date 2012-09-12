@@ -12,4 +12,7 @@ is
       Esp_Spi_Rem : Tkmrpc.Types.Esp_Spi_Type);
    --  Create a new ESA context with given id and parameters.
 
+   procedure Reset (Esa_Id : Tkmrpc.Types.Esa_Id_Type);
+   --  Reset ESA context with given id.
+
 end Tkm.Servers.Ike.Esa;
