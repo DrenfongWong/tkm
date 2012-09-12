@@ -1,5 +1,6 @@
 with Tkmrpc.Contexts.ae;
 with Tkmrpc.Contexts.isa;
+with Tkmrpc.Contexts.esa;
 
 with Tkm.Logger;
 with Tkm.Utils;
@@ -96,6 +97,11 @@ is
                          else
                          Int_I.Data (Int_I.Data'First .. Int_I.Size)),
          Lifetime    => Config.Lifetime);
+
+      Tkmrpc.Contexts.esa.create (Id    => Esa_Id,
+                                  ae_id => Ae_Id,
+                                  ea_id => Ea_Id,
+                                  sp_id => Sp_Id);
    end Create_First;
 
 end Tkm.Servers.Ike.Esa;
