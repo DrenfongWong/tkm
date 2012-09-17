@@ -44,6 +44,7 @@ is
    begin
       Key_Derivation.Derive_Child_Keys
         (Sk_D    => Sk_D,
+         Secret  => Null_Byte_Sequence,
          Nonce_I => Nc_I,
          Nonce_R => Nc_R,
          Enc_I   => E_I,

@@ -50,6 +50,7 @@ is
 
       Key_Derivation.Derive_Child_Keys
         (Sk_D    => Sk_D.Data (Sk_D.Data'First .. Sk_D.Size),
+         Secret  => Null_Byte_Sequence,
          Nonce_I => (if Initiator then
                      Nonce_Loc.Data (Nonce_Loc.Data'First .. Nonce_Loc.Size)
                      else
@@ -144,6 +145,7 @@ is
 
       Key_Derivation.Derive_Child_Keys
         (Sk_D    => Sk_D.Data (Sk_D.Data'First .. Sk_D.Size),
+         Secret  => Null_Byte_Sequence,
          Nonce_I => (if Init then
                      Nonce_Loc.Data (Nonce_Loc.Data'First .. Nonce_Loc.Size)
                      else

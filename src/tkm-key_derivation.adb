@@ -11,6 +11,7 @@ is
 
    procedure Derive_Child_Keys
      (Sk_D    :     Tkmrpc.Types.Byte_Sequence;
+      Secret  :     Tkmrpc.Types.Byte_Sequence;
       Nonce_I :     Tkmrpc.Types.Byte_Sequence;
       Nonce_R :     Tkmrpc.Types.Byte_Sequence;
       Enc_I   : out Tkmrpc.Types.Key_Type;
@@ -20,15 +21,19 @@ is
    is
       Int_Key_Len : constant := 64;
       Enc_Key_Len : constant := 32;
-      Seed_Size   : constant Positive := Nonce_I'Length + Nonce_R'Length;
+      Seed_Size   : constant Positive := Secret'Length + Nonce_I'Length
+        + Nonce_R'Length;
       Seed        : Tkmrpc.Types.Byte_Sequence (1 .. Seed_Size);
+      Idx_Nc_I    : constant Positive := Seed'First + Secret'Length;
+      Idx_Nc_R    : constant Positive := Idx_Nc_I + Nonce_I'Length;
       Prf_Plus    : Crypto.Prf_Plus_Hmac_Sha512.Context_Type;
    begin
 
-      --  Seed = Nonce_I | Nonce_R
+      --  Seed = Secret | Nonce_I | Nonce_R
 
-      Seed (Seed'First .. Nonce_I'Length)    := Nonce_I;
-      Seed (Nonce_I'Length + 1 .. Seed'Last) := Nonce_R;
+      Seed (Seed'First .. Idx_Nc_I - 1) := Secret;
+      Seed (Idx_Nc_I  .. Idx_Nc_R - 1)  := Nonce_I;
+      Seed (Idx_Nc_R .. Seed'Last)      := Nonce_R;
 
       L.Log (Message => "Sk_D " & Utils.To_Hex_String (Input => Sk_D));
       L.Log (Message => "Seed " & Utils.To_Hex_String (Input => Seed));
