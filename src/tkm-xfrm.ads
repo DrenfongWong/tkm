@@ -20,6 +20,12 @@ is
       Lifetime    : Tkmrpc.Types.Rel_Time_Type);
    --  Add XFRM state with given parameters. Lifetime is specified in seconds.
 
+   procedure Delete_State
+     (Source      : String;
+      Destination : String;
+      SPI         : Tkmrpc.Types.Esp_Spi_Type);
+   --  Delete XFRM state with given parameters.
+
    Xfrm_Error : exception;
 
 end Tkm.Xfrm;

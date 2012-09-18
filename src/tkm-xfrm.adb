@@ -49,6 +49,21 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Delete_State
+     (Source      : String;
+      Destination : String;
+      SPI         : Tkmrpc.Types.Esp_Spi_Type)
+   is
+      use Tkm.Utils;
+   begin
+      System (Command => "/bin/ip xfrm state delete"
+              & " src " & Source
+              & " dst " & Destination
+              & " proto esp spi" & SPI'Img);
+   end Delete_State;
+
+   -------------------------------------------------------------------------
+
    procedure Flush is
    begin
       System (Command => "/bin/ip xfrm policy flush");
