@@ -20,6 +20,23 @@ is
    --  Create a new ISA context with given id and parameters. Return the
    --  computed authentication and encryption keys.
 
+   procedure Create_Child
+     (Isa_Id        :     Tkmrpc.Types.Isa_Id_Type;
+      Parent_Isa_Id :     Tkmrpc.Types.Isa_Id_Type;
+      Ia_Id         :     Tkmrpc.Types.Ia_Id_Type;
+      Dh_Id         :     Tkmrpc.Types.Dh_Id_Type;
+      Nc_Loc_Id     :     Tkmrpc.Types.Nc_Id_Type;
+      Nonce_Rem     :     Tkmrpc.Types.Nonce_Type;
+      Initiator     :     Tkmrpc.Types.Init_Type;
+      Spi_Loc       :     Tkmrpc.Types.Ike_Spi_Type;
+      Spi_Rem       :     Tkmrpc.Types.Ike_Spi_Type;
+      Sk_Ai         : out Tkmrpc.Types.Key_Type;
+      Sk_Ar         : out Tkmrpc.Types.Key_Type;
+      Sk_Ei         : out Tkmrpc.Types.Key_Type;
+      Sk_Er         : out Tkmrpc.Types.Key_Type);
+   --  Rekey a ISA by creating a new ISA context with given id and parameters.
+   --  Return the computed authentication and encryption keys.
+
    procedure Sign_Psk
      (Isa_Id       :     Tkmrpc.Types.Isa_Id_Type;
       Init_Message :     Tkmrpc.Types.Init_Message_Type;

@@ -134,6 +134,9 @@ is
                 := Utils.To_Bytes (Input => Spi_Loc);
          end if;
 
+         --  SKEYSEED    = prf (Ni | Nr, Shared_Secret)
+         --  PRFPLUSSEED = Ni | Nr | SPIi | SPIr
+
          Crypto.Hmac_Sha512.Init (Ctx => Prf,
                                   Key => Fixed_Nonce);
          Skeyseed := Crypto.Hmac_Sha512.Generate (Ctx  => Prf,
@@ -224,6 +227,178 @@ is
             creation_time => 0);
       end;
    end Create;
+
+   -------------------------------------------------------------------------
+
+   procedure Create_Child
+     (Isa_Id        :     Tkmrpc.Types.Isa_Id_Type;
+      Parent_Isa_Id :     Tkmrpc.Types.Isa_Id_Type;
+      Ia_Id         :     Tkmrpc.Types.Ia_Id_Type;
+      Dh_Id         :     Tkmrpc.Types.Dh_Id_Type;
+      Nc_Loc_Id     :     Tkmrpc.Types.Nc_Id_Type;
+      Nonce_Rem     :     Tkmrpc.Types.Nonce_Type;
+      Initiator     :     Tkmrpc.Types.Init_Type;
+      Spi_Loc       :     Tkmrpc.Types.Ike_Spi_Type;
+      Spi_Rem       :     Tkmrpc.Types.Ike_Spi_Type;
+      Sk_Ai         : out Tkmrpc.Types.Key_Type;
+      Sk_Ar         : out Tkmrpc.Types.Key_Type;
+      Sk_Ei         : out Tkmrpc.Types.Key_Type;
+      Sk_Er         : out Tkmrpc.Types.Key_Type)
+   is
+      Int_Key_Len : constant := 64;
+      Enc_Key_Len : constant := 32;
+      Ae_Id       : constant Tkmrpc.Types.Ae_Id_Type
+        := Tkmrpc.Contexts.isa.get_ae_id (Id => Parent_Isa_Id);
+      Old_Sk_D    : constant Tkmrpc.Types.Key_Type
+        := Tkmrpc.Contexts.isa.get_sk_d (Id => Parent_Isa_Id);
+
+      Dh_Secret   : Tkmrpc.Types.Dh_Key_Type;
+      Nonce_Loc   : Tkmrpc.Types.Nonce_Type;
+      Sk_D        : Tkmrpc.Types.Key_Type
+        := (Size => Crypto.Hmac_Sha512.Hash_Output_Length,
+            Data => (others => 0));
+   begin
+      Sk_Ai := Tkmrpc.Types.Null_Key_Type;
+      Sk_Ar := Tkmrpc.Types.Null_Key_Type;
+      Sk_Ei := Tkmrpc.Types.Null_Key_Type;
+      Sk_Er := Tkmrpc.Types.Null_Key_Type;
+
+      L.Log (Message => "Creating new child ISA context with ID" & Isa_Id'Img
+             & " (Parent Isa" & Parent_Isa_Id'Img & ", DH" & Dh_Id'Img
+             & ", nonce" & Nc_Loc_Id'Img & ", spi_loc" & Spi_Loc'Img
+             & ", spi_rem" & Spi_Rem'Img & ")");
+
+      Tkmrpc.Contexts.dh.consume (Id     => Dh_Id,
+                                  dh_key => Dh_Secret);
+      L.Log (Message => "DH context" & Dh_Id'Img & " consumed");
+
+      Tkmrpc.Contexts.nc.consume (Id    => Nc_Loc_Id,
+                                  nonce => Nonce_Loc);
+      L.Log (Message => "Nonce context" & Nc_Loc_Id'Img & " consumed");
+
+      --  Use PRF-HMAC-SHA512 for now.
+
+      declare
+         use type Tkmrpc.Types.Init_Type;
+
+         Prf           : Crypto.Hmac_Sha512.Context_Type;
+         Skeyseed      : Tkmrpc.Types.Byte_Sequence
+           (1 .. Crypto.Hmac_Sha512.Hash_Output_Length);
+         Sk_Seed       : Tkmrpc.Types.Byte_Sequence
+           (1 .. Dh_Secret.Size + Nonce_Loc.Size + Nonce_Rem.Size);
+         Seed_Size     : constant Tkmrpc.Types.Byte_Sequence_Range
+           := Nonce_Rem.Size + Nonce_Loc.Size + 16;
+         Prf_Plus_Seed : Tkmrpc.Types.Byte_Sequence (1 .. Seed_Size);
+         Prf_Plus      : Crypto.Prf_Plus_Hmac_Sha512.Context_Type;
+         PPS_Idx1      : constant Tkmrpc.Types.Byte_Sequence_Range
+           := Nonce_Loc.Size + Nonce_Rem.Size + 1;
+         --  PRFPLUSSEED index of SPIi start
+         PPS_Idx2      : constant Tkmrpc.Types.Byte_Sequence_Range
+           := PPS_Idx1 + 8;
+         --  PRFPLUSSEED index of SPIr start
+         Sks_Idx1      : constant Tkmrpc.Types.Byte_Sequence_Range
+           := Dh_Secret.Size + 1;
+         --  SKEYSEED index of Ni start
+         Sks_Idx2      : Tkmrpc.Types.Byte_Sequence_Range;
+         --  SKEYSEED index of Nr start
+      begin
+
+         --  SKEYSEED    = prf (SK_d (old), Shared_Secret | Ni | Nr)
+         --  PRFPLUSSEED = Ni | Nr | SPIi | SPIr
+
+         Sk_Seed (Sk_Seed'First .. Dh_Secret.Size)
+           := Dh_Secret.Data (Dh_Secret.Data'First .. Dh_Secret.Size);
+         if Initiator = 1 then
+            Sks_Idx2 := Sks_Idx1 + Nonce_Loc.Size;
+            Sk_Seed (Sks_Idx1 .. Sks_Idx2 - 1)
+              := Nonce_Loc.Data  (Nonce_Loc.Data'First .. Nonce_Loc.Size);
+            Sk_Seed (Sks_Idx2 .. Sk_Seed'Last)
+              := Nonce_Rem.Data  (Nonce_Rem.Data'First .. Nonce_Rem.Size);
+            Prf_Plus_Seed (Prf_Plus_Seed'First .. PPS_Idx1 - 1)
+              := Sk_Seed (Sks_Idx1 .. Sk_Seed'Last);
+            Prf_Plus_Seed (PPS_Idx1 .. PPS_Idx2 - 1)
+              := Utils.To_Bytes (Input => Spi_Loc);
+            Prf_Plus_Seed (PPS_Idx2 .. Prf_Plus_Seed'Last)
+                := Utils.To_Bytes (Input => Spi_Rem);
+         else
+            Sks_Idx2 := Sks_Idx1 + Nonce_Rem.Size;
+            Sk_Seed (Sks_Idx1 .. Sks_Idx2 - 1)
+              := Nonce_Rem.Data  (Nonce_Rem.Data'First .. Nonce_Rem.Size);
+            Sk_Seed (Sks_Idx2 .. Sk_Seed'Last)
+              := Nonce_Loc.Data  (Nonce_Loc.Data'First .. Nonce_Loc.Size);
+            Prf_Plus_Seed (Prf_Plus_Seed'First .. PPS_Idx1 - 1)
+              := Sk_Seed (Sks_Idx1 .. Sk_Seed'Last);
+            Prf_Plus_Seed (PPS_Idx1 .. PPS_Idx2 - 1)
+              := Utils.To_Bytes (Input => Spi_Rem);
+            Prf_Plus_Seed (PPS_Idx2 .. Prf_Plus_Seed'Last)
+                := Utils.To_Bytes (Input => Spi_Loc);
+         end if;
+
+         Crypto.Hmac_Sha512.Init (Ctx => Prf,
+                                  Key => Old_Sk_D.Data (1 .. Old_Sk_D.Size));
+         Skeyseed := Crypto.Hmac_Sha512.Generate (Ctx  => Prf,
+                                                  Data => Sk_Seed);
+         L.Log (Message => "SKEYSEED " & Utils.To_Hex_String
+                (Input => Skeyseed));
+         L.Log (Message => "PRFPLUSSEED " & Utils.To_Hex_String
+                (Input => Prf_Plus_Seed));
+
+         --  KEYMAT = SK_d | SK_ai | SK_ar | SK_ei | SK_er | SK_pi | SK_pr
+
+         Crypto.Prf_Plus_Hmac_Sha512.Init (Ctx  => Prf_Plus,
+                                           Key  => Skeyseed,
+                                           Seed => Prf_Plus_Seed);
+
+         --  Key for derivation of further (child) key material
+
+         Sk_D.Data (Sk_D.Data'First .. Sk_D.Size)
+           := Crypto.Prf_Plus_Hmac_Sha512.Generate
+             (Ctx    => Prf_Plus,
+              Length => Sk_D.Size);
+         L.Log (Message => "Sk_D  " & Utils.To_Hex_String
+                (Input => Sk_D.Data (Sk_D.Data'First .. Sk_D.Size)));
+
+         --  IKE authentication keys
+
+         Sk_Ai.Data (1 .. Int_Key_Len) := Crypto.Prf_Plus_Hmac_Sha512.Generate
+           (Ctx    => Prf_Plus,
+            Length => Int_Key_Len);
+         Sk_Ai.Size := Int_Key_Len;
+         Sk_Ar.Data (1 .. Int_Key_Len) := Crypto.Prf_Plus_Hmac_Sha512.Generate
+           (Ctx    => Prf_Plus,
+            Length => Int_Key_Len);
+         Sk_Ar.Size := Int_Key_Len;
+         L.Log (Message => "Sk_Ai " & Utils.To_Hex_String
+                (Input => Sk_Ai.Data (1 .. Sk_Ai.Size)));
+         L.Log (Message => "Sk_Ar " & Utils.To_Hex_String
+                (Input => Sk_Ar.Data (1 .. Sk_Ar.Size)));
+
+         --  IKE encryption keys
+
+         Sk_Ei.Data (1 .. Enc_Key_Len) := Crypto.Prf_Plus_Hmac_Sha512.Generate
+           (Ctx    => Prf_Plus,
+            Length => Enc_Key_Len);
+         Sk_Ei.Size := Enc_Key_Len;
+         Sk_Er.Data (1 .. Enc_Key_Len) := Crypto.Prf_Plus_Hmac_Sha512.Generate
+           (Ctx    => Prf_Plus,
+            Length => Enc_Key_Len);
+         Sk_Er.Size := Enc_Key_Len;
+         L.Log (Message => "Sk_Ei " & Utils.To_Hex_String
+                (Input => Sk_Ei.Data (1 .. Sk_Ei.Size)));
+         L.Log (Message => "Sk_Er " & Utils.To_Hex_String
+                (Input => Sk_Er.Data (1 .. Sk_Er.Size)));
+
+         --  Create isa context
+
+         L.Log (Message => "Creating new ISA context with ID" & Isa_Id'Img);
+         Tkmrpc.Contexts.isa.create
+           (Id            => Isa_Id,
+            ae_id         => Ae_Id,
+            ia_id         => Ia_Id,
+            sk_d          => Sk_D,
+            creation_time => 0);
+      end;
+   end Create_Child;
 
    -------------------------------------------------------------------------
 
