@@ -15,6 +15,17 @@ is
 
    package L renames Tkm.Logger;
 
+   type Esp_Spis_Type is record
+      Local  : Tkmrpc.Types.Esp_Spi_Type;
+      Remote : Tkmrpc.Types.Esp_Spi_Type;
+   end record;
+
+   Esa_Spi_Mapping : array (Tkmrpc.Types.Esa_Id_Type'Range) of Esp_Spis_Type;
+   --  Mapping of Esa context id to associated ESP SPIs.
+   --  The SPIs are used to delete the corresponding XFRM state when an Esa
+   --  context is reset. The SPIs are stored in the array when an Esa context
+   --  is created and the associated XFRM states are installed in the kernel.
+
    procedure Create_Esa
      (Esa_Id      : Tkmrpc.Types.Esa_Id_Type;
       Isa_Id      : Tkmrpc.Types.Isa_Id_Type;
@@ -153,6 +164,9 @@ is
                          Int_I.Data (Int_I.Data'First .. Int_I.Size)),
          Lifetime    => Config.Lifetime);
 
+      Esa_Spi_Mapping (Esa_Id).Local := Esp_Spi_Loc;
+      Esa_Spi_Mapping (Esa_Id).Remote := Esp_Spi_Rem;
+
       Tkmrpc.Contexts.esa.create (Id    => Esa_Id,
                                   ae_id => Ae_Id,
                                   ea_id => Ea_Id,
@@ -245,8 +259,21 @@ is
 
    procedure Reset (Esa_Id : Tkmrpc.Types.Esa_Id_Type)
    is
+      use type Tkmrpc.Types.Esp_Spi_Type;
    begin
       L.Log (Message => "Resetting ESA context" & Esa_Id'Img);
+
+      if Esa_Spi_Mapping (Esa_Id).Local /= 0 then
+         Xfrm.Delete_State (Source      => Config.Local_Addr,
+                            Destination => Config.Peer_Addr,
+                            SPI         => Esa_Spi_Mapping (Esa_Id).Remote);
+         Xfrm.Delete_State (Source      => Config.Peer_Addr,
+                            Destination => Config.Local_Addr,
+                            SPI         => Esa_Spi_Mapping (Esa_Id).Local);
+         Esa_Spi_Mapping (Esa_Id).Local := 0;
+         Esa_Spi_Mapping (Esa_Id).Remote := 0;
+      end if;
+
       Tkmrpc.Contexts.esa.reset (Id => Esa_Id);
    end Reset;
 
