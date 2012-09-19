@@ -9,6 +9,7 @@ with Tkm.Logger;
 with Tkm.Random;
 with Tkm.Servers.Ike.Nonce;
 with Tkm.Servers.Ike.DH;
+with Tkm.Servers.Ike.Ae;
 with Tkm.Servers.Ike.Isa;
 with Tkm.Servers.Ike.Esa;
 
@@ -27,12 +28,9 @@ is
      (Result : out Results.Result_Type;
       Ae_Id  : Types.Ae_Id_Type)
    is
-      pragma Unreferenced (Ae_Id);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Ae.Reset (Ae_Id => Ae_Id);
+      Result := Results.Ok;
    end Ae_Reset;
 
    -------------------------------------------------------------------------

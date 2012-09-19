@@ -17,6 +17,7 @@ with Server_Ike_Nonce_Tests;
 with Server_Ike_DH_Tests;
 with Server_Ike_Tkm_Tests;
 with Server_Ike_Isa_Tests;
+with Server_Ike_Ae_Tests;
 
 procedure Test_Runner is
    use Ahven.Framework;
@@ -49,6 +50,8 @@ begin
              T     => new Server_Ike_Tkm_Tests.Testcase);
    Add_Test (Suite => S.all,
              T     => new Server_Ike_Isa_Tests.Testcase);
+   Add_Test (Suite => S.all,
+             T     => new Server_Ike_Ae_Tests.Testcase);
 
    Ahven.Text_Runner.Run (Suite => S);
    Release_Suite (T => S);
