@@ -3,8 +3,6 @@ with System.Assertions;
 with Tkmrpc.Types;
 with Tkmrpc.Contexts.dh;
 
-with Tkm;
-
 package body Assertion_Tests
 is
 
