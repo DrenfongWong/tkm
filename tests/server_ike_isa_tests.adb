@@ -211,10 +211,9 @@ package body Server_Ike_Isa_Tests is
               (Id    => 1,
                State => Contexts.isa.clean),
               Message   => "ISA context not 'clean'");
-      Assert (Condition => Contexts.ae.Has_State
-              (Id    => 1,
-               State => Contexts.ae.clean),
-              Message   => "AE context not 'clean'");
+
+      Servers.Ike.Ae_Reset (Result => Res,
+                            Ae_Id  => 1);
 
       Servers.Ike.Finalize;
 
@@ -222,6 +221,8 @@ package body Server_Ike_Isa_Tests is
       when others =>
          Servers.Ike.Isa_Reset (Result => Res,
                                 Isa_Id => 1);
+         Servers.Ike.Ae_Reset (Result => Res,
+                               Ae_Id  => 1);
          Servers.Ike.Nc_Reset (Result => Res,
                                Nc_Id  => 1);
          Servers.Ike.Dh_Reset (Result => Res,
