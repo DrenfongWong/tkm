@@ -12,6 +12,7 @@ with Tkm.Servers.Ike.DH;
 with Tkm.Servers.Ike.Ae;
 with Tkm.Servers.Ike.Isa;
 with Tkm.Servers.Ike.Esa;
+with Tkm.Servers.Ike.Cc;
 
 pragma Elaborate_All (Tkm.Random);
 
@@ -41,14 +42,12 @@ is
       Autha_Id    : Types.Autha_Id_Type;
       Certificate : Types.Certificate_Type)
    is
-      pragma Unreferenced (Cc_Id);
-      pragma Unreferenced (Autha_Id);
-      pragma Unreferenced (Certificate);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Cc.Add_Certificate
+        (Cc_Id       => Cc_Id,
+         Autha_Id    => Autha_Id,
+         Certificate => Certificate);
+      Result := Results.Ok;
    end Cc_Add_Certificate;
 
    -------------------------------------------------------------------------
@@ -58,13 +57,14 @@ is
       Cc_Id  : Types.Cc_Id_Type;
       Ca_Id  : Types.Ca_Id_Type)
    is
-      pragma Unreferenced (Cc_Id);
-      pragma Unreferenced (Ca_Id);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      if Tkm.Servers.Ike.Cc.Check_Ca (Cc_Id => Cc_Id,
+                                      Ca_Id => Ca_Id)
+      then
+         Result := Results.Ok;
+      else
+         Result := Results.Sign_Failure;
+      end if;
    end Cc_Check_Ca;
 
    -------------------------------------------------------------------------
@@ -73,12 +73,9 @@ is
      (Result : out Results.Result_Type;
       Cc_Id  : Types.Cc_Id_Type)
    is
-      pragma Unreferenced (Cc_Id);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Cc.Reset (Cc_Id => Cc_Id);
+      Result := Results.Ok;
    end Cc_Reset;
 
    -------------------------------------------------------------------------
@@ -90,15 +87,13 @@ is
       Autha_Id    : Types.Autha_Id_Type;
       Certificate : Types.Certificate_Type)
    is
-      pragma Unreferenced (Cc_Id);
-      pragma Unreferenced (Ri_Id);
-      pragma Unreferenced (Autha_Id);
-      pragma Unreferenced (Certificate);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Cc.Set_User_Certificate
+        (Cc_Id       => Cc_Id,
+         Ri_Id       => Ri_Id,
+         Autha_Id    => Autha_Id,
+         Certificate => Certificate);
+      Result := Results.Ok;
    end Cc_Set_User_Certificate;
 
    -------------------------------------------------------------------------
