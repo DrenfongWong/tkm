@@ -29,12 +29,12 @@ is
    -------------------------------------------------------------------------
 
    procedure Add_State
-     (Source      : String;
-      Destination : String;
-      SPI         : Tkmrpc.Types.Esp_Spi_Type;
-      Enc_Key     : Tkmrpc.Types.Byte_Sequence;
-      Auth_Key    : Tkmrpc.Types.Byte_Sequence;
-      Lifetime    : Tkmrpc.Types.Rel_Time_Type)
+     (Source        : String;
+      Destination   : String;
+      SPI           : Tkmrpc.Types.Esp_Spi_Type;
+      Enc_Key       : Tkmrpc.Types.Byte_Sequence;
+      Auth_Key      : Tkmrpc.Types.Byte_Sequence;
+      Lifetime_Hard : Tkmrpc.Types.Rel_Time_Type)
    is
       use Tkm.Utils;
    begin
@@ -46,7 +46,7 @@ is
               & " replay-window 0"
               & " enc aes 0x" & To_Hex_String (Input => Enc_Key)
               & " auth hmac(sha512) 0x" & To_Hex_String (Input => Auth_Key)
-              & " limit time-hard" & Lifetime'Img);
+              & " limit time-hard" & Lifetime_Hard'Img);
    end Add_State;
 
    -------------------------------------------------------------------------

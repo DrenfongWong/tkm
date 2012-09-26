@@ -12,12 +12,12 @@ is
    --  Add XFRM policy with given source and destination address.
 
    procedure Add_State
-     (Source      : String;
-      Destination : String;
-      SPI         : Tkmrpc.Types.Esp_Spi_Type;
-      Enc_Key     : Tkmrpc.Types.Byte_Sequence;
-      Auth_Key    : Tkmrpc.Types.Byte_Sequence;
-      Lifetime    : Tkmrpc.Types.Rel_Time_Type);
+     (Source        : String;
+      Destination   : String;
+      SPI           : Tkmrpc.Types.Esp_Spi_Type;
+      Enc_Key       : Tkmrpc.Types.Byte_Sequence;
+      Auth_Key      : Tkmrpc.Types.Byte_Sequence;
+      Lifetime_Hard : Tkmrpc.Types.Rel_Time_Type);
    --  Add XFRM state with given parameters. Lifetime is specified in seconds.
 
    procedure Delete_State

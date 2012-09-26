@@ -10,7 +10,7 @@ is
    Peer_Addr : constant String := "152.96.15.60";
    --  ESP destination address.
 
-   Lifetime : constant := 3600;
-   --  ESP SA lifetime in seconds.
+   Lifetime_Hard : constant := 3600;
+   --  ESP SA lifetime in seconds (hard).
 
 end Tkm.Config;
