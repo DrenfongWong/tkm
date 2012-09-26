@@ -149,6 +149,7 @@ is
                            Int_I.Data (Int_I.Data'First .. Int_I.Size)
                            else
                            Int_R.Data (Int_R.Data'First .. Int_R.Size)),
+         Lifetime_Soft => Config.Lifetime_Soft,
          Lifetime_Hard => Config.Lifetime_Hard);
       Xfrm.Add_State
         (Source        => Config.Peer_Addr,
@@ -162,6 +163,7 @@ is
                            Int_R.Data (Int_R.Data'First .. Int_R.Size)
                            else
                            Int_I.Data (Int_I.Data'First .. Int_I.Size)),
+         Lifetime_Soft => Config.Lifetime_Soft,
          Lifetime_Hard => Config.Lifetime_Hard);
 
       Esa_Spi_Mapping (Esa_Id).Local := Esp_Spi_Loc;

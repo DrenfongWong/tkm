@@ -17,8 +17,10 @@ is
       SPI           : Tkmrpc.Types.Esp_Spi_Type;
       Enc_Key       : Tkmrpc.Types.Byte_Sequence;
       Auth_Key      : Tkmrpc.Types.Byte_Sequence;
+      Lifetime_Soft : Tkmrpc.Types.Rel_Time_Type;
       Lifetime_Hard : Tkmrpc.Types.Rel_Time_Type);
-   --  Add XFRM state with given parameters. Lifetime is specified in seconds.
+   --  Add XFRM state with given parameters. Lifetimes are specified in
+   --  seconds.
 
    procedure Delete_State
      (Source      : String;
