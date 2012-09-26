@@ -22,7 +22,8 @@ is
               & " src " & Source
               & " dst " & Destination
               & " tmpl src 0.0.0.0 dst 0.0.0.0"
-              & " proto esp");
+              & " proto esp"
+              & " reqid 1");
    end Add_Policy;
 
    -------------------------------------------------------------------------
@@ -41,6 +42,7 @@ is
               & " src " & Source
               & " dst " & Destination
               & " proto esp spi" & SPI'Img
+              & " reqid 1"
               & " replay-window 0"
               & " enc aes 0x" & To_Hex_String (Input => Enc_Key)
               & " auth hmac(sha512) 0x" & To_Hex_String (Input => Auth_Key)
