@@ -16,10 +16,10 @@ is
       Group : Tkmrpc.Types.Dha_Id_Type)
       return Tkmrpc.Types.Dh_Pubvalue_Type
    is
-      Group_Size           : constant Tkmrpc.Types.Byte_Sequence_Range
+      Group_Size       : constant Tkmrpc.Types.Byte_Sequence_Range
         := Diffie_Hellman.Get_Group_Size (Group_Id => Group);
-      Random_Chunk, Xa, Ya : Tkmrpc.Types.Byte_Sequence (1 .. Group_Size);
-      Priv                 : Tkmrpc.Types.Dh_Priv_Type
+      Random_Chunk, Ya : Tkmrpc.Types.Byte_Sequence (1 .. Group_Size);
+      Priv             : Tkmrpc.Types.Dh_Priv_Type
         := Tkmrpc.Types.Null_Dh_Priv_Type;
    begin
       L.Log (Message => "Creating DH context for group" & Group'Img
@@ -30,13 +30,12 @@ is
       --  TODO: Once cfg server is implemented do proper mapping of Dha_Id to
       --  DH group Id.
 
-      Diffie_Hellman.Compute_Xa_Ya (Group_Id     => Group,
-                                    Random_Bytes => Random_Chunk,
-                                    Xa           => Xa,
-                                    Ya           => Ya);
-
-      Priv.Size                  := Xa'Length;
-      Priv.Data (1 .. Xa'Length) := Xa;
+      Diffie_Hellman.Compute_Xa_Ya
+        (Group_Id     => Group,
+         Random_Bytes => Random_Chunk,
+         Xa           => Priv.Data (1 .. Group_Size),
+         Ya           => Ya);
+      Priv.Size := Group_Size;
       Tkmrpc.Contexts.dh.create (Id       => Id,
                                  dha_id   => Group,
                                  secvalue => Priv);
@@ -64,7 +63,6 @@ is
         := Diffie_Hellman.Get_Group_Size (Group_Id => Group_Id);
       Priv       : constant Tkmrpc.Types.Dh_Priv_Type
         := Tkmrpc.Contexts.dh.get_secvalue (Id => Id);
-      Zz         : Tkmrpc.Types.Byte_Sequence (1 .. Group_Size);
       Key        : Tkmrpc.Types.Dh_Key_Type
         := Tkmrpc.Types.Null_Dh_Key_Type;
    begin
@@ -73,9 +71,8 @@ is
         (Group_Id => Group_Id,
          Xa       => Priv.Data (1 .. Priv.Size),
          Yb       => Pubvalue.Data (1 .. Pubvalue.Size),
-         Zz       => Zz);
-      Key.Size                  := Zz'Length;
-      Key.Data (1 .. Zz'Length) := Zz;
+         Zz       => Key.Data (1 .. Group_Size));
+      Key.Size := Group_Size;
       Tkmrpc.Contexts.dh.generate (Id        => Id,
                                    dh_key    => Key,
                                    timestamp => 0);
