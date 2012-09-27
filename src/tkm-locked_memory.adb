@@ -32,7 +32,7 @@ is
 
    -------------------------------------------------------------------------
 
-   procedure Lock (Object : Element_Handle)
+   procedure Lock (Object : not null access Element_Type)
    is
       Res     : Interfaces.C.int;
       Size    : constant Interfaces.C.size_t := Object.all'Size / 8;
@@ -53,7 +53,7 @@ is
 
    -------------------------------------------------------------------------
 
-   procedure Unlock (Object : Element_Handle)
+   procedure Unlock (Object : not null access Element_Type)
    is
       Res     : Interfaces.C.int;
       Size    : constant Interfaces.C.size_t := Object.all'Size / 8;
@@ -74,7 +74,7 @@ is
 
    -------------------------------------------------------------------------
 
-   procedure Wipe (Object : Element_Handle)
+   procedure Wipe (Object : not null access Element_Type)
    is
       Size    : constant Interfaces.C.size_t := Object.all'Size / 8;
       Address : constant System.Address      := Object.all'Address;
