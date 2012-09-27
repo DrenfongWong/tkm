@@ -9,6 +9,7 @@ with Tkm.Utils;
 with Tkm.Key_Derivation;
 with Tkm.Config;
 with Tkm.Xfrm;
+with Tkm.Locked_Memory;
 
 package body Tkm.Servers.Ike.Esa
 is
@@ -104,14 +105,22 @@ is
         (Id    => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
          State => Tkmrpc.Contexts.ae.authenticated));
 
-      Ae_Id     : constant Tkmrpc.Types.Ae_Id_Type
+      package Key_Locker is new Tkm.Locked_Memory
+        (Element_Type => Tkmrpc.Types.Key_Type);
+
+      Ae_Id : constant Tkmrpc.Types.Ae_Id_Type
         := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
-      Sk_D      : constant Tkmrpc.Types.Key_Type
+      Sk_D  : constant Tkmrpc.Types.Key_Type
         := Tkmrpc.Contexts.isa.get_sk_d (Id => Isa_Id);
 
-      Enc_I, Enc_R, Int_I, Int_R : Tkmrpc.Types.Key_Type
+      Enc_I, Enc_R, Int_I, Int_R : aliased Tkmrpc.Types.Key_Type
         := Tkmrpc.Types.Null_Key_Type;
    begin
+      Key_Locker.Lock (Object => Enc_I'Access);
+      Key_Locker.Lock (Object => Enc_R'Access);
+      Key_Locker.Lock (Object => Int_I'Access);
+      Key_Locker.Lock (Object => Int_R'Access);
+
       Key_Derivation.Derive_Child_Keys
         (Sk_D    => Sk_D.Data (Sk_D.Data'First .. Sk_D.Size),
          Secret  => Dh_Secret,
@@ -165,6 +174,16 @@ is
                            Int_I.Data (Int_I.Data'First .. Int_I.Size)),
          Lifetime_Soft => Config.Lifetime_Soft,
          Lifetime_Hard => Config.Lifetime_Hard);
+
+      Key_Locker.Wipe (Object => Enc_I'Access);
+      Key_Locker.Wipe (Object => Enc_R'Access);
+      Key_Locker.Wipe (Object => Int_I'Access);
+      Key_Locker.Wipe (Object => Int_R'Access);
+
+      Key_Locker.Unlock (Object => Enc_I'Access);
+      Key_Locker.Unlock (Object => Enc_R'Access);
+      Key_Locker.Unlock (Object => Int_I'Access);
+      Key_Locker.Unlock (Object => Int_R'Access);
 
       Esa_Spi_Mapping (Esa_Id).Local := Esp_Spi_Loc;
       Esa_Spi_Mapping (Esa_Id).Remote := Esp_Spi_Rem;
