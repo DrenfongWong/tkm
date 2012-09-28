@@ -71,4 +71,81 @@ is
       Int_R.Size := Int_Key_Len;
    end Derive_Child_Keys;
 
+   -------------------------------------------------------------------------
+
+   procedure Derive_Ike_Keys
+     (Skeyseed :     Tkmrpc.Types.Byte_Sequence;
+      Prf_Seed :     Tkmrpc.Types.Byte_Sequence;
+      Sk_D     : in out Tkmrpc.Types.Key_Type;
+      Sk_Ai    : in out Tkmrpc.Types.Key_Type;
+      Sk_Ar    : in out Tkmrpc.Types.Key_Type;
+      Sk_Ei    : in out Tkmrpc.Types.Key_Type;
+      Sk_Er    : in out Tkmrpc.Types.Key_Type;
+      Sk_Pi    : in out Tkmrpc.Types.Key_Type;
+      Sk_Pr    : in out Tkmrpc.Types.Key_Type)
+   is
+      Prf_Plus : Crypto.Prf_Plus_Hmac_Sha512.Context_Type;
+   begin
+      L.Log (Message => "SKEYSEED " & Utils.To_Hex_String
+             (Input => Skeyseed));
+      L.Log (Message => "PRFPLUSSEED " & Utils.To_Hex_String
+             (Input => Prf_Seed));
+
+      --  KEYMAT = SK_d | SK_ai | SK_ar | SK_ei | SK_er | SK_pi | SK_pr
+
+      Crypto.Prf_Plus_Hmac_Sha512.Init (Ctx  => Prf_Plus,
+                                        Key  => Skeyseed,
+                                        Seed => Prf_Seed);
+
+      --  Key for derivation of further (child) key material
+
+      Sk_D.Data (Sk_D.Data'First .. Sk_D.Size)
+        := Crypto.Prf_Plus_Hmac_Sha512.Generate
+          (Ctx    => Prf_Plus,
+           Length => Sk_D.Size);
+      L.Log (Message => "Sk_D  " & Utils.To_Hex_String
+             (Input => Sk_D.Data (Sk_D.Data'First .. Sk_D.Size)));
+
+      --  IKE authentication keys
+
+      Sk_Ai.Data (1 .. Sk_Ai.Size) := Crypto.Prf_Plus_Hmac_Sha512.Generate
+        (Ctx    => Prf_Plus,
+         Length => Sk_Ai.Size);
+      Sk_Ar.Data (1 .. Sk_Ar.Size) := Crypto.Prf_Plus_Hmac_Sha512.Generate
+        (Ctx    => Prf_Plus,
+         Length => Sk_Ai.Size);
+      L.Log (Message => "Sk_Ai " & Utils.To_Hex_String
+             (Input => Sk_Ai.Data (1 .. Sk_Ai.Size)));
+      L.Log (Message => "Sk_Ar " & Utils.To_Hex_String
+             (Input => Sk_Ar.Data (1 .. Sk_Ar.Size)));
+
+      --  IKE encryption keys
+
+      Sk_Ei.Data (1 .. Sk_Ei.Size) := Crypto.Prf_Plus_Hmac_Sha512.Generate
+        (Ctx    => Prf_Plus,
+         Length => Sk_Ei.Size);
+      Sk_Er.Data (1 .. Sk_Er.Size) := Crypto.Prf_Plus_Hmac_Sha512.Generate
+        (Ctx    => Prf_Plus,
+         Length => Sk_Er.Size);
+      L.Log (Message => "Sk_Ei " & Utils.To_Hex_String
+             (Input => Sk_Ei.Data (1 .. Sk_Ei.Size)));
+      L.Log (Message => "Sk_Er " & Utils.To_Hex_String
+             (Input => Sk_Er.Data (1 .. Sk_Er.Size)));
+
+      --  Keys used for AUTH payload generation
+
+      Sk_Pi.Data (Sk_Pi.Data'First .. Sk_Pi.Size)
+        := Crypto.Prf_Plus_Hmac_Sha512.Generate
+          (Ctx    => Prf_Plus,
+           Length => Sk_Pi.Size);
+      Sk_Pr.Data (Sk_Pr.Data'First .. Sk_Pr.Size)
+        := Crypto.Prf_Plus_Hmac_Sha512.Generate
+          (Ctx    => Prf_Plus,
+           Length => Sk_Pr.Size);
+      L.Log (Message => "Sk_Pi " & Utils.To_Hex_String
+             (Input => Sk_Pi.Data (Sk_Pi.Data'First .. Sk_Pi.Size)));
+      L.Log (Message => "Sk_Pr " & Utils.To_Hex_String
+             (Input => Sk_Pr.Data (Sk_Pr.Data'First .. Sk_Pr.Size)));
+   end Derive_Ike_Keys;
+
 end Tkm.Key_Derivation;

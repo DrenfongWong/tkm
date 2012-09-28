@@ -6,8 +6,8 @@ with Tkmrpc.Contexts.ae;
 with Tkm.Config;
 with Tkm.Utils;
 with Tkm.Logger;
+with Tkm.Key_Derivation;
 with Tkm.Crypto.Hmac_Sha512;
-with Tkm.Crypto.Prf_Plus_Hmac_Sha512;
 
 package body Tkm.Servers.Ike.Isa
 is
@@ -16,6 +16,9 @@ is
 
    Key_Pad : constant String := "Key Pad for IKEv2";
    Sig_Rem : Tkmrpc.Types.Signature_Type;
+
+   Int_Key_Len : constant := 64;
+   Enc_Key_Len : constant := 32;
 
    -------------------------------------------------------------------------
 
@@ -61,19 +64,21 @@ is
       Sk_Ei     : out Tkmrpc.Types.Key_Type;
       Sk_Er     : out Tkmrpc.Types.Key_Type)
    is
-      Int_Key_Len : constant := 64;
-      Enc_Key_Len : constant := 32;
-      Secret      : Tkmrpc.Types.Dh_Key_Type;
-      Nonce_Loc   : Tkmrpc.Types.Nonce_Type;
+      Secret    : Tkmrpc.Types.Dh_Key_Type;
+      Nonce_Loc : Tkmrpc.Types.Nonce_Type;
 
       Sk_D, Sk_Pi, Sk_Pr : Tkmrpc.Types.Key_Type :=
         (Size => Crypto.Hmac_Sha512.Hash_Output_Length,
          Data => (others => 0));
    begin
-      Sk_Ai := Tkmrpc.Types.Null_Key_Type;
-      Sk_Ar := Tkmrpc.Types.Null_Key_Type;
-      Sk_Ei := Tkmrpc.Types.Null_Key_Type;
-      Sk_Er := Tkmrpc.Types.Null_Key_Type;
+      Sk_Ai := (Size => Int_Key_Len,
+                Data => (others => 0));
+      Sk_Ar := (Size => Int_Key_Len,
+                Data => (others => 0));
+      Sk_Ei := (Size => Enc_Key_Len,
+                Data => (others => 0));
+      Sk_Er := (Size => Enc_Key_Len,
+                Data => (others => 0));
 
       L.Log (Message => "Creating new ISA context with ID" & Isa_Id'Img
              & " (DH" & Dh_Id'Img & ", nonce" & Nc_Loc_Id'Img & ", spi_loc"
@@ -100,7 +105,6 @@ is
          Seed_Size     : constant Positive := Nonce_Rem.Size + Nonce_Loc.Size
            + 16;
          Prf_Plus_Seed : Tkmrpc.Types.Byte_Sequence (1 .. Seed_Size);
-         Prf_Plus      : Crypto.Prf_Plus_Hmac_Sha512.Context_Type;
       begin
          if Initiator = 1 then
             Fixed_Nonce (Fixed_Nonce'First .. Nonce_Loc.Size)
@@ -141,70 +145,16 @@ is
                                   Key => Fixed_Nonce);
          Skeyseed := Crypto.Hmac_Sha512.Generate (Ctx  => Prf,
                                                   Data => Secret.Data);
-         L.Log (Message => "SKEYSEED " & Utils.To_Hex_String
-                (Input => Skeyseed));
-         L.Log (Message => "PRFPLUSSEED " & Utils.To_Hex_String
-                (Input => Prf_Plus_Seed));
 
-         --  KEYMAT = SK_d | SK_ai | SK_ar | SK_ei | SK_er | SK_pi | SK_pr
-
-         Crypto.Prf_Plus_Hmac_Sha512.Init (Ctx  => Prf_Plus,
-                                           Key  => Skeyseed,
-                                           Seed => Prf_Plus_Seed);
-
-         --  Key for derivation of further (child) key material
-
-         Sk_D.Data (Sk_D.Data'First .. Sk_D.Size)
-           := Crypto.Prf_Plus_Hmac_Sha512.Generate
-             (Ctx    => Prf_Plus,
-              Length => Sk_D.Size);
-         L.Log (Message => "Sk_D  " & Utils.To_Hex_String
-                (Input => Sk_D.Data (Sk_D.Data'First .. Sk_D.Size)));
-
-         --  IKE authentication keys
-
-         Sk_Ai.Data (1 .. Int_Key_Len) := Crypto.Prf_Plus_Hmac_Sha512.Generate
-           (Ctx    => Prf_Plus,
-            Length => Int_Key_Len);
-         Sk_Ai.Size := Int_Key_Len;
-         Sk_Ar.Data (1 .. Int_Key_Len) := Crypto.Prf_Plus_Hmac_Sha512.Generate
-           (Ctx    => Prf_Plus,
-            Length => Int_Key_Len);
-         Sk_Ar.Size := Int_Key_Len;
-         L.Log (Message => "Sk_Ai " & Utils.To_Hex_String
-                (Input => Sk_Ai.Data (1 .. Sk_Ai.Size)));
-         L.Log (Message => "Sk_Ar " & Utils.To_Hex_String
-                (Input => Sk_Ar.Data (1 .. Sk_Ar.Size)));
-
-         --  IKE encryption keys
-
-         Sk_Ei.Data (1 .. Enc_Key_Len) := Crypto.Prf_Plus_Hmac_Sha512.Generate
-           (Ctx    => Prf_Plus,
-            Length => Enc_Key_Len);
-         Sk_Ei.Size := Enc_Key_Len;
-         Sk_Er.Data (1 .. Enc_Key_Len) := Crypto.Prf_Plus_Hmac_Sha512.Generate
-           (Ctx    => Prf_Plus,
-            Length => Enc_Key_Len);
-         Sk_Er.Size := Enc_Key_Len;
-         L.Log (Message => "Sk_Ei " & Utils.To_Hex_String
-                (Input => Sk_Ei.Data (1 .. Sk_Ei.Size)));
-         L.Log (Message => "Sk_Er " & Utils.To_Hex_String
-                (Input => Sk_Er.Data (1 .. Sk_Er.Size)));
-
-         --  Keys used for AUTH payload generation
-
-         Sk_Pi.Data (Sk_Pi.Data'First .. Sk_Pi.Size)
-           := Crypto.Prf_Plus_Hmac_Sha512.Generate
-             (Ctx    => Prf_Plus,
-              Length => Sk_Pi.Size);
-         Sk_Pr.Data (Sk_Pr.Data'First .. Sk_Pr.Size)
-           := Crypto.Prf_Plus_Hmac_Sha512.Generate
-             (Ctx    => Prf_Plus,
-              Length => Sk_Pr.Size);
-         L.Log (Message => "Sk_Pi " & Utils.To_Hex_String
-                (Input => Sk_Pi.Data (Sk_Pi.Data'First .. Sk_Pi.Size)));
-         L.Log (Message => "Sk_Pr " & Utils.To_Hex_String
-                (Input => Sk_Pr.Data (Sk_Pr.Data'First .. Sk_Pr.Size)));
+         Key_Derivation.Derive_Ike_Keys (Skeyseed => Skeyseed,
+                                         Prf_Seed => Prf_Plus_Seed,
+                                         Sk_D     => Sk_D,
+                                         Sk_Ai    => Sk_Ai,
+                                         Sk_Ar    => Sk_Ar,
+                                         Sk_Ei    => Sk_Ei,
+                                         Sk_Er    => Sk_Er,
+                                         Sk_Pi    => Sk_Pi,
+                                         Sk_Pr    => Sk_Pr);
 
          --  Create ae and isa contexts
 
@@ -245,23 +195,25 @@ is
       Sk_Ei         : out Tkmrpc.Types.Key_Type;
       Sk_Er         : out Tkmrpc.Types.Key_Type)
    is
-      Int_Key_Len : constant := 64;
-      Enc_Key_Len : constant := 32;
-      Ae_Id       : constant Tkmrpc.Types.Ae_Id_Type
+      Ae_Id     : constant Tkmrpc.Types.Ae_Id_Type
         := Tkmrpc.Contexts.isa.get_ae_id (Id => Parent_Isa_Id);
-      Old_Sk_D    : constant Tkmrpc.Types.Key_Type
+      Old_Sk_D  : constant Tkmrpc.Types.Key_Type
         := Tkmrpc.Contexts.isa.get_sk_d (Id => Parent_Isa_Id);
 
-      Dh_Secret   : Tkmrpc.Types.Dh_Key_Type;
-      Nonce_Loc   : Tkmrpc.Types.Nonce_Type;
-      Sk_D        : Tkmrpc.Types.Key_Type
+      Dh_Secret : Tkmrpc.Types.Dh_Key_Type;
+      Nonce_Loc : Tkmrpc.Types.Nonce_Type;
+      Sk_D      : Tkmrpc.Types.Key_Type
         := (Size => Crypto.Hmac_Sha512.Hash_Output_Length,
             Data => (others => 0));
    begin
-      Sk_Ai := Tkmrpc.Types.Null_Key_Type;
-      Sk_Ar := Tkmrpc.Types.Null_Key_Type;
-      Sk_Ei := Tkmrpc.Types.Null_Key_Type;
-      Sk_Er := Tkmrpc.Types.Null_Key_Type;
+      Sk_Ai := (Size => Int_Key_Len,
+                Data => (others => 0));
+      Sk_Ar := (Size => Int_Key_Len,
+                Data => (others => 0));
+      Sk_Ei := (Size => Enc_Key_Len,
+                Data => (others => 0));
+      Sk_Er := (Size => Enc_Key_Len,
+                Data => (others => 0));
 
       L.Log (Message => "Creating new child ISA context with ID" & Isa_Id'Img
              & " (Parent Isa" & Parent_Isa_Id'Img & ", DH" & Dh_Id'Img
@@ -289,7 +241,6 @@ is
          Seed_Size     : constant Tkmrpc.Types.Byte_Sequence_Range
            := Nonce_Rem.Size + Nonce_Loc.Size + 16;
          Prf_Plus_Seed : Tkmrpc.Types.Byte_Sequence (1 .. Seed_Size);
-         Prf_Plus      : Crypto.Prf_Plus_Hmac_Sha512.Context_Type;
          PPS_Idx1      : constant Tkmrpc.Types.Byte_Sequence_Range
            := Nonce_Loc.Size + Nonce_Rem.Size + 1;
          --  PRFPLUSSEED index of SPIi start
@@ -301,6 +252,7 @@ is
          --  SKEYSEED index of Ni start
          Sks_Idx2      : Tkmrpc.Types.Byte_Sequence_Range;
          --  SKEYSEED index of Nr start
+         Sk_P          : Tkmrpc.Types.Key_Type := Tkmrpc.Types.Null_Key_Type;
       begin
 
          --  SKEYSEED    = prf (SK_d (old), Shared_Secret | Ni | Nr)
@@ -338,55 +290,15 @@ is
                                   Key => Old_Sk_D.Data (1 .. Old_Sk_D.Size));
          Skeyseed := Crypto.Hmac_Sha512.Generate (Ctx  => Prf,
                                                   Data => Sk_Seed);
-         L.Log (Message => "SKEYSEED " & Utils.To_Hex_String
-                (Input => Skeyseed));
-         L.Log (Message => "PRFPLUSSEED " & Utils.To_Hex_String
-                (Input => Prf_Plus_Seed));
-
-         --  KEYMAT = SK_d | SK_ai | SK_ar | SK_ei | SK_er | SK_pi | SK_pr
-
-         Crypto.Prf_Plus_Hmac_Sha512.Init (Ctx  => Prf_Plus,
-                                           Key  => Skeyseed,
-                                           Seed => Prf_Plus_Seed);
-
-         --  Key for derivation of further (child) key material
-
-         Sk_D.Data (Sk_D.Data'First .. Sk_D.Size)
-           := Crypto.Prf_Plus_Hmac_Sha512.Generate
-             (Ctx    => Prf_Plus,
-              Length => Sk_D.Size);
-         L.Log (Message => "Sk_D  " & Utils.To_Hex_String
-                (Input => Sk_D.Data (Sk_D.Data'First .. Sk_D.Size)));
-
-         --  IKE authentication keys
-
-         Sk_Ai.Data (1 .. Int_Key_Len) := Crypto.Prf_Plus_Hmac_Sha512.Generate
-           (Ctx    => Prf_Plus,
-            Length => Int_Key_Len);
-         Sk_Ai.Size := Int_Key_Len;
-         Sk_Ar.Data (1 .. Int_Key_Len) := Crypto.Prf_Plus_Hmac_Sha512.Generate
-           (Ctx    => Prf_Plus,
-            Length => Int_Key_Len);
-         Sk_Ar.Size := Int_Key_Len;
-         L.Log (Message => "Sk_Ai " & Utils.To_Hex_String
-                (Input => Sk_Ai.Data (1 .. Sk_Ai.Size)));
-         L.Log (Message => "Sk_Ar " & Utils.To_Hex_String
-                (Input => Sk_Ar.Data (1 .. Sk_Ar.Size)));
-
-         --  IKE encryption keys
-
-         Sk_Ei.Data (1 .. Enc_Key_Len) := Crypto.Prf_Plus_Hmac_Sha512.Generate
-           (Ctx    => Prf_Plus,
-            Length => Enc_Key_Len);
-         Sk_Ei.Size := Enc_Key_Len;
-         Sk_Er.Data (1 .. Enc_Key_Len) := Crypto.Prf_Plus_Hmac_Sha512.Generate
-           (Ctx    => Prf_Plus,
-            Length => Enc_Key_Len);
-         Sk_Er.Size := Enc_Key_Len;
-         L.Log (Message => "Sk_Ei " & Utils.To_Hex_String
-                (Input => Sk_Ei.Data (1 .. Sk_Ei.Size)));
-         L.Log (Message => "Sk_Er " & Utils.To_Hex_String
-                (Input => Sk_Er.Data (1 .. Sk_Er.Size)));
+         Key_Derivation.Derive_Ike_Keys (Skeyseed => Skeyseed,
+                                         Prf_Seed => Prf_Plus_Seed,
+                                         Sk_D     => Sk_D,
+                                         Sk_Ai    => Sk_Ai,
+                                         Sk_Ar    => Sk_Ar,
+                                         Sk_Ei    => Sk_Ei,
+                                         Sk_Er    => Sk_Er,
+                                         Sk_Pi    => Sk_P,
+                                         Sk_Pr    => Sk_P);
 
          --  Create isa context
 
