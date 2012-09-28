@@ -1,6 +1,6 @@
 with "alog";
 with "gmpada";
-with "tkmrpc_server";
+with "tkmrpc_server-ike";
 
 project Tkm_Common is
 
