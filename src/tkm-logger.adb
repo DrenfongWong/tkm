@@ -36,6 +36,18 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Log (Ex : Ada.Exceptions.Exception_Occurrence)
+   is
+   begin
+      Instance.Log_Message
+        (Level => Alog.Error,
+         Msg   => "Processing error: "
+         & Ada.Exceptions.Exception_Name (X => Ex)
+         & " - " & Ada.Exceptions.Exception_Message (X => Ex));
+   end Log;
+
+   -------------------------------------------------------------------------
+
    procedure Stop
    is
    begin
