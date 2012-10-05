@@ -1,6 +1,5 @@
 with Ada.Exceptions;
 
-with Anet.Types;
 with Anet.Sockets.Unix;
 with Anet.Receivers.Stream;
 
@@ -45,7 +44,7 @@ begin
    L.Log (Message => "XFRM test policies installed");
 
    Sock.Init;
-   Sock.Bind (Path => Anet.Types.Unix_Path_Type (IKE_Socket));
+   Sock.Bind (Path => Anet.Sockets.Unix.Path_Type (IKE_Socket));
 
    Servers.Ike.Init;
 
