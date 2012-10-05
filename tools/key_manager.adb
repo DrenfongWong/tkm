@@ -11,6 +11,7 @@ with Tkm.Logger;
 with Tkm.Version;
 with Tkm.Xfrm;
 with Tkm.Config;
+with Tkm.Callbacks;
 
 procedure Key_Manager
 is
@@ -48,6 +49,8 @@ begin
 
    Servers.Ike.Init;
 
+   Receiver.Register_Error_Handler
+     (Callback => Tkm.Callbacks.Receiver_Error'Access);
    Receiver.Listen (Callback => Dispatch'Access);
 
 exception
