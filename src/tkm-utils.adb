@@ -12,7 +12,7 @@ is
    Null_Byte_Sequence : constant Tkmrpc.Types.Byte_Sequence (1 .. 0)
      := (others => 0);
 
-   ------------------------------------------------------------------------
+   -------------------------------------------------------------------------
 
    function Hex_To_Bytes (Input : String) return Tkmrpc.Types.Byte_Sequence
    is
@@ -124,7 +124,7 @@ is
       return To_Bytes (Input);
    end To_Bytes;
 
-   ------------------------------------------------------------------------
+   -------------------------------------------------------------------------
 
    function To_Bytes (Input : String) return Tkmrpc.Types.Byte_Sequence
    is
@@ -138,7 +138,7 @@ is
       return Result;
    end To_Bytes;
 
-   ------------------------------------------------------------------------
+   -------------------------------------------------------------------------
 
    function To_Hex_String (Input : Tkmrpc.Types.Byte_Sequence) return String
    is
