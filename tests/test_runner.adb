@@ -12,6 +12,7 @@ with Util_Tests;
 with Diffie_Hellman_Tests;
 with Hmac_Tests;
 with Prf_Plus_Tests;
+with Signer_Tests;
 with Key_Derivation_Tests;
 with Server_Ike_Nonce_Tests;
 with Server_Ike_DH_Tests;
@@ -41,6 +42,8 @@ begin
              T     => new Hmac_Tests.Testcase);
    Add_Test (Suite => S.all,
              T     => new Prf_Plus_Tests.Testcase);
+   Add_Test (Suite => S.all,
+             T     => new Signer_Tests.Testcase);
    Add_Test (Suite => S.all,
              T     => new Key_Derivation_Tests.Testcase);
    Add_Test (Suite => S.all,
