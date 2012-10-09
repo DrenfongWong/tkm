@@ -28,6 +28,11 @@ is
    --  with zeros.
 
    function To_Bytes
+     (Bignum : GMP.Binding.Mpz_T)
+      return Tkmrpc.Types.Byte_Sequence;
+   --  Convert given GMP bignum to byte sequence.
+
+   function To_Bytes
      (Input : Interfaces.Unsigned_64)
       return Tkmrpc.Types.Byte_Sequence;
    --  Return byte sequence for given unsigned 64-bit number.

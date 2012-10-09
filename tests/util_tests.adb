@@ -55,7 +55,9 @@ package body Util_Tests is
       Utils.To_Bytes (Bignum => Bn_Value2,
                       Bytes  => Value2);
       Assert (Condition => Value2 = Ref_Value2,
-              Message   => "Value mismatch (2)");
+              Message   => "Value mismatch (2,p)");
+      Assert (Condition => Utils.To_Bytes (Bignum => Bn_Value2) = Ref_Value2,
+              Message   => "Value mismatch (2,f)");
 
       begin
          Utils.To_Bytes (Bignum => Bn_One,

@@ -12,6 +12,21 @@ is
    Null_Byte_Sequence : constant Tkmrpc.Types.Byte_Sequence (1 .. 0)
      := (others => 0);
 
+   function Bignum_Size (Integer : GMP.Binding.Mpz_T) return Natural;
+   --  Return size in bytes of given bignum.
+
+   -------------------------------------------------------------------------
+
+   function Bignum_Size (Integer : GMP.Binding.Mpz_T) return Natural
+   is
+      Bits : constant Interfaces.C.size_t
+        := GMP.Binding.Mpz_Sizeinbase
+          (Op   => Integer,
+           Base => 2);
+   begin
+      return (Natural (Bits) + 7) / 8;
+   end Bignum_Size;
+
    -------------------------------------------------------------------------
 
    function Hex_To_Bytes (Input : String) return Tkmrpc.Types.Byte_Sequence
@@ -76,12 +91,8 @@ is
       pragma Import (C, C_Free, "free");
 
       Addr : System.Address := System.Null_Address;
-      Bits : constant Interfaces.C.size_t
-        := Mpz_Sizeinbase
-          (Op   => Bignum,
-           Base => 2);
       Size : constant Interfaces.C.size_t
-        := Interfaces.C.size_t (Float'Ceiling (Float (Bits) / 8.0));
+        := Interfaces.C.size_t (Bignum_Size (Bignum));
    begin
       if Integer (Size) > Bytes'Last then
          raise Conversion_Error with "Unable to convert bignum to bytes, "
@@ -106,6 +117,20 @@ is
          Bytes (Bytes'Last - Byte_Seq'Last + 1 .. Bytes'Last) := Byte_Seq;
          C_Free (Ptr => Addr);
       end;
+   end To_Bytes;
+
+   -------------------------------------------------------------------------
+
+   function To_Bytes
+     (Bignum : GMP.Binding.Mpz_T)
+      return Tkmrpc.Types.Byte_Sequence
+   is
+      Result : Tkmrpc.Types.Byte_Sequence (1 .. Bignum_Size (Bignum));
+   begin
+      To_Bytes (Bignum => Bignum,
+                Bytes  => Result);
+
+      return Result;
    end To_Bytes;
 
    -------------------------------------------------------------------------
