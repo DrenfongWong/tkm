@@ -1,3 +1,5 @@
+with X509.Keys;
+
 with Tkmrpc.Contexts.dh;
 with Tkmrpc.Contexts.nc;
 with Tkmrpc.Contexts.isa;
@@ -7,7 +9,9 @@ with Tkm.Config;
 with Tkm.Utils;
 with Tkm.Logger;
 with Tkm.Key_Derivation;
+with Tkm.Private_Key;
 with Tkm.Crypto.Hmac_Sha512;
+with Tkm.Crypto.Rsa_Pkcs1_Sha1;
 
 package body Tkm.Servers.Ike.Isa
 is
@@ -393,10 +397,48 @@ is
       Init_Message :     Tkmrpc.Types.Init_Message_Type;
       Signature    : out Tkmrpc.Types.Signature_Type)
    is
-      pragma Unreferenced (Lc_Id, Init_Message, Signature);
+      pragma Unreferenced (Lc_Id);
+
+      package RSA renames Crypto.Rsa_Pkcs1_Sha1;
+
+      Privkey : constant X509.Keys.RSA_Private_Key_Type := Private_Key.Get;
+      Signer  : RSA.Context_Type;
+      Ae_Id   : constant Tkmrpc.Types.Ae_Id_Type
+        := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
+      Octets  : constant Tkmrpc.Types.Byte_Sequence
+        := Compute_Auth_Octets (Isa_Id       => Isa_Id,
+                                Ae_Id        => Ae_Id,
+                                Init_Message => Init_Message,
+                                Idx          => Config.Local_Id,
+                                Verify       => 0);
    begin
       L.Log (Message => "Generating local signature for ISA context"
              & Isa_Id'Img);
+
+      RSA.Init (Ctx   => Signer,
+                N     => X509.Keys.Get_Modulus (Key => Privkey),
+                E     => X509.Keys.Get_Pub_Exponent (Key => Privkey),
+                D     => X509.Keys.Get_Priv_Exponent (Key => Privkey),
+                P     => X509.Keys.Get_Prime_P (Key => Privkey),
+                Q     => X509.Keys.Get_Prime_Q (Key => Privkey),
+                Exp1  => X509.Keys.Get_Exponent1 (Key => Privkey),
+                Exp2  => X509.Keys.Get_Exponent2 (Key => Privkey),
+                Coeff => X509.Keys.Get_Coefficient (Key => Privkey));
+
+      declare
+         Sig : constant Tkmrpc.Types.Byte_Sequence
+           := RSA.Generate (Ctx  => Signer,
+                            Data => Octets);
+      begin
+         Signature.Data (1 .. Sig'Length) := Sig;
+         Signature.Size                   := Sig'Length;
+
+         L.Log (Message => "Signature " & Utils.To_Hex_String
+                (Input => Sig));
+         Tkmrpc.Contexts.ae.sign
+           (Id    => Ae_Id,
+            lc_id => 1);
+      end;
    end Sign;
 
    -------------------------------------------------------------------------
