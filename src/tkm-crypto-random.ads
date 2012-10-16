@@ -1,6 +1,6 @@
 with Tkmrpc.Types;
 
-package Tkm.Random
+package Tkm.Crypto.Random
 is
 
    procedure Init;
@@ -16,4 +16,4 @@ is
 
    Random_Error : exception;
 
-end Tkm.Random;
+end Tkm.Crypto.Random;

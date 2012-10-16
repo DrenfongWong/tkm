@@ -1,6 +1,6 @@
 with Tkmrpc.Contexts.nc;
 
-with Tkm.Random;
+with Tkm.Crypto.Random;
 with Tkm.Logger;
 
 package body Tkm.Servers.Ike.Nonce
@@ -23,7 +23,7 @@ is
              & " requested, context" & Id'Img);
 
       Nonce.Size             := Tkmrpc.Types.Nonce_Type_Range (Length);
-      Nonce.Data (1 .. Size) := Random.Get (Size => Size);
+      Nonce.Data (1 .. Size) := Crypto.Random.Get (Size => Size);
 
       Tkmrpc.Contexts.nc.create (Id    => Id,
                                  nonce => Nonce);

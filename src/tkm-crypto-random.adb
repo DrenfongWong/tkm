@@ -1,6 +1,6 @@
 with Ada.Sequential_IO;
 
-package body Tkm.Random
+package body Tkm.Crypto.Random
 is
 
    package S_IO is new Ada.Sequential_IO (Element_Type => Tkmrpc.Types.Byte);
@@ -51,4 +51,4 @@ is
          raise Random_Error with "Unable to init random number generator";
    end Init;
 
-end Tkm.Random;
+end Tkm.Crypto.Random;

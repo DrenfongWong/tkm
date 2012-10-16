@@ -1,6 +1,6 @@
 with Tkmrpc.Types;
 
-with Tkm.Random;
+with Tkm.Crypto.Random;
 
 package body Random_Tests is
 
@@ -40,9 +40,9 @@ package body Random_Tests is
          return True;
       end Is_Unique;
    begin
-      Random.Init;
+      Crypto.Random.Init;
       for I in 1 .. Count loop
-         R := Random.Get (Size => Bytes_Type'Length);
+         R := Crypto.Random.Get (Size => Bytes_Type'Length);
          Assert (Condition => Is_Unique
                  (Current => R, Index => I),
                  Message   => "Bytes not random, idx" & I'Img);
@@ -50,11 +50,11 @@ package body Random_Tests is
          Previous_R (I) := R;
       end loop;
 
-      Random.Finalize;
+      Crypto.Random.Finalize;
 
    exception
       when others =>
-         Random.Finalize;
+         Crypto.Random.Finalize;
          raise;
    end Get_Random_Bytes;
 

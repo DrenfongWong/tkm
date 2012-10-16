@@ -1,7 +1,7 @@
 with Tkmrpc.Contexts.dh;
 
 with Tkm.Logger;
-with Tkm.Random;
+with Tkm.Crypto.Random;
 with Tkm.Diffie_Hellman;
 
 package body Tkm.Servers.Ike.DH
@@ -25,7 +25,7 @@ is
       L.Log (Message => "Creating DH context for group" & Group'Img
              & ", context" & Id'Img);
 
-      Random_Chunk := Random.Get (Size => Random_Chunk'Length);
+      Random_Chunk := Crypto.Random.Get (Size => Random_Chunk'Length);
 
       --  TODO: Once cfg server is implemented do proper mapping of Dha_Id to
       --  DH group Id.

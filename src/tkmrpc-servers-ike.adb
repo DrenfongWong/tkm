@@ -6,15 +6,13 @@ with Tkmrpc.Contexts.nc;
 with Tkmrpc.Contexts.esa;
 
 with Tkm.Logger;
-with Tkm.Random;
+with Tkm.Crypto.Random;
 with Tkm.Servers.Ike.Nonce;
 with Tkm.Servers.Ike.DH;
 with Tkm.Servers.Ike.Ae;
 with Tkm.Servers.Ike.Isa;
 with Tkm.Servers.Ike.Esa;
 with Tkm.Servers.Ike.Cc;
-
-pragma Elaborate_All (Tkm.Random);
 
 package body Tkmrpc.Servers.Ike
 is
@@ -246,7 +244,7 @@ is
    procedure Finalize
    is
    begin
-      Random.Finalize;
+      Crypto.Random.Finalize;
    end Finalize;
 
    -------------------------------------------------------------------------
@@ -254,7 +252,7 @@ is
    procedure Init
    is
    begin
-      Random.Init;
+      Crypto.Random.Init;
    end Init;
 
    -------------------------------------------------------------------------
