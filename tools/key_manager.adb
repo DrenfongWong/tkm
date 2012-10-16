@@ -60,4 +60,5 @@ exception
       L.Log (Level   => L.Error,
              Message => Ada.Exceptions.Exception_Information (X => E));
       L.Stop;
+      Ada.Command_Line.Set_Exit_Status (Code => Ada.Command_Line.Failure);
 end Key_Manager;
