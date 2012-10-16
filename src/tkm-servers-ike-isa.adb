@@ -323,6 +323,20 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Sign
+     (Isa_Id       :     Tkmrpc.Types.Isa_Id_Type;
+      Lc_Id        :     Tkmrpc.Types.Lc_Id_Type;
+      Init_Message :     Tkmrpc.Types.Init_Message_Type;
+      Signature    : out Tkmrpc.Types.Signature_Type)
+   is
+      pragma Unreferenced (Lc_Id, Init_Message, Signature);
+   begin
+      L.Log (Message => "Generating local signature for ISA context"
+             & Isa_Id'Img);
+   end Sign;
+
+   -------------------------------------------------------------------------
+
    procedure Sign_Psk
      (Isa_Id       :     Tkmrpc.Types.Isa_Id_Type;
       Init_Message :     Tkmrpc.Types.Init_Message_Type;

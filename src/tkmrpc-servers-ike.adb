@@ -382,15 +382,12 @@ is
       Init_Message : Types.Init_Message_Type;
       Signature    : out Types.Signature_Type)
    is
-      pragma Unreferenced (Isa_Id);
-      pragma Unreferenced (Lc_Id);
-      pragma Unreferenced (Init_Message);
-      pragma Unreferenced (Signature);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Isa.Sign (Isa_Id       => Isa_Id,
+                                Lc_Id        => Lc_Id,
+                                Init_Message => Init_Message,
+                                Signature    => Signature);
+      Result := Results.Ok;
    end Isa_Sign;
 
    -------------------------------------------------------------------------

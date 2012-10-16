@@ -37,6 +37,13 @@ is
    --  Rekey a ISA by creating a new ISA context with given id and parameters.
    --  Return the computed authentication and encryption keys.
 
+   procedure Sign
+     (Isa_Id       :     Tkmrpc.Types.Isa_Id_Type;
+      Lc_Id        :     Tkmrpc.Types.Lc_Id_Type;
+      Init_Message :     Tkmrpc.Types.Init_Message_Type;
+      Signature    : out Tkmrpc.Types.Signature_Type);
+   --  Create signature of local authentication octets using given message.
+
    procedure Sign_Psk
      (Isa_Id       :     Tkmrpc.Types.Isa_Id_Type;
       Init_Message :     Tkmrpc.Types.Init_Message_Type;
