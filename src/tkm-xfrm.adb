@@ -10,23 +10,30 @@ is
    package L renames Tkm.Logger;
    package X renames Standard.Xfrm.Sockets;
 
+   Dir_Map : constant array (Direction_Type) of X.Direction_Type
+     := (Direction_In  => X.Direction_In,
+         Direction_Out => X.Direction_Out,
+         Direction_Fwd => X.Direction_Fwd);
+   --  Policy direction map.
+
    Sock : X.Xfrm_Socket_Type;
    --  Netlink/XFRM socket.
 
    -------------------------------------------------------------------------
 
    procedure Add_Policy
-     (Source      : String;
+     (Direction   : Direction_Type;
+      Source      : String;
       Destination : String)
    is
    begin
       L.Log (Message => "Adding policy [ " & Source & " => " & Destination
-             & " ]");
+             & ", " & Direction'Img & " ]");
       Sock.Add_Policy
         (Src       => Anet.To_IPv4_Addr (Str => Source),
          Dst       => Anet.To_IPv4_Addr (Str => Destination),
          Reqid     => 1,
-         Direction => X.Direction_Out);
+         Direction => Dir_Map (Direction));
    end Add_Policy;
 
    -------------------------------------------------------------------------

@@ -3,6 +3,12 @@ with Tkmrpc.Types;
 package Tkm.Xfrm
 is
 
+   type Direction_Type is
+     (Direction_In,
+      Direction_Fwd,
+      Direction_Out);
+   --  Policy directions.
+
    procedure Init;
    --  Init XFRM package.
 
@@ -10,7 +16,8 @@ is
    --  Flush XFRM policies and states.
 
    procedure Add_Policy
-     (Source      : String;
+     (Direction   : Direction_Type;
+      Source      : String;
       Destination : String);
    --  Add XFRM policy with given source and destination address.
 

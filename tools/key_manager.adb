@@ -92,9 +92,11 @@ begin
 
    Tkm.Xfrm.Init;
    Tkm.Xfrm.Flush;
-   Tkm.Xfrm.Add_Policy (Source      => Tkm.Config.Local_Addr,
+   Tkm.Xfrm.Add_Policy (Direction   => Tkm.Xfrm.Direction_Out,
+                        Source      => Tkm.Config.Local_Addr,
                         Destination => Tkm.Config.Peer_Addr);
-   Tkm.Xfrm.Add_Policy (Source      => Tkm.Config.Peer_Addr,
+   Tkm.Xfrm.Add_Policy (Direction   => Tkm.Xfrm.Direction_In,
+                        Source      => Tkm.Config.Peer_Addr,
                         Destination => Tkm.Config.Local_Addr);
 
    Sock.Init;
