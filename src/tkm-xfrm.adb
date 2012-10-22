@@ -1,15 +1,17 @@
-with GNAT.OS_Lib;
+with Anet;
+
+with Xfrm.Sockets;
 
 with Tkm.Logger;
-with Tkm.Utils;
 
 package body Tkm.Xfrm
 is
 
    package L renames Tkm.Logger;
+   package X renames Standard.Xfrm.Sockets;
 
-   procedure System (Command : String);
-   --  Execute command.
+   Sock : X.Xfrm_Socket_Type;
+   --  Netlink/XFRM socket.
 
    -------------------------------------------------------------------------
 
@@ -18,12 +20,13 @@ is
       Destination : String)
    is
    begin
-      System (Command => "/bin/ip xfrm policy add dir out"
-              & " src " & Source
-              & " dst " & Destination
-              & " tmpl src 0.0.0.0 dst 0.0.0.0"
-              & " proto esp"
-              & " reqid 1");
+      L.Log (Message => "Adding policy [ " & Source & " => " & Destination
+             & " ]");
+      Sock.Add_Policy
+        (Src       => Anet.To_IPv4_Addr (Str => Source),
+         Dst       => Anet.To_IPv4_Addr (Str => Destination),
+         Reqid     => 1,
+         Direction => X.Direction_Out);
    end Add_Policy;
 
    -------------------------------------------------------------------------
@@ -37,64 +40,70 @@ is
       Lifetime_Soft : Tkmrpc.Types.Rel_Time_Type;
       Lifetime_Hard : Tkmrpc.Types.Rel_Time_Type)
    is
-      use Tkm.Utils;
+      function To_Anet_Bytes
+        (Item : Tkmrpc.Types.Byte_Sequence)
+         return Anet.Byte_Array;
+      --  Convert given byte sequence to Anet byte array.
+
+      function To_Anet_Bytes
+        (Item : Tkmrpc.Types.Byte_Sequence)
+         return Anet.Byte_Array
+      is
+         Result : Anet.Byte_Array (Item'Range);
+      begin
+         for I in Result'Range loop
+            Result (I) := Anet.Byte (Item (I));
+         end loop;
+
+         return Result;
+      end To_Anet_Bytes;
    begin
-      System (Command => "/bin/ip xfrm state add"
-              & " src " & Source
-              & " dst " & Destination
-              & " proto esp spi" & SPI'Img
-              & " reqid 1"
-              & " replay-window 0"
-              & " enc aes 0x" & To_Hex_String (Input => Enc_Key)
-              & " auth hmac(sha512) 0x" & To_Hex_String (Input => Auth_Key)
-              & " limit time-soft" & Lifetime_Soft'Img
-              & " limit time-hard" & Lifetime_Hard'Img);
+      L.Log (Message => "Adding SA [ " & Source & " => " & Destination
+             & ", SPI" & SPI'Img & ", soft" & Lifetime_Soft'Img
+             & ", hard" & Lifetime_Hard'Img & " ]");
+      Sock.Add_State
+        (Src           => Anet.To_IPv4_Addr (Str => Source),
+         Dst           => Anet.To_IPv4_Addr (Str => Destination),
+         Reqid         => 1,
+         Spi           => SPI,
+         Enc_Key       => To_Anet_Bytes (Item => Enc_Key),
+         Enc_Alg       => "aes",
+         Int_Key       => To_Anet_Bytes (Item => Auth_Key),
+         Int_Alg       => "hmac(sha512)",
+         Lifetime_Soft => Lifetime_Soft,
+         Lifetime_Hard => Lifetime_Hard);
    end Add_State;
 
    -------------------------------------------------------------------------
 
    procedure Delete_State
-     (Source      : String;
-      Destination : String;
+     (Destination : String;
       SPI         : Tkmrpc.Types.Esp_Spi_Type)
    is
-      use Tkm.Utils;
    begin
-      System (Command => "/bin/ip xfrm state delete"
-              & " src " & Source
-              & " dst " & Destination
-              & " proto esp spi" & SPI'Img);
+      L.Log (Message => "Deleting SA [ => " & Destination & ", SPI"
+             & SPI'Img & " ]");
+      Sock.Delete_State
+        (Dst => Anet.To_IPv4_Addr (Str => Destination),
+         Spi => SPI);
    end Delete_State;
 
    -------------------------------------------------------------------------
 
    procedure Flush is
    begin
-      System (Command => "/bin/ip xfrm policy flush");
-      System (Command => "/bin/ip xfrm state flush");
+      L.Log (Message => "Flushing SPD");
+      Sock.Flush_Policies;
+      L.Log (Message => "Flushing SAD");
+      Sock.Flush_States;
    end Flush;
 
    -------------------------------------------------------------------------
 
-   procedure System (Command : String)
+   procedure Init
    is
-      Return_Code : Integer;
-      Args        : GNAT.OS_Lib.Argument_List_Access;
    begin
-      Args := GNAT.OS_Lib.Argument_String_To_List
-        (Arg_String => Command);
-
-      L.Log (Level   => L.Debug,
-             Message => "Executing command '" & Command & "'");
-      Return_Code := GNAT.OS_Lib.Spawn
-        (Program_Name => Args (Args'First).all,
-         Args         => Args (Args'First + 1 .. Args'Last));
-
-      GNAT.OS_Lib.Free (Arg => Args);
-
-      if Return_Code /= 0 then
-         raise Xfrm_Error with "Error executing: '" & Command & "'";
-      end if;
-   end System;
+      Sock.Init;
+   end Init;
 
 end Tkm.Xfrm;

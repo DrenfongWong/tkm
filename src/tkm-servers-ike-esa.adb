@@ -285,11 +285,9 @@ is
       L.Log (Message => "Resetting ESA context" & Esa_Id'Img);
 
       if Esa_Spi_Mapping (Esa_Id).Local /= 0 then
-         Xfrm.Delete_State (Source      => Config.Local_Addr,
-                            Destination => Config.Peer_Addr,
+         Xfrm.Delete_State (Destination => Config.Peer_Addr,
                             SPI         => Esa_Spi_Mapping (Esa_Id).Remote);
-         Xfrm.Delete_State (Source      => Config.Peer_Addr,
-                            Destination => Config.Local_Addr,
+         Xfrm.Delete_State (Destination => Config.Local_Addr,
                             SPI         => Esa_Spi_Mapping (Esa_Id).Local);
          Esa_Spi_Mapping (Esa_Id).Local := 0;
          Esa_Spi_Mapping (Esa_Id).Remote := 0;

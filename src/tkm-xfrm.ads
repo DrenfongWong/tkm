@@ -3,6 +3,9 @@ with Tkmrpc.Types;
 package Tkm.Xfrm
 is
 
+   procedure Init;
+   --  Init XFRM package.
+
    procedure Flush;
    --  Flush XFRM policies and states.
 
@@ -23,8 +26,7 @@ is
    --  seconds.
 
    procedure Delete_State
-     (Source      : String;
-      Destination : String;
+     (Destination : String;
       SPI         : Tkmrpc.Types.Esp_Spi_Type);
    --  Delete XFRM state with given parameters.
 

@@ -90,12 +90,12 @@ begin
 
    --  Install test policies
 
+   Tkm.Xfrm.Init;
    Tkm.Xfrm.Flush;
    Tkm.Xfrm.Add_Policy (Source      => Tkm.Config.Local_Addr,
                         Destination => Tkm.Config.Peer_Addr);
    Tkm.Xfrm.Add_Policy (Source      => Tkm.Config.Peer_Addr,
                         Destination => Tkm.Config.Local_Addr);
-   L.Log (Message => "XFRM test policies installed");
 
    Sock.Init;
    Sock.Bind (Path => Anet.Sockets.Unix.Path_Type (IKE_Socket));
