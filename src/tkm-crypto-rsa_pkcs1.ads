@@ -20,11 +20,11 @@ generic
 package Tkm.Crypto.Rsa_Pkcs1
 is
 
-   type Context_Type is private;
+   type Signer_Type is private;
    --  Signer context.
 
    procedure Init
-     (Ctx   : in out Context_Type;
+     (Ctx   : in out Signer_Type;
       N     :        String;
       E     :        String;
       D     :        String;
@@ -37,7 +37,7 @@ is
    --  parameters are expected to be in hexadecimal representation.
 
    function Generate
-     (Ctx  : in out Context_Type;
+     (Ctx  : in out Signer_Type;
       Data :        Tkmrpc.Types.Byte_Sequence)
       return Tkmrpc.Types.Byte_Sequence;
    --  Generate RSASSA-PKCS1-v1_5 signature over given data bytes.
@@ -46,7 +46,7 @@ is
 
 private
 
-   type Context_Type is new Ada.Finalization.Controlled with record
+   type Signer_Type is new Ada.Finalization.Controlled with record
       Hasher : Hash_Ctx_Type := Initial_Ctx;
 
       K : Natural := 0;
@@ -56,6 +56,6 @@ private
    end record;
 
    overriding
-   procedure Finalize (Ctx : in out Context_Type);
+   procedure Finalize (Ctx : in out Signer_Type);
 
 end Tkm.Crypto.Rsa_Pkcs1;

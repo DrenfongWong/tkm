@@ -13,14 +13,14 @@ is
    --  DER encoding T of the DigestInfo value for SHA-1.
 
    function Rsasp1
-     (Ctx  : Context_Type;
+     (Ctx  : Signer_Type;
       Data : Tkmrpc.Types.Byte_Sequence)
       return Tkmrpc.Types.Byte_Sequence;
    --  PKCS#1 RSASP1 signature primitive.
 
    -------------------------------------------------------------------------
 
-   procedure Finalize (Ctx : in out Context_Type)
+   procedure Finalize (Ctx : in out Signer_Type)
    is
    begin
       Mpz_Clear (Integer => Ctx.N);
@@ -36,7 +36,7 @@ is
    -------------------------------------------------------------------------
 
    function Generate
-     (Ctx  : in out Context_Type;
+     (Ctx  : in out Signer_Type;
       Data :        Tkmrpc.Types.Byte_Sequence)
       return Tkmrpc.Types.Byte_Sequence
    is
@@ -79,7 +79,7 @@ is
    -------------------------------------------------------------------------
 
    procedure Init
-     (Ctx   : in out Context_Type;
+     (Ctx   : in out Signer_Type;
       N     :        String;
       E     :        String;
       D     :        String;
@@ -164,7 +164,7 @@ is
    -------------------------------------------------------------------------
 
    function Rsasp1
-     (Ctx  : Context_Type;
+     (Ctx  : Signer_Type;
       Data : Tkmrpc.Types.Byte_Sequence)
       return Tkmrpc.Types.Byte_Sequence
    is

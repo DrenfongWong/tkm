@@ -38,7 +38,7 @@ package body Signer_Tests is
 
    procedure Rsa_Pkcs1_Modulus_Too_Short
    is
-      Sign_Ctx : RSA.Context_Type;
+      Sign_Ctx : RSA.Signer_Type;
    begin
       RSA.Init (Ctx   => Sign_Ctx,
                 N     => "abab",
@@ -69,7 +69,7 @@ package body Signer_Tests is
 
    procedure Rsa_Pkcs1_Signer_Not_Initialized
    is
-      Sign_Ctx : RSA.Context_Type;
+      Sign_Ctx : RSA.Signer_Type;
    begin
       begin
          declare
@@ -90,7 +90,7 @@ package body Signer_Tests is
 
    procedure Rsa_Pkcs1_v1_5_Example1
    is
-      Sign_Ctx : RSA.Context_Type;
+      Sign_Ctx : RSA.Signer_Type;
 
       N : constant String := "a56e4a0e701017589a5187dc7ea841d156f2ec0e36ad52a4"
         & "4dfeb1e61f7ad991d8c51056ffedb162b4c0f283a12a88a394dff526ab7291cbb30"
@@ -214,7 +214,7 @@ package body Signer_Tests is
 
    procedure Rsa_Pkcs1_v1_5_Example11
    is
-      Sign_Ctx : RSA.Context_Type;
+      Sign_Ctx : RSA.Signer_Type;
 
       N : constant String := "1ed7eea9405f507f941623a17bea717b860de44cb77687b8"
         & "b85a6d7d1ef4f8628d257cb94238c625ba25d46aae593960af79f75e28ab63ac3ca"
@@ -335,7 +335,7 @@ package body Signer_Tests is
 
    procedure Rsa_Pkcs1_v1_5_Example15
    is
-      Sign_Ctx : RSA.Context_Type;
+      Sign_Ctx : RSA.Signer_Type;
 
       N : constant String := "df271fd25f8644496b0c81be4bd50297ef099b002a6fd677"
         & "27eb449cea566ed6a3981a71312a141cabc9815c1209e320a25b32464e9999f18ca"

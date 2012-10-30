@@ -402,7 +402,7 @@ is
       package RSA renames Crypto.Rsa_Pkcs1_Sha1;
 
       Privkey : constant X509.Keys.RSA_Private_Key_Type := Private_Key.Get;
-      Signer  : RSA.Context_Type;
+      Signer  : RSA.Signer_Type;
       Ae_Id   : constant Tkmrpc.Types.Ae_Id_Type
         := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
       Octets  : constant Tkmrpc.Types.Byte_Sequence
