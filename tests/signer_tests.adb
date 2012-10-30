@@ -67,7 +67,7 @@ package body Signer_Tests is
          end;
 
       exception
-         when RSA.Signer_Error => null;
+         when RSA.Encoding_Error => null;
       end;
    end Rsa_Pkcs1_Modulus_Too_Short;
 

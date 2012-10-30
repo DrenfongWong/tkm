@@ -20,10 +20,6 @@ generic
 package Tkm.Crypto.Rsa_Pkcs1
 is
 
-   ------------
-   -- Signer --
-   ------------
-
    type Signer_Type is private;
    --  Signer context.
 
@@ -46,12 +42,6 @@ is
       return Tkmrpc.Types.Byte_Sequence;
    --  Generate RSASSA-PKCS1-v1_5 signature over given data bytes.
 
-   Signer_Error : exception;
-
-   --------------
-   -- Verifier --
-   --------------
-
    type Verifier_Type is private;
    --  Verifier context.
 
@@ -69,6 +59,8 @@ is
       return Boolean;
    --  Verify given RSASSA-PKCS1-v1_5 signature.
 
+   Encoding_Error : exception;
+   Signer_Error   : exception;
    Verifier_Error : exception;
 
 private

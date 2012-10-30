@@ -12,6 +12,15 @@ is
    Sha1_Digest_Info : constant String := "3021300906052b0e03021a05000414";
    --  DER encoding T of the DigestInfo value for SHA-1.
 
+   function Emsa_Encode
+     (Hasher : in out Hash_Ctx_Type;
+      Size   :        Positive;
+      Data   :        Tkmrpc.Types.Byte_Sequence)
+      return Tkmrpc.Types.Byte_Sequence;
+   --  Encodes the given data with EMSA-PKCS1-v1_5 format using the specified
+   --  hasher context. The Size argument specifies the size of the resulting
+   --  encoded message (which is normally the size of the modulus in bytes).
+
    function Rsasp1
      (Ctx  : Signer_Type;
       Data : Tkmrpc.Types.Byte_Sequence)
@@ -23,6 +32,45 @@ is
       Data : Tkmrpc.Types.Byte_Sequence)
       return Tkmrpc.Types.Byte_Sequence;
    --  PKCS#1 RSAVP1 signature primitive.
+
+   -------------------------------------------------------------------------
+
+   function Emsa_Encode
+     (Hasher : in out Hash_Ctx_Type;
+      Size   :        Positive;
+      Data   :        Tkmrpc.Types.Byte_Sequence)
+      return Tkmrpc.Types.Byte_Sequence
+   is
+   begin
+      Update (Ctx   => Hasher,
+              Input => Utils.To_String (Input => Data));
+
+      declare
+         use type Tkmrpc.Types.Byte_Sequence;
+
+         --  EMSA-PKCS1-v1_5 encoded message
+         --  EM = 0x00 || 0x01 || PS || 0x00 || T
+
+         H     : constant String  := Digest (Ctx => Hasher);
+         T     : constant String  := Sha1_Digest_Info & H;
+         Tlen  : constant Natural := T'Length / 2;
+         Pslen : constant Integer := Size - Tlen - 3;
+         Em    : Tkmrpc.Types.Byte_Sequence (1 .. Size)
+           := (1      => 0,
+               2      => 1,
+               others => 16#ff#);
+      begin
+         if Size < Tlen + 11 then
+            raise Encoding_Error with "RSA modulus of" & Size'Img
+              & " bytes too short to verify DER encoded message of"
+              & Tlen'Img & " bytes";
+         end if;
+
+         Em (3 + Pslen)            := 0;
+         Em (4 + Pslen .. Em'Last) := Utils.Hex_To_Bytes (Input => T);
+         return Em;
+      end;
+   end Emsa_Encode;
 
    -------------------------------------------------------------------------
 
@@ -61,34 +109,12 @@ is
       end if;
 
       Ctx.Hasher := Initial_Ctx;
-      Update (Ctx   => Ctx.Hasher,
-              Input => Utils.To_String (Input => Data));
-
-      declare
-
-         --  EMSA-PKCS1-v1_5 encoded message
-         --  EM = 0x00 || 0x01 || PS || 0x00 || T
-
-         H     : constant String  := Digest (Ctx => Ctx.Hasher);
-         T     : constant String  := Sha1_Digest_Info & H;
-         Tlen  : constant Natural := T'Length / 2;
-         Pslen : constant Integer := Ctx.K - Tlen - 3;
-         Em    : Tkmrpc.Types.Byte_Sequence (1 .. Ctx.K)
-           := (1      => 0,
-               2      => 1,
-               others => 16#ff#);
-      begin
-         if Ctx.K < Tlen + 11 then
-            raise Signer_Error with "RSA modulus of" & Ctx.K'Img & " bytes too"
-              & " short to sign DER encoded message of" & Tlen'Img & " bytes";
-         end if;
-
-         Em (3 + Pslen)            := 0;
-         Em (4 + Pslen .. Em'Last) := Utils.Hex_To_Bytes (Input => T);
-
-         return Rsasp1 (Ctx  => Ctx,
-                        Data => Em);
-      end;
+      return Rsasp1
+        (Ctx  => Ctx,
+         Data => Emsa_Encode
+           (Hasher => Ctx.Hasher,
+            Size   => Ctx.K,
+            Data   => Data));
    end Generate;
 
    -------------------------------------------------------------------------
@@ -334,42 +360,19 @@ is
       end if;
 
       declare
+         use type Tkmrpc.Types.Byte_Sequence;
+
          Message : constant Tkmrpc.Types.Byte_Sequence := Rsavp1
            (Ctx  => Ctx,
             Data => Signature);
       begin
          Ctx.Hasher := Initial_Ctx;
-         Update (Ctx   => Ctx.Hasher,
-                 Input => Utils.To_String (Input => Data));
-
-         declare
-            use type Tkmrpc.Types.Byte_Sequence;
-
-            --  EMSA-PKCS1-v1_5 encoded message
-            --  EM = 0x00 || 0x01 || PS || 0x00 || T
-
-            H     : constant String  := Digest (Ctx => Ctx.Hasher);
-            T     : constant String  := Sha1_Digest_Info & H;
-            Tlen  : constant Natural := T'Length / 2;
-            Pslen : constant Integer := Ctx.K - Tlen - 3;
-            Em    : Tkmrpc.Types.Byte_Sequence (1 .. Ctx.K)
-              := (1      => 0,
-                  2      => 1,
-                  others => 16#ff#);
-         begin
-            if Ctx.K < Tlen + 11 then
-               raise Verifier_Error with "RSA modulus of" & Ctx.K'Img
-                 & " bytes too short to verify DER encoded message of"
-                 & Tlen'Img & " bytes";
-            end if;
-
-            Em (3 + Pslen)            := 0;
-            Em (4 + Pslen .. Em'Last) := Utils.Hex_To_Bytes (Input => T);
-
-            if Em = Message then
-               return True;
-            end if;
-         end;
+         if Emsa_Encode (Hasher => Ctx.Hasher,
+                         Size   => Ctx.K,
+                         Data   => Data) = Message
+         then
+            return True;
+         end if;
       end;
 
       return False;
