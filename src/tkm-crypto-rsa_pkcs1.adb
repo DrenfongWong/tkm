@@ -41,6 +41,10 @@ is
       return Tkmrpc.Types.Byte_Sequence
    is
    begin
+      if Ctx.K = 0 then
+         raise Signer_Error with "Signer not initialized";
+      end if;
+
       Ctx.Hasher := Initial_Ctx;
       Update (Ctx   => Ctx.Hasher,
               Input => Utils.To_String (Input => Data));

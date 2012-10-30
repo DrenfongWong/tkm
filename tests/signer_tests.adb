@@ -29,6 +29,9 @@ package body Signer_Tests is
       T.Add_Test_Routine
         (Routine => Rsa_Pkcs1_Modulus_Too_Short'Access,
          Name    => "RSA modulus too short");
+      T.Add_Test_Routine
+        (Routine => Rsa_Pkcs1_Signer_Not_Initialized'Access,
+         Name    => "RSA signer not initialized");
    end Initialize;
 
    -------------------------------------------------------------------------
@@ -61,6 +64,27 @@ package body Signer_Tests is
          when RSA.Signer_Error => null;
       end;
    end Rsa_Pkcs1_Modulus_Too_Short;
+
+   -------------------------------------------------------------------------
+
+   procedure Rsa_Pkcs1_Signer_Not_Initialized
+   is
+      Sign_Ctx : RSA.Context_Type;
+   begin
+      begin
+         declare
+            Dummy : constant Tkmrpc.Types.Byte_Sequence
+              := RSA.Generate (Ctx  => Sign_Ctx,
+                               Data => (1 => 16#ab#));
+            pragma Unreferenced (Dummy);
+         begin
+            Fail (Message => "Exception expected");
+         end;
+
+      exception
+         when RSA.Signer_Error => null;
+      end;
+   end Rsa_Pkcs1_Signer_Not_Initialized;
 
    -------------------------------------------------------------------------
 

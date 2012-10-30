@@ -22,4 +22,7 @@ is
    procedure Rsa_Pkcs1_Modulus_Too_Short;
    --  PKCS#1 modulus too short test.
 
+   procedure Rsa_Pkcs1_Signer_Not_Initialized;
+   --  PKCS#1 signer not initialized test.
+
 end Signer_Tests;

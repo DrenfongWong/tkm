@@ -49,7 +49,7 @@ private
    type Context_Type is new Ada.Finalization.Controlled with record
       Hasher : Hash_Ctx_Type := Initial_Ctx;
 
-      K : Positive;
+      K : Natural := 0;
       --  Length in octets of the RSA modulus n.
 
       N, E, D, P, Q, Exp1, Exp2, Coeff : GMP.Binding.Mpz_T;
