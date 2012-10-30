@@ -16,6 +16,7 @@ with Tkm.Version;
 with Tkm.Xfrm;
 with Tkm.Config;
 with Tkm.Callbacks;
+with Tkm.Ca_Cert;
 with Tkm.Private_Key;
 
 procedure Key_Manager
@@ -41,16 +42,18 @@ is
       use Ada.Command_Line;
    begin
       L.Log (Message => Msg);
-      L.Log (Message => "Usage: " & Command_Name & " -k <key>");
+      L.Log (Message => "Usage: " & Command_Name & " -c <cacert> -k <key>");
+      L.Log (Message => "  -c CA certificate in DER format");
       L.Log (Message => "  -k RSA private key in DER format");
       L.Stop;
       Set_Exit_Status (Code => Failure);
    end Print_Usage;
 
-   Private_Key : Unbounded_String;
-   IKE_Socket  : constant String := "/tmp/tkm.rpc.ike";
-   Sock        : aliased Anet.Sockets.Unix.TCP_Socket_Type;
-   Receiver    : Unix_TCP_Receiver.Receiver_Type (S => Sock'Access);
+   Private_Key, Ca_Cert : Unbounded_String;
+
+   IKE_Socket : constant String := "/tmp/tkm.rpc.ike";
+   Sock       : aliased Anet.Sockets.Unix.TCP_Socket_Type;
+   Receiver   : Unix_TCP_Receiver.Receiver_Type (S => Sock'Access);
 begin
    L.Use_File;
    L.Log (Message => "Trusted Key Manager (TKM) starting ("
@@ -58,8 +61,11 @@ begin
 
    begin
       loop
-         case GNAT.Command_Line.Getopt ("k:") is
+         case GNAT.Command_Line.Getopt ("c: k:") is
             when ASCII.NUL => exit;
+            when 'c'       =>
+               Ca_Cert := To_Unbounded_String
+                 (GNAT.Command_Line.Parameter);
             when 'k'       =>
                Private_Key := To_Unbounded_String
                  (GNAT.Command_Line.Parameter);
@@ -83,6 +89,14 @@ begin
       Print_Usage (Msg => "No RSA private key specified");
       return;
    end if;
+   if Ca_Cert = Null_Unbounded_String then
+      Print_Usage (Msg => "No CA certificate specified");
+      return;
+   end if;
+
+   --  Load CA certificate
+
+   Tkm.Ca_Cert.Load (Path => To_String (Ca_Cert));
 
    --  Load RSA private key
 
