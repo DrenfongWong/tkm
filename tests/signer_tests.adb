@@ -32,6 +32,12 @@ package body Signer_Tests is
       T.Add_Test_Routine
         (Routine => Rsa_Pkcs1_Signer_Not_Initialized'Access,
          Name    => "RSA signer not initialized");
+      T.Add_Test_Routine
+        (Routine => Rsa_Pkcs1_Verify_Signature'Access,
+         Name    => "RSA verify signature");
+      T.Add_Test_Routine
+        (Routine => Rsa_Pkcs1_Verifier_Not_Initialized'Access,
+         Name    => "RSA verifier not initialized");
    end Initialize;
 
    -------------------------------------------------------------------------
@@ -492,5 +498,85 @@ package body Signer_Tests is
                  Message   => "Signature mismatch (15.4)");
       end Example_15_4;
    end Rsa_Pkcs1_v1_5_Example15;
+
+   -------------------------------------------------------------------------
+
+   procedure Rsa_Pkcs1_Verifier_Not_Initialized
+   is
+      Verify_Ctx : RSA.Verifier_Type;
+   begin
+      begin
+         declare
+            Dummy : constant Boolean
+              := RSA.Verify (Ctx       => Verify_Ctx,
+                             Data      => (1 => 16#ab#),
+                             Signature => (1 => 16#ab#));
+            pragma Unreferenced (Dummy);
+         begin
+            Fail (Message => "Exception expected");
+         end;
+
+      exception
+         when RSA.Verifier_Error => null;
+      end;
+   end Rsa_Pkcs1_Verifier_Not_Initialized;
+
+   -------------------------------------------------------------------------
+
+   procedure Rsa_Pkcs1_Verify_Signature
+   is
+      Verify_Ctx : RSA.Verifier_Type;
+
+      E : constant String := "010001";
+      N : constant String := "df271fd25f8644496b0c81be4bd50297ef099b002a6fd677"
+        & "27eb449cea566ed6a3981a71312a141cabc9815c1209e320a25b32464e9999f18ca"
+        & "13a9fd3892558f9e0adefdd3650dd23a3f036d60fe398843706a40b0b8462c8bee3"
+        & "bce12f1f2860c2444cdc6a44476a75ff4aa24273ccbe3bf80248465f8ff8c3a7f33"
+        & "67dfc0df5b6509a4f82811cedd81cdaaa73c491da412170d544d4ba96b97f0afc80"
+        & "65498d3a49fd910992a1f0725be24f465cfe7e0eabf678996c50bc5e7524abf73f1"
+        & "5e5bef7d518394e3138ce4944506aaaaf3f9b236dcab8fc00f87af596fdc3d9d6c7"
+        & "5cd508362fae2cbeddcc4c7450b17b776c079ecca1f256351a43b97dbe2153";
+      M : constant String := "f45d55f35551e975d6a8dc7ea9f488593940cc75694a2"
+        & "78f27e578a163d839b34040841808cf9c58c9b8728bf5f9ce8ee811ea91714f4"
+        & "7bab92d0f6d5a26fcfeea6cd93b910c0a2c963e64eb1823f102753d41f033591"
+        & "0ad3a977104f1aaf6c3742716a9755d11b8eed690477f445c5d27208b2e28433"
+        & "0fa3d301423fa7f2d086e0ad0b892b9db544e456d3f0dab85d953c12d340aa87"
+        & "3eda727c8a649db7fa63740e25e9af1533b307e61329993110e95194e039399c"
+        & "3824d24c51f22b26bde1024cd395958a2dfeb4816a6e8adedb50b1f6b56d0b30"
+        & "60ff0f1c4cb0d0e001dd59d73be12";
+      S : constant String := "b75a5466b65d0f300ef53833f2175c8a347a3804fc634"
+        & "51dc902f0b71f9083459ed37a5179a3b723a53f1051642d77374c4c6c8dbb1ca"
+        & "20525f5c9f32db776953556da31290e22197482ceb69906c46a758fb0e7409ba"
+        & "801077d2a0a20eae7d1d6d392ab4957e86b76f0652d68b83988a78f26e11172e"
+        & "a609bf849fbbd78ad7edce21de662a081368c040607cee29db0627227f44963a"
+        & "d171d2293b633a392e331dca54fe3082752f43f63c161b447a4c65a6875670d5"
+        & "f6600fcc860a1caeb0a88f8fdec4e564398a5c46c87f68ce07001f6213abe0ab"
+        & "5625f87d19025f08d81dac7bd4586bc9382191f6d2880f6227e5df3eed21e779"
+        & "2d249480487f3655261";
+   begin
+      RSA.Init (Ctx => Verify_Ctx,
+                N   => N,
+                E   => E);
+      Assert (Condition => RSA.Verify
+              (Ctx       => Verify_Ctx,
+               Data      => Utils.Hex_To_Bytes (Input => M),
+               Signature => Utils.Hex_To_Bytes (Input => S)),
+              Message   => "Verification failed");
+
+      declare
+         Too_Long : constant Tkmrpc.Types.Byte_Sequence (1 .. 257)
+           := (others => 12);
+         R        : Boolean;
+         pragma Unreferenced (R);
+      begin
+         R := RSA.Verify (Ctx       => Verify_Ctx,
+                          Data      => (1 => 12),
+                          Signature => Too_Long);
+         Fail (Message => "Exception expected");
+
+      exception
+         when RSA.Verifier_Error => null;
+      end;
+   end Rsa_Pkcs1_Verify_Signature;
 
 end Signer_Tests;

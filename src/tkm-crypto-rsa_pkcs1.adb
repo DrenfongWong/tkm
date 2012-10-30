@@ -18,6 +18,12 @@ is
       return Tkmrpc.Types.Byte_Sequence;
    --  PKCS#1 RSASP1 signature primitive.
 
+   function Rsavp1
+     (Ctx  : Verifier_Type;
+      Data : Tkmrpc.Types.Byte_Sequence)
+      return Tkmrpc.Types.Byte_Sequence;
+   --  PKCS#1 RSAVP1 signature primitive.
+
    -------------------------------------------------------------------------
 
    procedure Finalize (Ctx : in out Signer_Type)
@@ -31,6 +37,15 @@ is
       Mpz_Clear (Integer => Ctx.Exp1);
       Mpz_Clear (Integer => Ctx.Exp2);
       Mpz_Clear (Integer => Ctx.Coeff);
+   end Finalize;
+
+   -------------------------------------------------------------------------
+
+   procedure Finalize (Ctx : in out Verifier_Type)
+   is
+   begin
+      Mpz_Clear (Integer => Ctx.N);
+      Mpz_Clear (Integer => Ctx.E);
    end Finalize;
 
    -------------------------------------------------------------------------
@@ -163,6 +178,37 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Init
+     (Ctx   : in out Verifier_Type;
+      N     :        String;
+      E     :        String)
+   is
+      use type C.int;
+      use type C.size_t;
+
+      Res : C.int;
+   begin
+      Mpz_Init_Set_Str (Result => Res,
+                        Rop    => Ctx.N,
+                        Str    => C.To_C (N),
+                        Base   => 16);
+      if Res /= 0 then
+         raise Verifier_Error with "Unable to initialize modulus";
+      end if;
+      Ctx.K := Positive (Mpz_Sizeinbase (Op   => Ctx.N,
+                                         Base => 2) + 7) / 8;
+
+      Mpz_Init_Set_Str (Result => Res,
+                        Rop    => Ctx.E,
+                        Str    => C.To_C (E),
+                        Base   => 16);
+      if Res /= 0 then
+         raise Verifier_Error with "Unable to initialize public exponent";
+      end if;
+   end Init;
+
+   -------------------------------------------------------------------------
+
    function Rsasp1
      (Ctx  : Signer_Type;
       Data : Tkmrpc.Types.Byte_Sequence)
@@ -228,5 +274,105 @@ is
          Mpz_Clear (Integer => T1);
       end return;
    end Rsasp1;
+
+   -------------------------------------------------------------------------
+
+   function Rsavp1
+     (Ctx  : Verifier_Type;
+      Data : Tkmrpc.Types.Byte_Sequence)
+      return Tkmrpc.Types.Byte_Sequence
+   is
+      use type C.int;
+
+      Res  : C.int;
+      S, M : Mpz_T;
+   begin
+      Mpz_Init_Set_Str
+        (Result => Res,
+         Rop    => S,
+         Str    => C.To_C (Utils.To_Hex_String (Input => Data)),
+         Base   => 16);
+      if Res /= 0 then
+         Mpz_Clear (Integer => S);
+         raise Verifier_Error with "Unable to initialize signature";
+      end if;
+
+      Mpz_Init (Integer => M);
+      Mpz_Powm (Rop    => M,
+                Base   => S,
+                Exp    => Ctx.E,
+                Modulo => Ctx.N);
+      Mpz_Clear (Integer => S);
+
+      declare
+         Bytes  : constant Tkmrpc.Types.Byte_Sequence
+           := Utils.To_Bytes (Bignum => M);
+         Result : Tkmrpc.Types.Byte_Sequence (1 .. Ctx.K) := (others => 0);
+      begin
+         Result ((Result'Last - Bytes'Last + 1) .. Result'Last) := Bytes;
+         Mpz_Clear (Integer => M);
+         return Result;
+      end;
+   end Rsavp1;
+
+   -------------------------------------------------------------------------
+
+   function Verify
+     (Ctx       : in out Verifier_Type;
+      Data      :        Tkmrpc.Types.Byte_Sequence;
+      Signature :        Tkmrpc.Types.Byte_Sequence)
+      return Boolean
+   is
+   begin
+      if Ctx.K = 0 then
+         raise Verifier_Error with "Verifier not initialized";
+      end if;
+
+      if Signature'Length = 0 or else Signature'Length > Ctx.K then
+         raise Verifier_Error with "Invalid signature length:"
+           & Signature'Length'Img & ", modulus is" & Ctx.K'Img & " bytes";
+      end if;
+
+      declare
+         Message : constant Tkmrpc.Types.Byte_Sequence := Rsavp1
+           (Ctx  => Ctx,
+            Data => Signature);
+      begin
+         Ctx.Hasher := Initial_Ctx;
+         Update (Ctx   => Ctx.Hasher,
+                 Input => Utils.To_String (Input => Data));
+
+         declare
+            use type Tkmrpc.Types.Byte_Sequence;
+
+            --  EMSA-PKCS1-v1_5 encoded message
+            --  EM = 0x00 || 0x01 || PS || 0x00 || T
+
+            H     : constant String  := Digest (Ctx => Ctx.Hasher);
+            T     : constant String  := Sha1_Digest_Info & H;
+            Tlen  : constant Natural := T'Length / 2;
+            Pslen : constant Integer := Ctx.K - Tlen - 3;
+            Em    : Tkmrpc.Types.Byte_Sequence (1 .. Ctx.K)
+              := (1      => 0,
+                  2      => 1,
+                  others => 16#ff#);
+         begin
+            if Ctx.K < Tlen + 11 then
+               raise Verifier_Error with "RSA modulus of" & Ctx.K'Img
+                 & " bytes too short to verify DER encoded message of"
+                 & Tlen'Img & " bytes";
+            end if;
+
+            Em (3 + Pslen)            := 0;
+            Em (4 + Pslen .. Em'Last) := Utils.Hex_To_Bytes (Input => T);
+
+            if Em = Message then
+               return True;
+            end if;
+         end;
+      end;
+
+      return False;
+   end Verify;
 
 end Tkm.Crypto.Rsa_Pkcs1;

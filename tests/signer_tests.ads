@@ -25,4 +25,10 @@ is
    procedure Rsa_Pkcs1_Signer_Not_Initialized;
    --  PKCS#1 signer not initialized test.
 
+   procedure Rsa_Pkcs1_Verify_Signature;
+   --  PKCS#1 verify signature test.
+
+   procedure Rsa_Pkcs1_Verifier_Not_Initialized;
+   --  PKCS#1 verifier not initialized test.
+
 end Signer_Tests;
