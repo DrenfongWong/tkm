@@ -8,6 +8,11 @@ generic
    --  Associated hasher context.
 
    Initial_Ctx : Hash_Ctx_Type;
+   --  Initial hash context.
+
+   Digest_Info : String;
+   --  DER encoding of the DigestInfo value for the associated hash algorithm
+   --  (see Tkm.Digests package).
 
    with procedure Update
      (Ctx   : in out Hash_Ctx_Type;

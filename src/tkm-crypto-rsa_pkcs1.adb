@@ -9,9 +9,6 @@ is
 
    package C renames Interfaces.C;
 
-   Sha1_Digest_Info : constant String := "3021300906052b0e03021a05000414";
-   --  DER encoding T of the DigestInfo value for SHA-1.
-
    function Emsa_Encode
      (Hasher : in out Hash_Ctx_Type;
       Size   :        Positive;
@@ -52,7 +49,7 @@ is
          --  EM = 0x00 || 0x01 || PS || 0x00 || T
 
          H     : constant String  := Digest (Ctx => Hasher);
-         T     : constant String  := Sha1_Digest_Info & H;
+         T     : constant String  := Digest_Info & H;
          Tlen  : constant Natural := T'Length / 2;
          Pslen : constant Integer := Size - Tlen - 3;
          Em    : Tkmrpc.Types.Byte_Sequence (1 .. Size)
