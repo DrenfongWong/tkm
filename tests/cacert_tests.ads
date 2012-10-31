@@ -10,4 +10,7 @@ package Cacert_Tests is
    procedure Load_Certs;
    --  Load various certs.
 
+   procedure Verify_Signature;
+   --  Verify a certificate signature.
+
 end Cacert_Tests;
