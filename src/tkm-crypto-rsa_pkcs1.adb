@@ -117,15 +117,15 @@ is
    -------------------------------------------------------------------------
 
    procedure Init
-     (Ctx   : in out Signer_Type;
-      N     :        String;
-      E     :        String;
-      D     :        String;
-      P     :        String;
-      Q     :        String;
-      Exp1  :        String;
-      Exp2  :        String;
-      Coeff :        String)
+     (Ctx   : out Signer_Type;
+      N     :     String;
+      E     :     String;
+      D     :     String;
+      P     :     String;
+      Q     :     String;
+      Exp1  :     String;
+      Exp2  :     String;
+      Coeff :     String)
    is
       use type C.int;
       use type C.size_t;
@@ -202,9 +202,9 @@ is
    -------------------------------------------------------------------------
 
    procedure Init
-     (Ctx   : in out Verifier_Type;
-      N     :        String;
-      E     :        String)
+     (Ctx   : out Verifier_Type;
+      N     :     String;
+      E     :     String)
    is
       use type C.int;
       use type C.size_t;

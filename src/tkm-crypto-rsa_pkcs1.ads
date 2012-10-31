@@ -29,15 +29,15 @@ is
    --  Signer context.
 
    procedure Init
-     (Ctx   : in out Signer_Type;
-      N     :        String;
-      E     :        String;
-      D     :        String;
-      P     :        String;
-      Q     :        String;
-      Exp1  :        String;
-      Exp2  :        String;
-      Coeff :        String);
+     (Ctx   : out Signer_Type;
+      N     :     String;
+      E     :     String;
+      D     :     String;
+      P     :     String;
+      Q     :     String;
+      Exp1  :     String;
+      Exp2  :     String;
+      Coeff :     String);
    --  Initialize signer context with given private key parameters. The key
    --  parameters are expected to be in hexadecimal representation.
 
@@ -51,9 +51,9 @@ is
    --  Verifier context.
 
    procedure Init
-     (Ctx   : in out Verifier_Type;
-      N     :        String;
-      E     :        String);
+     (Ctx   : out Verifier_Type;
+      N     :     String;
+      E     :     String);
    --  Initialize verifier context with given public key parameters. The key
    --  parameters are expected to be in hexadecimal representation.
 
