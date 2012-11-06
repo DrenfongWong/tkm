@@ -75,21 +75,22 @@ package body Signer_Tests is
 
    procedure Rsa_Pkcs1_Signer_Not_Initialized
    is
+      pragma Warnings
+        (Off, "variable ""Sign_Ctx"" is read but never assigned");
       Sign_Ctx : RSA.Signer_Type;
+      pragma Warnings (On, "variable ""Sign_Ctx"" is read but never assigned");
    begin
+      declare
+         Dummy : constant Tkmrpc.Types.Byte_Sequence
+           := RSA.Generate (Ctx  => Sign_Ctx,
+                            Data => (1 => 16#ab#));
+         pragma Unreferenced (Dummy);
       begin
-         declare
-            Dummy : constant Tkmrpc.Types.Byte_Sequence
-              := RSA.Generate (Ctx  => Sign_Ctx,
-                               Data => (1 => 16#ab#));
-            pragma Unreferenced (Dummy);
-         begin
-            Fail (Message => "Exception expected");
-         end;
-
-      exception
-         when RSA.Signer_Error => null;
+         Fail (Message => "Exception expected");
       end;
+
+   exception
+      when RSA.Signer_Error => null;
    end Rsa_Pkcs1_Signer_Not_Initialized;
 
    -------------------------------------------------------------------------
@@ -503,22 +504,24 @@ package body Signer_Tests is
 
    procedure Rsa_Pkcs1_Verifier_Not_Initialized
    is
+      pragma Warnings
+        (Off, "variable ""Verify_Ctx"" is read but never assigned");
       Verify_Ctx : RSA.Verifier_Type;
+      pragma Warnings
+        (On, "variable ""Verify_Ctx"" is read but never assigned");
    begin
+      declare
+         Dummy : constant Boolean
+           := RSA.Verify (Ctx       => Verify_Ctx,
+                          Data      => (1 => 16#ab#),
+                          Signature => (1 => 16#ab#));
+         pragma Unreferenced (Dummy);
       begin
-         declare
-            Dummy : constant Boolean
-              := RSA.Verify (Ctx       => Verify_Ctx,
-                             Data      => (1 => 16#ab#),
-                             Signature => (1 => 16#ab#));
-            pragma Unreferenced (Dummy);
-         begin
-            Fail (Message => "Exception expected");
-         end;
-
-      exception
-         when RSA.Verifier_Error => null;
+         Fail (Message => "Exception expected");
       end;
+
+   exception
+      when RSA.Verifier_Error => null;
    end Rsa_Pkcs1_Verifier_Not_Initialized;
 
    -------------------------------------------------------------------------

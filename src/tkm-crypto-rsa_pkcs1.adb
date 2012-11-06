@@ -10,13 +10,12 @@ is
    package C renames Interfaces.C;
 
    function Emsa_Encode
-     (Hasher : in out Hash_Ctx_Type;
-      Size   :        Positive;
-      Data   :        Tkmrpc.Types.Byte_Sequence)
+     (Size : Positive;
+      Data : Tkmrpc.Types.Byte_Sequence)
       return Tkmrpc.Types.Byte_Sequence;
-   --  Encodes the given data with EMSA-PKCS1-v1_5 format using the specified
-   --  hasher context. The Size argument specifies the size of the resulting
-   --  encoded message (which is normally the size of the modulus in bytes).
+   --  Encodes the given data with EMSA-PKCS1-v1_5 format. The Size argument
+   --  specifies the size of the resulting encoded message (which is normally
+   --  the size of the modulus in bytes).
 
    function Rsasp1
      (Ctx  : Signer_Type;
@@ -33,11 +32,11 @@ is
    -------------------------------------------------------------------------
 
    function Emsa_Encode
-     (Hasher : in out Hash_Ctx_Type;
-      Size   :        Positive;
-      Data   :        Tkmrpc.Types.Byte_Sequence)
+     (Size : Positive;
+      Data : Tkmrpc.Types.Byte_Sequence)
       return Tkmrpc.Types.Byte_Sequence
    is
+      Hasher : Hash_Ctx_Type := Initial_Ctx;
    begin
       Update (Ctx   => Hasher,
               Input => Utils.To_String (Input => Data));
@@ -96,8 +95,8 @@ is
    -------------------------------------------------------------------------
 
    function Generate
-     (Ctx  : in out Signer_Type;
-      Data :        Tkmrpc.Types.Byte_Sequence)
+     (Ctx  : Signer_Type;
+      Data : Tkmrpc.Types.Byte_Sequence)
       return Tkmrpc.Types.Byte_Sequence
    is
    begin
@@ -105,13 +104,11 @@ is
          raise Signer_Error with "Signer not initialized";
       end if;
 
-      Ctx.Hasher := Initial_Ctx;
       return Rsasp1
         (Ctx  => Ctx,
          Data => Emsa_Encode
-           (Hasher => Ctx.Hasher,
-            Size   => Ctx.K,
-            Data   => Data));
+           (Size => Ctx.K,
+            Data => Data));
    end Generate;
 
    -------------------------------------------------------------------------
@@ -341,9 +338,9 @@ is
    -------------------------------------------------------------------------
 
    function Verify
-     (Ctx       : in out Verifier_Type;
-      Data      :        Tkmrpc.Types.Byte_Sequence;
-      Signature :        Tkmrpc.Types.Byte_Sequence)
+     (Ctx       : Verifier_Type;
+      Data      : Tkmrpc.Types.Byte_Sequence;
+      Signature : Tkmrpc.Types.Byte_Sequence)
       return Boolean
    is
    begin
@@ -363,10 +360,8 @@ is
            (Ctx  => Ctx,
             Data => Signature);
       begin
-         Ctx.Hasher := Initial_Ctx;
-         if Emsa_Encode (Hasher => Ctx.Hasher,
-                         Size   => Ctx.K,
-                         Data   => Data) = Message
+         if Emsa_Encode (Size => Ctx.K,
+                         Data => Data) = Message
          then
             return True;
          end if;

@@ -42,8 +42,8 @@ is
    --  parameters are expected to be in hexadecimal representation.
 
    function Generate
-     (Ctx  : in out Signer_Type;
-      Data :        Tkmrpc.Types.Byte_Sequence)
+     (Ctx  : Signer_Type;
+      Data : Tkmrpc.Types.Byte_Sequence)
       return Tkmrpc.Types.Byte_Sequence;
    --  Generate RSASSA-PKCS1-v1_5 signature over given data bytes.
 
@@ -51,16 +51,16 @@ is
    --  Verifier context.
 
    procedure Init
-     (Ctx   : out Verifier_Type;
-      N     :     String;
-      E     :     String);
+     (Ctx : out Verifier_Type;
+      N   :     String;
+      E   :     String);
    --  Initialize verifier context with given public key parameters. The key
    --  parameters are expected to be in hexadecimal representation.
 
    function Verify
-     (Ctx       : in out Verifier_Type;
-      Data      :        Tkmrpc.Types.Byte_Sequence;
-      Signature :        Tkmrpc.Types.Byte_Sequence)
+     (Ctx       : Verifier_Type;
+      Data      : Tkmrpc.Types.Byte_Sequence;
+      Signature : Tkmrpc.Types.Byte_Sequence)
       return Boolean;
    --  Verify given RSASSA-PKCS1-v1_5 signature.
 
@@ -71,8 +71,6 @@ is
 private
 
    type Signer_Type is new Ada.Finalization.Controlled with record
-      Hasher : Hash_Ctx_Type := Initial_Ctx;
-
       K : Natural := 0;
       --  Length in octets of the RSA modulus n.
 
@@ -83,8 +81,6 @@ private
    procedure Finalize (Ctx : in out Signer_Type);
 
    type Verifier_Type is new Ada.Finalization.Controlled with record
-      Hasher : Hash_Ctx_Type := Initial_Ctx;
-
       K : Natural := 0;
       --  Length in octets of the RSA modulus n.
 
