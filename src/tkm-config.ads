@@ -27,6 +27,14 @@ is
             16#6e#, 16#2e#, 16#6f#, 16#72#, 16#67#, others => 0));
    --  Local ID: C=CH, O=Linux strongSwan, OU=Sales, CN=alice@strongswan.org.
 
+   Remote_Id : constant Tkmrpc.Types.Idx_Type
+     := (Size => 22,
+         Data =>
+           (16#03#, 16#00#, 16#00#, 16#00#, 16#62#, 16#6f#, 16#62#, 16#40#,
+            16#73#, 16#74#, 16#72#, 16#6f#, 16#6e#, 16#67#, 16#73#, 16#77#,
+            16#61#, 16#6e#, 16#2e#, 16#6f#, 16#72#, 16#67#, others => 0));
+   --  Remote ID: bob@strongswan.org.
+
    Lifetime_Hard : constant := 60;
    --  ESP SA lifetime in seconds (hard).
 
