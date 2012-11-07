@@ -22,6 +22,7 @@ package body Server_Ike_Cc_Tests is
          authag_id   => 5,
          ri_id       => 2,
          certificate => Types.Null_Certificate_Type,
+         last_cert   => Types.Null_Certificate_Type,
          not_before  => 25,
          not_after   => 67);
 
