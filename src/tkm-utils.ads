@@ -1,3 +1,5 @@
+with X509;
+
 with Interfaces;
 
 with GMP.Binding;
@@ -36,6 +38,16 @@ is
      (Input : Interfaces.Unsigned_64)
       return Tkmrpc.Types.Byte_Sequence;
    --  Return byte sequence for given unsigned 64-bit number.
+
+   function To_X509_Bytes
+     (Item : Tkmrpc.Types.Byte_Sequence)
+      return X509.Byte_Array;
+   --  Convert given byte sequence to X509 byte array.
+
+   function To_Sequence
+     (Item : X509.Byte_Array)
+      return Tkmrpc.Types.Byte_Sequence;
+   --  Convert given X509 byte array to byte sequence.
 
    Conversion_Error : exception;
 

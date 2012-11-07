@@ -203,6 +203,21 @@ is
 
    -------------------------------------------------------------------------
 
+   function To_Sequence
+     (Item : X509.Byte_Array)
+      return Tkmrpc.Types.Byte_Sequence
+   is
+      Result : Tkmrpc.Types.Byte_Sequence (Item'Range);
+   begin
+      for I in Result'Range loop
+         Result (I) := Tkmrpc.Types.Byte (Item (I));
+      end loop;
+
+      return Result;
+   end To_Sequence;
+
+   -------------------------------------------------------------------------
+
    function To_String (Input : Tkmrpc.Types.Byte_Sequence) return String
    is
       Result   : String (1 .. Input'Length);
@@ -214,5 +229,20 @@ is
 
       return Result;
    end To_String;
+
+   -------------------------------------------------------------------------
+
+   function To_X509_Bytes
+     (Item : Tkmrpc.Types.Byte_Sequence)
+      return X509.Byte_Array
+   is
+      Result : X509.Byte_Array (Item'Range);
+   begin
+      for I in Result'Range loop
+         Result (I) := X509.Byte (Item (I));
+      end loop;
+
+      return Result;
+   end To_X509_Bytes;
 
 end Tkm.Utils;
