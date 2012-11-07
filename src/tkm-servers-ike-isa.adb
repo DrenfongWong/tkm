@@ -1,9 +1,11 @@
 with X509.Keys;
+with X509.Certs;
 
 with Tkmrpc.Contexts.dh;
 with Tkmrpc.Contexts.nc;
 with Tkmrpc.Contexts.isa;
 with Tkmrpc.Contexts.ae;
+with Tkmrpc.Contexts.cc;
 
 with Tkm.Config;
 with Tkm.Utils;
@@ -33,6 +35,66 @@ is
       return Tkmrpc.Types.Byte_Sequence;
    --  Compute local/remote AUTH octets for given ISA and AE context depending
    --  on the verify flag: Verify = False => local.
+
+   -------------------------------------------------------------------------
+
+   procedure Auth
+     (Isa_Id       : Tkmrpc.Types.Isa_Id_Type;
+      Cc_Id        : Tkmrpc.Types.Cc_Id_Type;
+      Init_Message : Tkmrpc.Types.Init_Message_Type;
+      Signature    : Tkmrpc.Types.Signature_Type)
+   is
+      package RSA renames Crypto.Rsa_Pkcs1_Sha1;
+
+      Raw_Cert  : constant Tkmrpc.Types.Certificate_Type
+        := Tkmrpc.Contexts.cc.get_certificate (Id => Cc_Id);
+      User_Cert : X509.Certs.Certificate_Type;
+   begin
+      X509.Certs.Load
+        (Buffer => Utils.To_X509_Bytes
+           (Item => Raw_Cert.Data (Raw_Cert.Data'First .. Raw_Cert.Size)),
+         Cert   => User_Cert);
+      L.Log (Message => "Verifying remote signature for ISA context"
+             & Isa_Id'Img & " with CC context" & Cc_Id'Img);
+
+      declare
+         Pubkey   : constant X509.Keys.RSA_Public_Key_Type
+           := X509.Certs.Get_Public_Key (Cert => User_Cert);
+         Verifier : RSA.Verifier_Type;
+         Ae_Id    : constant Tkmrpc.Types.Ae_Id_Type
+           := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
+         Octets   : constant Tkmrpc.Types.Byte_Sequence
+           := Compute_Auth_Octets (Isa_Id       => Isa_Id,
+                                   Ae_Id        => Ae_Id,
+                                   Init_Message => Init_Message,
+                                   Idx          => Config.Remote_Id,
+                                   Verify       => 1);
+      begin
+         RSA.Init (Ctx => Verifier,
+                   N   => X509.Keys.Get_Modulus (Key => Pubkey),
+                   E   => X509.Keys.Get_Pub_Exponent (Key => Pubkey));
+
+         if not RSA.Verify
+           (Ctx       => Verifier,
+            Data      => Octets,
+            Signature => Signature.Data
+              (Signature.Data'First .. Signature.Size))
+         then
+            raise Authentication_Failure with "Authentication failed for ISA"
+              & " context" & Isa_Id'Img;
+         end if;
+
+         Tkmrpc.Contexts.ae.authenticate
+           (Id              => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
+            ca_context      => 1,
+            ra_id           => 1,
+            remote_identity => 1,
+            not_before      => 1,
+            not_after       => 1);
+         L.Log (Message => "Authentication of ISA context" & Isa_Id'Img
+                & " successful");
+      end;
+   end Auth;
 
    -------------------------------------------------------------------------
 

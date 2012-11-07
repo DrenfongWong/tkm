@@ -58,6 +58,14 @@ is
       Signature : Tkmrpc.Types.Signature_Type);
    --  Authenticate ISA context identified by id.
 
+   procedure Auth
+     (Isa_Id       : Tkmrpc.Types.Isa_Id_Type;
+      Cc_Id        : Tkmrpc.Types.Cc_Id_Type;
+      Init_Message : Tkmrpc.Types.Init_Message_Type;
+      Signature    : Tkmrpc.Types.Signature_Type);
+   --  Authenticate ISA context identified by id with specified cc context, IKE
+   --  init message and given signature.
+
    procedure Reset (Isa_Id : Tkmrpc.Types.Isa_Id_Type);
    --  Reset ISA context with given id.
 

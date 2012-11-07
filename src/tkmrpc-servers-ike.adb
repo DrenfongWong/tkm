@@ -56,13 +56,9 @@ is
       Ca_Id  : Types.Ca_Id_Type)
    is
    begin
-      if Tkm.Servers.Ike.Cc.Check_Ca (Cc_Id => Cc_Id,
-                                      Ca_Id => Ca_Id)
-      then
-         Result := Results.Ok;
-      else
-         Result := Results.Sign_Failure;
-      end if;
+      Tkm.Servers.Ike.Cc.Check_Ca (Cc_Id => Cc_Id,
+                                   Ca_Id => Ca_Id);
+      Result := Results.Ok;
    end Cc_Check_Ca;
 
    -------------------------------------------------------------------------
@@ -264,15 +260,12 @@ is
       Init_Message : Types.Init_Message_Type;
       Signature    : Types.Signature_Type)
    is
-      pragma Unreferenced (Isa_Id);
-      pragma Unreferenced (Cc_Id);
-      pragma Unreferenced (Init_Message);
-      pragma Unreferenced (Signature);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Isa.Auth (Isa_Id       => Isa_Id,
+                                Cc_Id        => Cc_Id,
+                                Init_Message => Init_Message,
+                                Signature    => Signature);
+      Result := Results.Ok;
    end Isa_Auth;
 
    -------------------------------------------------------------------------
