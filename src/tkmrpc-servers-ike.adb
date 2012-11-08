@@ -4,6 +4,7 @@ with Tkmrpc.Contexts.dh;
 with Tkmrpc.Contexts.isa;
 with Tkmrpc.Contexts.nc;
 with Tkmrpc.Contexts.esa;
+with Tkmrpc.Contexts.cc;
 
 with Tkm.Logger;
 with Tkm.Crypto.Random;
@@ -481,6 +482,9 @@ is
       end loop;
       for I in Tkmrpc.Types.Dh_Id_Type'Range loop
          Tkmrpc.Contexts.dh.reset (Id => I);
+      end loop;
+      for I in Tkmrpc.Types.Cc_Id_Type'Range loop
+         Tkmrpc.Contexts.cc.reset (Id => I);
       end loop;
       for I in Tkmrpc.Types.Ae_Id_Type'Range loop
          Tkmrpc.Contexts.ae.reset (Id => I);
