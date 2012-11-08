@@ -271,19 +271,6 @@ is
 
    -------------------------------------------------------------------------
 
-   procedure Isa_Auth_Psk
-     (Result    : out Results.Result_Type;
-      Isa_Id    : Types.Isa_Id_Type;
-      Signature : Types.Signature_Type)
-   is
-   begin
-      Tkm.Servers.Ike.Isa.Auth_Psk (Isa_Id    => Isa_Id,
-                                    Signature => Signature);
-      Result := Results.Ok;
-   end Isa_Auth_Psk;
-
-   -------------------------------------------------------------------------
-
    procedure Isa_Create
      (Result    : out Results.Result_Type;
       Isa_Id    : Types.Isa_Id_Type;
@@ -381,26 +368,6 @@ is
                                 Signature    => Signature);
       Result := Results.Ok;
    end Isa_Sign;
-
-   -------------------------------------------------------------------------
-
-   procedure Isa_Sign_Psk
-     (Result       : out Results.Result_Type;
-      Isa_Id       : Types.Isa_Id_Type;
-      Init_Message : Types.Init_Message_Type;
-      Idx          : Types.Idx_Type;
-      Verify       : Types.Verify_Type;
-      Signature    : out Types.Signature_Type)
-   is
-   begin
-      Tkm.Servers.Ike.Isa.Sign_Psk
-        (Isa_Id       => Isa_Id,
-         Init_Message => Init_Message,
-         Idx          => Idx,
-         Verify       => Verify,
-         Signature    => Signature);
-      Result := Results.Ok;
-   end Isa_Sign_Psk;
 
    -------------------------------------------------------------------------
 

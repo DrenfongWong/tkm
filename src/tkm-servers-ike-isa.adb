@@ -20,21 +20,17 @@ is
 
    package L renames Tkm.Logger;
 
-   Key_Pad : constant String := "Key Pad for IKEv2";
-   Sig_Rem : Tkmrpc.Types.Signature_Type;
-
    Int_Key_Len : constant := 64;
    Enc_Key_Len : constant := 32;
 
    function Compute_Auth_Octets
-     (Isa_Id       : Tkmrpc.Types.Isa_Id_Type;
-      Ae_Id        : Tkmrpc.Types.Ae_Id_Type;
+     (Ae_Id        : Tkmrpc.Types.Ae_Id_Type;
       Init_Message : Tkmrpc.Types.Init_Message_Type;
-      Idx          : Tkmrpc.Types.Idx_Type;
-      Verify       : Tkmrpc.Types.Verify_Type)
+      Idx          : Tkmrpc.Types.Identity_Type;
+      Verify       : Boolean)
       return Tkmrpc.Types.Byte_Sequence;
-   --  Compute local/remote AUTH octets for given ISA and AE context depending
-   --  on the verify flag: Verify = False => local.
+   --  Compute local/remote AUTH octets for given AE context depending on the
+   --  verify flag: Verify = False => local.
 
    -------------------------------------------------------------------------
 
@@ -64,11 +60,10 @@ is
          Ae_Id    : constant Tkmrpc.Types.Ae_Id_Type
            := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
          Octets   : constant Tkmrpc.Types.Byte_Sequence
-           := Compute_Auth_Octets (Isa_Id       => Isa_Id,
-                                   Ae_Id        => Ae_Id,
+           := Compute_Auth_Octets (Ae_Id        => Ae_Id,
                                    Init_Message => Init_Message,
                                    Idx          => Config.Remote_Id,
-                                   Verify       => 1);
+                                   Verify       => True);
       begin
          RSA.Init (Ctx => Verifier,
                    N   => X509.Keys.Get_Modulus (Key => Pubkey),
@@ -98,55 +93,25 @@ is
 
    -------------------------------------------------------------------------
 
-   procedure Auth_Psk
-     (Isa_Id    : Tkmrpc.Types.Isa_Id_Type;
-      Signature : Tkmrpc.Types.Signature_Type)
-   is
-      use type Tkmrpc.Types.Byte_Sequence;
-   begin
-      L.Log (Message => "Authenticating ISA context with ID" & Isa_Id'Img);
-      if Signature.Data (Signature.Data'First .. Signature.Size)
-        /= Sig_Rem.Data (Sig_Rem.Data'First .. Sig_Rem.Size)
-      then
-         raise Authentication_Failure with "Authentication failed for ISA"
-           & " context" & Isa_Id'Img;
-      end if;
-
-      Tkmrpc.Contexts.ae.authenticate
-        (Id              => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
-         ca_context      => 1,
-         ra_id           => 1,
-         remote_identity => 1,
-         not_before      => 1,
-         not_after       => 1);
-      L.Log (Message => "Authentication of ISA context" & Isa_Id'Img
-             & " successful");
-   end Auth_Psk;
-
-   -------------------------------------------------------------------------
-
    function Compute_Auth_Octets
-     (Isa_Id       : Tkmrpc.Types.Isa_Id_Type;
-      Ae_Id        : Tkmrpc.Types.Ae_Id_Type;
+     (Ae_Id        : Tkmrpc.Types.Ae_Id_Type;
       Init_Message : Tkmrpc.Types.Init_Message_Type;
-      Idx          : Tkmrpc.Types.Idx_Type;
-      Verify       : Tkmrpc.Types.Verify_Type)
+      Idx          : Tkmrpc.Types.Identity_Type;
+      Verify       : Boolean)
       return Tkmrpc.Types.Byte_Sequence
    is
-      use type Tkmrpc.Types.Verify_Type;
-
       Sk_P  : Tkmrpc.Types.Key_Type;
       Nonce : Tkmrpc.Types.Nonce_Type;
       Prf   : Crypto.Hmac_Sha512.Context_Type;
    begin
-      if Verify = 0 then
-         L.Log (Message => "Generating local AUTH octets");
-         Sk_P  := Tkmrpc.Contexts.ae.get_sk_ike_auth_loc (Id => Ae_Id);
-         Nonce := Tkmrpc.Contexts.ae.get_nonce_rem (Id => Ae_Id);
-      else
+      if Verify then
          L.Log (Message => "Generating remote AUTH octets");
          Sk_P  := Tkmrpc.Contexts.ae.get_sk_ike_auth_rem (Id => Ae_Id);
          Nonce := Tkmrpc.Contexts.ae.get_nonce_loc (Id => Ae_Id);
+      else
+         L.Log (Message => "Generating local AUTH octets");
+         Sk_P  := Tkmrpc.Contexts.ae.get_sk_ike_auth_loc (Id => Ae_Id);
+         Nonce := Tkmrpc.Contexts.ae.get_nonce_rem (Id => Ae_Id);
       end if;
 
       Crypto.Hmac_Sha512.Init
@@ -468,11 +433,10 @@ is
       Ae_Id   : constant Tkmrpc.Types.Ae_Id_Type
         := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
       Octets  : constant Tkmrpc.Types.Byte_Sequence
-        := Compute_Auth_Octets (Isa_Id       => Isa_Id,
-                                Ae_Id        => Ae_Id,
+        := Compute_Auth_Octets (Ae_Id        => Ae_Id,
                                 Init_Message => Init_Message,
                                 Idx          => Config.Local_Id,
-                                Verify       => 0);
+                                Verify       => False);
    begin
       L.Log (Message => "Generating local signature for ISA context"
              & Isa_Id'Img);
@@ -502,61 +466,5 @@ is
             lc_id => 1);
       end;
    end Sign;
-
-   -------------------------------------------------------------------------
-
-   procedure Sign_Psk
-     (Isa_Id       :     Tkmrpc.Types.Isa_Id_Type;
-      Init_Message :     Tkmrpc.Types.Init_Message_Type;
-      Idx          :     Tkmrpc.Types.Idx_Type;
-      Verify       :     Tkmrpc.Types.Verify_Type;
-      Signature    : out Tkmrpc.Types.Signature_Type)
-   is
-      use type Tkmrpc.Types.Verify_Type;
-
-      Prf    : Crypto.Hmac_Sha512.Context_Type;
-      Ae_Id  : constant Tkmrpc.Types.Ae_Id_Type
-        := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
-      Octets : constant Tkmrpc.Types.Byte_Sequence
-        := Compute_Auth_Octets (Isa_Id       => Isa_Id,
-                                Ae_Id        => Ae_Id,
-                                Init_Message => Init_Message,
-                                Idx          => Idx,
-                                Verify       => Verify);
-   begin
-
-      --  Signature = prf(prf(Shared Secret,"Key Pad for IKEv2"), octets)
-
-      Crypto.Hmac_Sha512.Init
-        (Ctx => Prf,
-         Key => Utils.To_Bytes (Input => Config.Pre_Shared_Key));
-      Crypto.Hmac_Sha512.Init
-        (Ctx => Prf,
-         Key => Crypto.Hmac_Sha512.Generate
-           (Ctx  => Prf,
-            Data => Utils.To_Bytes (Input => Key_Pad)));
-
-      declare
-         Sig : constant Tkmrpc.Types.Byte_Sequence
-           := Crypto.Hmac_Sha512.Generate (Ctx  => Prf,
-                                           Data => Octets);
-      begin
-         Signature.Data (1 .. Sig'Length) := Sig;
-         Signature.Size                   := Sig'Length;
-
-         L.Log (Message => "PSK Signature " & Utils.To_Hex_String
-                (Input => Sig));
-         if Verify = 1 then
-
-            --  Store remote signature for AUTH step.
-
-            Sig_Rem := Signature;
-         else
-            Tkmrpc.Contexts.ae.sign
-              (Id    => Ae_Id,
-               lc_id => 1);
-         end if;
-      end;
-   end Sign_Psk;
 
 end Tkm.Servers.Ike.Isa;

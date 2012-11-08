@@ -1,16 +1,13 @@
 package Tkm.Config
 is
 
-   Pre_Shared_Key : constant String := "foobar";
-   --  Pre-shared key used for (PSK) authentification.
-
    Local_Addr : constant String := "152.96.15.32";
    --  ESP source address.
 
    Peer_Addr : constant String := "152.96.15.60";
    --  ESP destination address.
 
-   Local_Id : constant Tkmrpc.Types.Idx_Type
+   Local_Id : constant Tkmrpc.Types.Identity_Type
      := (Size => 24,
          Data =>
            (16#03#, 16#00#, 16#00#, 16#00#, 16#61#, 16#6C#, 16#69#, 16#63#,
@@ -19,7 +16,7 @@ is
             others => 0));
    --  Local ID: alice@strongswan.org.
 
-   Remote_Id : constant Tkmrpc.Types.Idx_Type
+   Remote_Id : constant Tkmrpc.Types.Identity_Type
      := (Size => 22,
          Data =>
            (16#03#, 16#00#, 16#00#, 16#00#, 16#62#, 16#6f#, 16#62#, 16#40#,

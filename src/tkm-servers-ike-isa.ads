@@ -44,20 +44,6 @@ is
       Signature    : out Tkmrpc.Types.Signature_Type);
    --  Create signature of local authentication octets using given message.
 
-   procedure Sign_Psk
-     (Isa_Id       :     Tkmrpc.Types.Isa_Id_Type;
-      Init_Message :     Tkmrpc.Types.Init_Message_Type;
-      Idx          :     Tkmrpc.Types.Idx_Type;
-      Verify       :     Tkmrpc.Types.Verify_Type;
-      Signature    : out Tkmrpc.Types.Signature_Type);
-   --  Create PSK signature of local authentication octets using given message
-   --  and identification payload.
-
-   procedure Auth_Psk
-     (Isa_Id    : Tkmrpc.Types.Isa_Id_Type;
-      Signature : Tkmrpc.Types.Signature_Type);
-   --  Authenticate ISA context identified by id.
-
    procedure Auth
      (Isa_Id       : Tkmrpc.Types.Isa_Id_Type;
       Cc_Id        : Tkmrpc.Types.Cc_Id_Type;
