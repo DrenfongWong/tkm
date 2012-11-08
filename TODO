@@ -5,6 +5,8 @@ General
 -------
 - Add Get_Data getter to variable-length data types
 - Add util function to concatenate byte sequences
+- Additional sanity checks of RSA keys
+- Lock and wipe private key memory
 
 DH
 --
@@ -12,3 +14,9 @@ DH
   - Lock and wipe DH values
   - Implement GMP custom allocators
 - Implement extended public value sanity checks
+
+CC
+--
+- Set trustchain certificate validity
+- Additional trustchain checks according to RFC 5280, section 6
+  and RFC 2818,	section 3
