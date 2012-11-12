@@ -231,9 +231,11 @@ is
       pragma Unreferenced (Esa_Id);
    begin
 
-      --  Auto-generated stub.
+      --  Since charon's behavior makes sure that old child SAs are deleted and
+      --  that only the new ESP SA is present, there is no need for additional
+      --  steps by the TKM.
 
-      Result := Results.Invalid_Operation;
+      Result := Results.Ok;
    end Esa_Select;
 
    -------------------------------------------------------------------------
