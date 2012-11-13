@@ -1,3 +1,5 @@
 git-rev
 obj
 tkm-version.ads
+*.lyx~
+*.pdf

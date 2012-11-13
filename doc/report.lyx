@@ -1,0 +1,544 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\definecolor{newyellow}{rgb}{1,1,0.8}
+\definecolor{colKeys}{rgb}{0,0,1}
+\definecolor{colIdentifier}{rgb}{0,0,0}
+\definecolor{colComments}{rgb}{1,0,0}
+\definecolor{colString}{rgb}{0,0.5,0}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_title "IKE Separation"
+\pdf_author "Reto Buerki, Adrian-Ken Rüegsegger"
+\pdf_subject "Extraction of security critical components into a Trusted Computing Base (TCB)"
+\pdf_keywords "Separation, TCB, IPsec, IKE, IKEv2, Security, Ada"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks true
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize a4paper
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 2
+\paperpagestyle fancy
+\listings_params "backgroundcolor={\color{newyellow}},basicstyle={\ttfamily\small},breakautoindent=true,breaklines=true,captionpos=b,commentstyle={\color{colComments}},extendedchars=true,frame=single,identifierstyle={\color{colIdentifier}},keywordstyle={\color{colKeys}},language=Ada,numbers=left,numberstyle={\tiny},showspaces=false,showstringspaces=false,stringstyle={\color{colString}},tabsize=4"
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+IKE Separation – Extraction of security critical components into a Trusted
+ Computing Base (TCB)
+\end_layout
+
+\begin_layout Author
+Reto Bürki, Adrian-Ken Rüegsegger
+\end_layout
+
+\begin_layout Standard
+\align center
+University of Applied Sciences Rapperswil (HSR), Switzerland
+\end_layout
+
+\begin_layout Abstract
+The IPsec protocol relies on the correct operation of the IKE key exchange
+ to meet its security goals.
+ The implementation of the IKEv2 protocol is a non-trivial task and results
+ in a large and complex code base.
+ This makes it hard to gain a high degree of confidence in the correct operation
+ of the code.
+\end_layout
+
+\begin_layout Abstract
+The security and robustness of the IKEv2 implementation strongSwan has been
+ augmented, by identifying and separating security critical from non-critical
+ components and separating them into a TCB.
+ The TCB has been implemented using the Ada programming language.
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+The strongSwan project is an OpenSource IPsec-based VPN solution for Unix-like
+ operating systems.
+ It provides the charon daemon, which is a feature-rich implementation of
+ the Internet key exchange protocol version 2 (IKEv2) as specified in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc5996"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Overview
+\end_layout
+
+\begin_layout Subsection
+Related work
+\end_layout
+
+\begin_layout Subsection
+Threat model (?)
+\end_layout
+
+\begin_layout Standard
+It is assumed that charon, which is considered an untrusted software component,
+ is under complete control of the attacker.
+ This means the attacker has complete access to all data available to the
+ IKEv2 daemon and can execute arbitrary code with the privileges of charon.
+\end_layout
+
+\begin_layout Section
+Requirements
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Requirements"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Security requirements
+\end_layout
+
+\begin_layout Subsection
+Functional requirements
+\end_layout
+
+\begin_layout Subsection
+Additional requirements
+\end_layout
+
+\begin_layout Section
+Analysis of strongSwan
+\end_layout
+
+\begin_layout Standard
+This section describes the current operation of the strongSwan charon IKEv2
+ daemon, which are relevant to fullfiling the requirements specified in
+ section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Requirements"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+IKEv2 protocol analysis
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:IKEv2-protocol-analysis"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following section provides a detailed analysis of the IKEv2 message
+ exchanges (as specified by 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc5996"
+
+\end_inset
+
+), focusing on the security relevance of the transmitted data.
+\end_layout
+
+\begin_layout Subsection
+Code analysis
+\end_layout
+
+\begin_layout Standard
+This section illustrates the charon source code, which processes the IKEv2
+ message and other security relevant data as described by section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:IKEv2-protocol-analysis"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+IKE_SA_INIT
+\end_layout
+
+\begin_layout Subsubsection
+IKE_AUTH
+\end_layout
+
+\begin_layout Subsubsection
+CHILD_CREATE_SA
+\end_layout
+
+\begin_layout Subsubsection
+Source of randmoness
+\end_layout
+
+\begin_layout Standard
+Randomness is provided by requesting a random number generator plugin instance
+ (
+\family typewriter
+rng_t
+\family default
+) from the crypto factory of libstrongswan.
+\end_layout
+
+\begin_layout Subsubsection
+Payload encryption
+\end_layout
+
+\begin_layout Subsubsection
+Payload decryption
+\end_layout
+
+\begin_layout Section
+Design
+\end_layout
+
+\begin_layout Standard
+The main concept is to separate the security relevant services from all
+ other IKEv2 services and split the IKEv2 key management daemon into two
+ components: a trusted and an untrusted part.
+ The trusted part performs the critical services.
+ stores all relevant keying material and exposes the necessary services
+ to the untrusted component via a well defined and minial interface.
+ The split of the components must guarantee the fullfilment of the security
+ requirements defined in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Requirements"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Split of IKE
+\end_layout
+
+\begin_layout Subsection
+Security goals
+\end_layout
+
+\begin_layout Subsubsection
+Assumptions
+\end_layout
+
+\begin_layout Standard
+IKE and TKM can only exchange messages via the well defined interface and
+ are otherwise completely isolated from each other.
+ In a real system this is very difficult to achieve since there are many
+ possibilities for side channels, which have been demonstrated to work,
+ see for example 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "cryptoeprint:2010:594"
+
+\end_inset
+
+,
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Zhang:2012:CSC:2382196.2382230"
+
+\end_inset
+
+ or 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Aciicmez:2007:PSB:1229285.1266999"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+TKM Functionality
+\end_layout
+
+\begin_layout Subsubsection
+Nonce generation
+\end_layout
+
+\begin_layout Subsubsection
+Diffie Hellman
+\end_layout
+
+\begin_layout Subsubsection
+Signature generation
+\end_layout
+
+\begin_layout Subsubsection
+Signature verification
+\end_layout
+
+\begin_layout Subsubsection
+Certificate chain validation
+\end_layout
+
+\begin_layout Subsubsection
+Derivation of key material
+\end_layout
+
+\begin_layout Section
+TKM interface
+\end_layout
+
+\begin_layout Subsection
+Protocol overview
+\end_layout
+
+\begin_layout Subsubsection
+Creation of an IKE SA
+\end_layout
+
+\begin_layout Subsubsection
+Creation of a Child SA
+\end_layout
+
+\begin_layout Subsubsection
+Rekeying of an IKE SA
+\end_layout
+
+\begin_layout Subsubsection
+Rekeying of a Child SA
+\end_layout
+
+\begin_layout Subsection
+State machines
+\end_layout
+
+\begin_layout Subsubsection
+Nonce 
+\end_layout
+
+\begin_layout Subsubsection
+Diffie Hellman
+\end_layout
+
+\begin_layout Subsubsection
+Certificate chain
+\end_layout
+
+\begin_layout Subsubsection
+Authenticated endpoint
+\end_layout
+
+\begin_layout Subsubsection
+IKE SA
+\end_layout
+
+\begin_layout Subsubsection
+Child SA
+\end_layout
+
+\begin_layout Subsection
+Exchanges
+\end_layout
+
+\begin_layout Subsubsection
+nc_create
+\end_layout
+
+\begin_layout Subsubsection
+...
+\end_layout
+
+\begin_layout Section
+Implementation
+\end_layout
+
+\begin_layout Subsection
+Untrusted component: charon-tkm
+\end_layout
+
+\begin_layout Subsubsection
+TKM nonce generation plugin (
+\family typewriter
+tkm_nonceg_t
+\family default
+)
+\end_layout
+
+\begin_layout Subsubsection
+TKM Diffie Hellman plugin (
+\family typewriter
+tkm_diffie_hellman_t
+\family default
+)
+\end_layout
+
+\begin_layout Subsubsection
+TKM private/public key plugin (
+\family typewriter
+tkm_[private|public]_key_t
+\family default
+)
+\end_layout
+
+\begin_layout Subsubsection
+TKM keymat plugin (
+\family typewriter
+tkm_keymat_t
+\family default
+)
+\end_layout
+
+\begin_layout Subsubsection
+TKM kernel IPsec interface plugin (
+\family typewriter
+tkm_kernel_ipsec_t
+\family default
+)
+\end_layout
+
+\begin_layout Subsubsection
+TKM listener plugin (
+\family typewriter
+tkm_listener_t
+\family default
+)
+\end_layout
+
+\begin_layout Subsubsection
+ESP SA event service (EES)
+\end_layout
+
+\begin_layout Subsubsection
+Exception handler (EH)
+\end_layout
+
+\begin_layout Subsection
+Trusted component: TKM
+\end_layout
+
+\begin_layout Subsection
+xfrm-proxy
+\end_layout
+
+\begin_layout Subsection
+Additional components
+\end_layout
+
+\begin_layout Standard
+Certain functionality which was needed for the implementation of TKM has
+ been realized in self-contained software projects or as extension to existing
+ libraries.
+\end_layout
+
+\begin_layout Subsubsection
+Anet
+\end_layout
+
+\begin_layout Subsubsection
+xfrm-ada
+\end_layout
+
+\begin_layout Subsubsection
+x509-Ada
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\begin_layout Standard
+We have shown that...
+\end_layout
+
+\begin_layout Subsection
+Achievements
+\end_layout
+
+\begin_layout Subsection
+Future work
+\end_layout
+
+\begin_layout Standard
+Integration into platform such as Linux containers, SELinux, Qubes OS
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "ike-separation"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
