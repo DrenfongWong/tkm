@@ -161,10 +161,113 @@ name "sec:Requirements"
 
 \begin_layout Subsection
 Security requirements
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Security-requirements"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Separation of key material
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Separation-of-key"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The untrusted part of the IKEv2 component must not have access to generated
+ key material that is used for authentication of peers, encryption and integrity
+ protection of user data (child SA keys).
+ This also includes criticial intermediate values, which may result from
+ the key generation and key derivation process.
+\end_layout
+
+\begin_layout Standard
+TODO: Excluded are IKE keys
+\end_layout
+
+\begin_layout Subsubsection
+Cryptographic operations
+\end_layout
+
+\begin_layout Standard
+All relevant cryptographic operations must be performed by the trusted computing
+ base (TCB) to assure the correctnes of the resulting values.
+ Since key material is needed to perform crypto operations, this is also
+ a consequence of the requirement specified in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Separation-of-key"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Authentication
+\end_layout
+
+\begin_layout Standard
+The IKEv2 component must only allow IPSec SAs to be established for peers
+ that have succesfully been authenticated.
+ The authentication must be performed by the TCB to assure the correctnes
+ of the process.
+\end_layout
+
+\begin_layout Standard
+The authentication state in the TCB must always be unambiguously associated
+ with the corresponding SA.
+\end_layout
+
+\begin_layout Subsubsection
+Integrity
+\end_layout
+
+\begin_layout Standard
+The security of the IKEv2 component must solely depend on the correct operation
+ of the trusted part.
+ The security operation of the system must not be violated by a misbehaving
+ untrusted part.
 \end_layout
 
 \begin_layout Subsection
 Functional requirements
+\end_layout
+
+\begin_layout Subsubsection
+Separation
+\end_layout
+
+\begin_layout Standard
+The IKEv2 component must be separated into a trusted and untrusted part,
+ to minimize the size and complexity of the TCB.
+ The trusted part must enforce all security requirements specified in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Security-requirements"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Communication
+\end_layout
+
+\begin_layout Standard
+The communication protocol between the trusted and untrusted parts must
+ be simple, robust and well-defined to allow a verifiable implementation.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -213,6 +316,13 @@ key "rfc5996"
 
 \begin_layout Subsection
 Code analysis
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Code-analysis"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -231,12 +341,120 @@ reference "sub:IKEv2-protocol-analysis"
 IKE_SA_INIT
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename images/ike-sa-init.svg
+	width 100text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+IKE SA establishment
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection
 IKE_AUTH
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename images/ike-auth.svg
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+IKE SA authentication
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection
 CHILD_CREATE_SA
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename images/child-create-sa.svg
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Child SA establishment
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -256,8 +474,82 @@ rng_t
 Payload encryption
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename images/payload-encryption.svg
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+IKE SA payload encryption
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection
 Payload decryption
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename images/payload-decryption.svg
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+IKE SA payload decryption
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -284,6 +576,99 @@ reference "sec:Requirements"
 
 \begin_layout Subsection
 Split of IKE
+\end_layout
+
+\begin_layout Standard
+The charon software design is based on a plugin architecture.
+ Almost every func- tional part of the daemon is implemented as a plugin.
+ This provides the flexibility to extend or exchange specific parts of the
+ system.
+ As outlined in the code analysis section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Code-analysis"
+
+\end_inset
+
+, most security critical operations and values are already encapsulated
+ in plugins.
+ The changes needed to allow complete separation of the critical parts from
+ the charon daemon are limited.
+ Therefore, the architecture depicted in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig-IKE-split"
+
+\end_inset
+
+ is proposed:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename images/design-overview.svg
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Split of IKE into trusted and untrusted parts
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig-IKE-split"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+By implementing custom plugins which act as proxy between the trusted and
+ untrusted parts of the component, it is possible to move the key material
+ and related operations into the TCB.
+ This ensures that the untrusted part has no direct access to security relevant
+ data.
+ The critical parts extracted from charon are implemented by the trusted
+ key manager which is part of the TCB.
+ By using a well-defined interface, the internal functionality of the TCB’s
+ key manager is completely hidden from the plugins.
+ The plugins reference the data (and their associated state) needed for
+ processing via context identifiers.
+ They have no diret access to the objects referenced by the identifiers
+ but can tell the key manager to perform certain, allowed operations with
+ the specified context(s).
+ Only uncritical results of operations are returned to the caller plugin
+ (e.g.
+ public value of a DH exchange).
+ This architecure allows the trusted part to be minimal while the bulk of
+ the charon code can be used as is, in the untrusted part to handle the
+ vast majority of IKEv2 processing.
 \end_layout
 
 \begin_layout Subsection
@@ -501,12 +886,124 @@ Certain functionality which was needed for the implementation of TKM has
 Anet
 \end_layout
 
+\begin_layout Standard
+Anet is a networking library for the Ada programming language.
+ It is used by the trusted key manager and xfrm-proxy to open or connect
+ to unix sockets and communicate with charon-tkm.
+\end_layout
+
+\begin_layout Standard
+Anet has been released as an opensource project under the GMGPL license
+ and is available at 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://git.codelabs.ch/?p=anet.git
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Subsubsection
 xfrm-ada
 \end_layout
 
+\begin_layout Standard
+This project is an Ada binding to Linux's XFRM kernel
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.kernel.org/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ interface.
+ It provides functionality to add and delete XFRM policies and states.
+\end_layout
+
+\begin_layout Standard
+The xfrm framework is used to implement the IPsec protocol suite in the
+ Linux kernel.
+ The XFRM states operate on the Security Association Database (SAD) and
+ the XFRM policies operate on the Security Policy Database (SPD).
+ Among other features, it provides ESP 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc4303"
+
+\end_inset
+
+ payload encryption with the key material provided by an userspace application.
+\end_layout
+
+\begin_layout Standard
+The TKM uses the XFRM interface via the xfrm-ada library, to manage the
+ SPD and SAD and provide the keys for ESP encryption to the kernel.
+\end_layout
+
+\begin_layout Standard
+xfrm-ada has been released as an opensource project under the GMGPL license
+ and is available at 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://git.codelabs.ch/?p=xfrm-ada.git
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Subsubsection
 x509-Ada
+\end_layout
+
+\begin_layout Standard
+This project is an Ada PKIX X.509 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc5280"
+
+\end_inset
+
+ library.
+ It provides functionality to process ASN.1/DER-encoded TODO: REF X.680 certificat
+es and private keys.
+\end_layout
+
+\begin_layout Standard
+x509-Ada has been released as an opensource project under the GMGPL license
+ and is available at 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://git.codelabs.ch/?p=x509-ada.git
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
