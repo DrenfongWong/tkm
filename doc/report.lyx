@@ -107,7 +107,7 @@ The IPsec protocol relies on the correct operation of the IKE key exchange
 \begin_layout Abstract
 The security and robustness of the IKEv2 implementation strongSwan has been
  augmented, by identifying and separating security critical from non-critical
- components and separating them into a TCB.
+ components and separating them into a minimal TCB.
  The TCB has been implemented using the Ada programming language.
 \end_layout
 
@@ -115,11 +115,77 @@ The security and robustness of the IKEv2 implementation strongSwan has been
 Introduction
 \end_layout
 
+\begin_layout Subsection
+Overview
+\end_layout
+
+\begin_layout Standard
+This section provides an overview about the terminology used in this project
+ and explains the basic key concepts.
+\end_layout
+
+\begin_layout Subsubsection
+Trusted Computing Base
+\end_layout
+
+\begin_layout Standard
+In a system with a high demand for security or integrity, functions relevant
+ to guarantee this demand must be isolated from the rest of the system in
+ a Trusted Computing Base (TCB)
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+TCB
+\end_layout
+
+\end_inset
+
+.
+ To be trusted, this code must be as minimal as possible to allow (formal)
+ verification of code correctness.
+ In order to isolate code in a TCB, critical sections must be identified
+ and the system must be separated into a critical (TCB) and non-critical
+ (untrusted) part.
+ Communication mechanisms between the sections must be established, which
+ itself must be robust and well defined.
+\end_layout
+
+\begin_layout Standard
+If an attacker is able to compromise the untrusted-part of the system, the
+ security and integrity functions guaranteed by the TCB must still be in
+ place.
+\end_layout
+
+\begin_layout Subsubsection
+strongSwan
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+strongSwan
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 The strongSwan project is an OpenSource IPsec-based VPN solution for Unix-like
  operating systems.
  It provides the charon daemon, which is a feature-rich implementation of
- the Internet key exchange protocol version 2 (IKEv2) as specified in 
+ the Internet key exchange protocol version 2 (IKEv2
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IKEv2
+\end_layout
+
+\end_inset
+
+) as specified in 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "rfc5996"
@@ -127,10 +193,210 @@ key "rfc5996"
 \end_inset
 
 .
+ The software is implemented using the C programming language with an object
+ oriented (OO) approach.
+ This allows to emulate modern programming paradigms while still using a
+ standard C compiler and tool set
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://wiki.strongswan.org/projects/strongswan/wiki/ObjectOrientedC
 \end_layout
 
-\begin_layout Subsection
-Overview
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The strongSwan architecture is very flexible and easy to extend with new
+ features.
+ Almost every part of the daemon works as a plugin and new functionality
+ can be added by simply writing a new plugin.
+ This architecture proved very helpful in this present project, as very
+ few changes were required in the upstream strongSwan code to implement
+ the Trusted Key Manager (TKM, see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Trusted-Key-Manager"
+
+\end_inset
+
+) architecture.
+\end_layout
+
+\begin_layout Subsubsection
+Ada
+\end_layout
+
+\begin_layout Standard
+Ada
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Ada
+\end_layout
+
+\end_inset
+
+ is a structured, strongly typed programming language.
+ The language has initially been designed by Jean Ichbiah from Honeywell
+ Bull in the 1970s.
+ Ada has a very similar structure to Pascal
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Pascal
+\end_layout
+
+\end_inset
+
+ and is often used for systems with a demand for security and integritiy
+ or which have a huge code base.
+\end_layout
+
+\begin_layout Standard
+The development of Ada was initiated by the US Department of Defense (DoD
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+DoD
+\end_layout
+
+\end_inset
+
+) in order to consolidate and supersede the hundreds of programming languages
+ used in their countless projects.
+ The new language should comply with all identified DoD requirements (dubbed
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Steelman Language Requirements
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Steelman78"
+
+\end_inset
+
+), which focused strongly on security and safety.
+ 
+\end_layout
+
+\begin_layout Standard
+Ada was the first standardized high-level programming language 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ada83"
+
+\end_inset
+
+.
+ The current version is Ada 2005
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Ada 2005
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "DBLP:books/sp/Ada2006"
+
+\end_inset
+
+ which supports all modern programming pa\SpecialChar \-
+ra\SpecialChar \-
+digms.
+ The next major version of the language is planned to be complete in 2012
+ and will naturally be called Ada 2012
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Ada 2012
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Ada compilers, before used in practice, have to pass a standardized test
+ suite which guarantees the compliance of the compiler with the Ada standard.
+ Since Ada provides many features which aid in the development of safety
+ and security critical applications, it is nowadays mostly used in such
+ areas where these aspects are important.
+ The primary industries making use of Ada are namely avionics, railway systems,
+ banking, military and space technology.
+\end_layout
+
+\begin_layout Standard
+The language is named after Lady Ada Lovelace (1815-1852), the daughter
+ of Lord Byron
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Ada Lovelace - http://en.wikipedia.org/wiki/Ada_Lovelace
+\end_layout
+
+\end_inset
+
+ who is considered to be the first computer programmer.
+\end_layout
+
+\begin_layout Subsubsection
+Trusted Key Manager
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Trusted-Key-Manager"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Trusted Key Manager
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Trusted Key Manager
+\end_layout
+
+\end_inset
+
+ is a minimal TCB developed during this project which implements the identified
+ security-critical functions of the IKEv2 protocol using the Ada programming
+ language.
+ It uses the Tkm-Rpc library to communicate with the strongSwan charon daemon.
+ This library is also written in Ada.
 \end_layout
 
 \begin_layout Subsection
@@ -185,7 +451,7 @@ name "sub:Separation-of-key"
 The untrusted part of the IKEv2 component must not have access to generated
  key material that is used for authentication of peers, encryption and integrity
  protection of user data (child SA keys).
- This also includes criticial intermediate values, which may result from
+ This also includes critical intermediate values, which may result from
  the key generation and key derivation process.
 \end_layout
 
@@ -280,8 +546,10 @@ Analysis of strongSwan
 
 \begin_layout Standard
 This section describes the current operation of the strongSwan charon IKEv2
- daemon, which are relevant to fullfiling the requirements specified in
- section 
+ daemon.
+ A deep understanding of these mechanisms was a prerequisite before the
+ seperation of the daemon in a trusted and unstrusted part to fullfill the
+ requirements specified in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:Requirements"
@@ -345,7 +613,7 @@ IKE_SA_INIT
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -478,6 +746,7 @@ sideways false
 status collapsed
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename images/nonce-generation.svg
 	width 60text%
@@ -590,6 +859,10 @@ IKE SA payload decryption
 
 \end_layout
 
+\begin_layout Subsection
+Security-critical functionality
+\end_layout
+
 \begin_layout Section
 Design
 \end_layout
@@ -646,7 +919,7 @@ reference "fig-IKE-split"
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -843,55 +1116,51 @@ Implementation
 \end_layout
 
 \begin_layout Subsection
+XML-Specification
+\end_layout
+
+\begin_layout Standard
+How is the protocol between charon and TKM specified? Example section, exchanges
+, types etc.
+ How is this specification used to create doc/code/fsm/graphs.
+ examples
+\end_layout
+
+\begin_layout Subsection
+Tkm-Rpc
+\end_layout
+
+\begin_layout Standard
+What is Tkm-Rpc? How is it used by the components? How are the code files
+ generated? example code on usage
+\end_layout
+
+\begin_layout Subsection
 Untrusted component: charon-tkm
 \end_layout
 
 \begin_layout Subsubsection
-TKM nonce generation plugin (
-\family typewriter
-tkm_nonceg_t
-\family default
-)
+TKM nonce generation plugin
 \end_layout
 
 \begin_layout Subsubsection
-TKM Diffie Hellman plugin (
-\family typewriter
-tkm_diffie_hellman_t
-\family default
-)
+TKM Diffie Hellman plugin
 \end_layout
 
 \begin_layout Subsubsection
-TKM private/public key plugin (
-\family typewriter
-tkm_[private|public]_key_t
-\family default
-)
+TKM private/public key plugin
 \end_layout
 
 \begin_layout Subsubsection
-TKM keymat plugin (
-\family typewriter
-tkm_keymat_t
-\family default
-)
+TKM keymat plugin
 \end_layout
 
 \begin_layout Subsubsection
-TKM kernel IPsec interface plugin (
-\family typewriter
-tkm_kernel_ipsec_t
-\family default
-)
+TKM kernel IPsec interface plugin
 \end_layout
 
 \begin_layout Subsubsection
-TKM listener plugin (
-\family typewriter
-tkm_listener_t
-\family default
-)
+TKM listener plugin
 \end_layout
 
 \begin_layout Subsubsection
@@ -1061,7 +1330,18 @@ Future work
 \end_layout
 
 \begin_layout Standard
-Integration into platform such as Linux containers, SELinux, Qubes OS
+Integration into platform such as Linux containers, SELinux, Qubes OS or
+ an SK
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset index_print
+LatexCommand printindex
+type "idx"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
