@@ -1217,6 +1217,89 @@ Trusted component: TKM
 xfrm-proxy
 \end_layout
 
+\begin_layout Standard
+The xfrm-proxy component uses the xfrm-ada library (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:xfrm-ada"
+
+\end_inset
+
+) developed in this project to communicate with charon's EES service (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:EES-Service"
+
+\end_inset
+
+).
+ See figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:XFRM-proxy-architecture"
+
+\end_inset
+
+ for an overview of the proxy architecture.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/xfrm-proxy-arch.svg
+	width 60text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+XFRM proxy architecture
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:XFRM-proxy-architecture"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since the kernel stores critical IPsec policies and SA states, the charon
+ daemon is no longer allowed to communicate with the kernel XFRM subsystem.
+ 
+\end_layout
+
+\begin_layout Standard
+To make rekeying work in such a scenario, kernel XFRM acquire and expire
+ messages must be delivered to charon by other means.
+ The xfrm-proxy component subscribes to the kernel's XFRM subsystem acquire
+ and expire multicast groups to receive events and delivers them to charon
+ using the EES service.
+ Charon then normally starts create or rekeying jobs for the policy or SA
+ in question.
+\end_layout
+
 \begin_layout Subsection
 Additional components
 \end_layout
@@ -1229,6 +1312,13 @@ Certain functionality which was needed for the implementation of TKM has
 
 \begin_layout Subsubsection
 Anet
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Anet"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1255,10 +1345,37 @@ http://git.codelabs.ch/?p=anet.git
 
 \begin_layout Subsubsection
 xfrm-ada
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:xfrm-ada"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-This project is an Ada binding to Linux's XFRM kernel
+This project is an Ada binding to Linux's XFRM
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+XFRM
+\end_layout
+
+\end_inset
+
+ kernel
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+kernel
+\end_layout
+
+\end_inset
+
+
 \begin_inset Foot
 status open
 
@@ -1283,11 +1400,49 @@ http://www.kernel.org/
 \end_layout
 
 \begin_layout Standard
-The xfrm framework is used to implement the IPsec protocol suite in the
- Linux kernel.
- The XFRM states operate on the Security Association Database (SAD) and
- the XFRM policies operate on the Security Policy Database (SPD).
- Among other features, it provides ESP 
+The xfrm framework is used to implement the IPsec
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IPsec
+\end_layout
+
+\end_inset
+
+ protocol suite in the Linux kernel.
+ The XFRM states operate on the Security Association Database (SAD
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+SAD
+\end_layout
+
+\end_inset
+
+) and the XFRM policies operate on the Security Policy Database (SPD
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+SPD
+\end_layout
+
+\end_inset
+
+).
+ Among other features, it provides ESP
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ESP
+\end_layout
+
+\end_inset
+
+ 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "rfc4303"
