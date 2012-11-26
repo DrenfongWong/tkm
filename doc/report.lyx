@@ -451,8 +451,18 @@ Trusted Key Manager
  is a minimal TCB developed during this project which implements the identified
  security-critical functions of the IKEv2 protocol using the Ada programming
  language.
- It uses the Tkm-Rpc library to communicate with the strongSwan charon daemon.
- This library is also written in Ada.
+ It uses the Tkm-Rpc
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Tkm-Rpc
+\end_layout
+
+\end_inset
+
+ library to communicate with the strongSwan charon daemon.
+ The Tkm-Rpc library is also written in Ada.
 \end_layout
 
 \begin_layout Subsection
@@ -478,7 +488,7 @@ It is assumed that charon, which is considered an untrusted software component,
 \end_layout
 
 \begin_layout Subsection
-Abgrenzung
+Scope of this project
 \end_layout
 
 \begin_layout Standard
@@ -682,7 +692,7 @@ Analysis of strongSwan
 \begin_layout Standard
 This section describes the current operation of the strongSwan charon IKEv2
  daemon.
- A deep understanding of these mechanisms was a prerequisite to the separation
+ A deep understanding of these mechanisms is a prerequisite for the separation
  of the daemon in a trusted and untrusted part to achieve the requirements
  specified in section 
 \begin_inset CommandInset ref
@@ -715,6 +725,8 @@ key "rfc5996"
 \end_inset
 
 ), focusing on the security relevance of the transmitted data.
+ All communication using IKE consists of a request / response pair.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -733,7 +745,7 @@ reference "tab:IKEv2-payloads"
 \begin_inset Float table
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -1138,9 +1150,21 @@ name "tab:IKEv2-payloads"
 \end_layout
 
 \begin_layout Standard
-Every IKE message contains a Message ID as part of its fixed header (HDR).
- This Message ID is used to match up requests and responses, and to identify
- retransmissions of messages 
+Every IKE message contains a Message 
+\begin_inset Formula $ID$
+\end_inset
+
+ as part of its fixed header (
+\begin_inset Formula $HDR$
+\end_inset
+
+).
+ This Message 
+\begin_inset Formula $ID$
+\end_inset
+
+ is used to match up requests and responses, and to identify retransmissions
+ of messages 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "rfc5996"
@@ -1150,6 +1174,19 @@ key "rfc5996"
 .
  The fixed header does not contain information identified as critical, therefore
  the header is omitted from the discussion in the following sections.
+ 
+\end_layout
+
+\begin_layout Standard
+A value is considered 'critical' if the untrusted part may not know it at
+ all (i.e.
+ is not allowed to be present in the untrusted parts memory region).
+ Other payloads (such as 
+\begin_inset Formula $AUTH$
+\end_inset
+
+) are calculated from critical values inside the TKM and then handed to
+ the untrusted part.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1174,6 +1211,18 @@ IKE_SA_INIT
 \end_layout
 
 \begin_layout Standard
+The first pair of messages (IKE_SA_INIT) negotiate cryptographic algorithms,
+ exchange nonces, and do a Diffie-Hellman exchange 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc5996"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
 \begin{flalign}
 Initiator\rightarrow Responder\; & HDR,SAi1,KEi,Ni
@@ -1185,28 +1234,46 @@ Initiator\rightarrow Responder\; & HDR,SAi1,KEi,Ni
 \end_layout
 
 \begin_layout Standard
-Critical: 
-\begin_inset Formula $Ni$
-\end_inset
-
- and indirectly 
-\begin_inset Formula $KEi$
-\end_inset
-
- because DH must be done by TKM.
- The chosen cryptographic algorithms 
+The 
 \begin_inset Formula $SAi1$
 \end_inset
 
- are not critical, but the TKM must enforce the allowed policy.
+ payload states the cryptographic algorithms the initiator supports for
+ the IKE SA.
+ This payload is not considered critical since the TKM only supports a subset
+ of cryptographic algorithms which are strong enough and believed to be
+ secure.
+ A misconfiguration of allowed proposals would only result in a not working
+ configuration.
 \end_layout
 
 \begin_layout Standard
-Created by TKM: Ni, KEi
+Child keys are derived from the SKEYSEED value resulting from the Diffie-Hellman
+ exchange after the IKE_SA_INIT messages.
+ Therefore the TKM MUST implement the DH protocol and provides the public
+ 
+\begin_inset Formula $KE$
+\end_inset
+
+ payload to the untrusted part.
 \end_layout
 
 \begin_layout Standard
-Verified by TKM: SAi1
+The nonce 
+\begin_inset Formula $Ni$
+\end_inset
+
+ is used as input to cryptographic functions and provides freshness to the
+ key derivation technique used to obtain keys for the child SA, and to ensure
+ creation of strong pseudorandom bits from the Diffie-Hellman key.
+ Therefore, the nonce 
+\begin_inset Formula $Ni$
+\end_inset
+
+ used in the initial exchange MUST be randomly chosen, MUST be at least
+ 128 bits in size, and MUST be at least half the key size of the negotiated
+ pseudorandom function (PRF).
+ The TKM MUST enforce these constraints.
 \end_layout
 
 \begin_layout Standard
@@ -1221,8 +1288,71 @@ Initiator\leftarrow Responder\; & HDR,SAr1,KEr,Nr,[CERTREQ]
 \end_layout
 
 \begin_layout Standard
-No control over foreign values, but enforcement of chosen algorithms before
- deriving IKE keys.
+Values created by the responder can not be controlled by the TKM, these
+ values are taken as is.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+Created by TKM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+KEi, Ni
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Critical IKE_SA_INIT payloads
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -1244,6 +1374,46 @@ IKE_AUTH
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+After the completion of the IKE_SA_INIT exchange, each party can generate
+ SKEYSEED, from which all keys are derived for that IKE SA.
+ The messages that follow are encrypted and integrity protected in their
+ entirety, with the exception of the message headers.
+ The keys used for the encryption and integrity protection are derived from
+ SKEYSEED and are known as SK_e (encryption) and SK_a (authentication, a.k.a.
+ integrity protection).
+ A separate SK_e and SK_a is computed for each direction.
+ The notation SK { ...
+ } indicates that these payloads are encrypted and integrity protected using
+ that direction's SK_e and SK_a (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc5996"
+
+\end_inset
+
+, section 1.2).
+\end_layout
+
+\begin_layout Standard
+The DH protocol is implemented in the TKM so the SK_e and SK_a keys must
+ be provided to the untrusted part.
+ The generated IKE keys 
+\begin_inset Formula $SK$
+\end_inset
+
+ are not considered critical because an attacker taking over the untrusted
+ part is already able to extract all information protected by these keys
+ (see the threat model section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Threat-model"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
@@ -1296,11 +1466,50 @@ end{flalign}
 \end_layout
 
 \begin_layout Standard
-SK created by TKM but handed to untrusted IKE.
- Not considered critical, see reasoning TODO.
- AUTH created by TKM but handed to IKE, reasoning: use strong enough PRF.
- Enforce SAi2 before deriving child keys, check delayed.
- Same for TS.
+The initiator asserts its identity with the 
+\begin_inset Formula $IDi$
+\end_inset
+
+ payload.
+ This value is not critical so it's directly configured using the standard
+ strongSwan configuration mechanism.
+ Nevertheless, the TKM must enforce correct identities to assure that only
+ trusted identities are allowed.
+ This is done during the authentication process.
+\end_layout
+
+\begin_layout Standard
+The Authentication payload (
+\begin_inset Formula $AUTH$
+\end_inset
+
+) contains data used for authentication purposes and is created by the TKM
+ because it results from critical values.
+ Only certificate-based authentication is supported (no PSK) and only the
+ TKM MUST know the private key used to generate the AUTH signature.
+ The AUTH payload is then handed to the untrusted part because the TKM assured
+ that the PRF used to generate AUTH (see TODO) is strong enough.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $SAi2$
+\end_inset
+
+ is not considered critical and can be configured directly in the untrusted
+ part.
+ The TKM enforces the correct algorithms before deriving child keys.
+ The same is true for the 
+\begin_inset Formula $TS$
+\end_inset
+
+ payloads.
+ TODO CERT.
+ The 
+\begin_inset Formula $CERTREQ$
+\end_inset
+
+ payload can be used but makes no difference because the TKM currently trusts
+ only one CA.
 \end_layout
 
 \begin_layout Standard
@@ -1353,8 +1562,90 @@ end{flalign}
 \end_layout
 
 \begin_layout Standard
-Perform cert based AUTH, private keys for AUTH only known to TKM, after
- AUTH: enforce policy?
+Payloads created by the responder can obviously not be controlled.
+ The TKM enforces the selected algorithms before deriving child keys by
+ consulting the policy.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+Created by TKM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SK, AUTH
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+Enforced by TKM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ID, CERT, CERTREQ, SAi, TS
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Critical IKE_AUTH payloads
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -1370,7 +1661,7 @@ name "sub:CREATE_CHILD_SA"
 status open
 
 \begin_layout Plain Layout
-CREATE_CHID_SA
+CREATE_CHILD_SA
 \end_layout
 
 \end_inset
@@ -1381,9 +1672,173 @@ CREATE_CHID_SA
 \begin_layout Standard
 \begin_inset Formula 
 \begin{flalign}
-Initiator\rightarrow Responder\; & HDR,SK\left\{ SA,Ni,[KEi],TSi,TSr\right\} \\
+Initiator\rightarrow Responder\; & HDR,SK\left\{ SA,Ni,[KEi],TSi,TSr\right\} 
+\end{flalign}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Formula $SK$
+\end_inset
+
+ used to protect the CREATE_CHILD_SA exchange is the same as described in
+ section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:IKE_AUTH"
+
+\end_inset
+
+.
+ The 
+\begin_inset Formula $SK$
+\end_inset
+
+ is created by the TKM but handed to the untrusted part to protect the IKE
+ exchanges from outside attackers.
+ Attackers which have taken over the untrusted part are already able to
+ extract all information protected by these keys.
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Formula $SA$
+\end_inset
+
+ is again not considered critical and can be configured directly in the
+ untrusted part.
+ The TKM enforces the correct algorithms before deriving new child keys.
+ The same is true for the 
+\begin_inset Formula $TS$
+\end_inset
+
+ payloads.
+\end_layout
+
+\begin_layout Standard
+Depending on the PRF configuration of the connection, the CREATE_CHILD_SA
+ request MAY optionally contain a 
+\begin_inset Formula $KE$
+\end_inset
+
+ payload for an additional Diffie-Hellman exchange to enable stronger guarantees
+ of forward secrecy for the child SA.
+ The keying material for the child SA is a function of SK_d established
+ during the establishment of the IKE SA, the nonces exchanged during the
+ CREATE_CHILD_SA exchange, and the Diffie-Hellman value (if KE payloads
+ are included in the CREATE_CHILD_SA exchange) (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc5996"
+
+\end_inset
+
+, section 1.3).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{flalign}
 Initiator\leftarrow Responder\; & HDR,SK\left\{ SA,Nr,[KEr],TSi,TSr\right\} 
 \end{flalign}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Payloads created by the responder can not be controlled but the algorithms
+ selected from 
+\begin_inset Formula $SA$
+\end_inset
+
+ and the traffic selectors selected from 
+\begin_inset Formula $TS$
+\end_inset
+
+ MUST be checked by the TKM.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+Created by TKM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SK, Ni, [KEi]
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+Enforced by TKM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SAi, TS
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Critical CREATE_CHILD_SA payloads
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
