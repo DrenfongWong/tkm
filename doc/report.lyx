@@ -1193,7 +1193,7 @@ A value is considered 'critical' if the untrusted part may not know it at
 IKE_SA_INIT
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:IKE_SA_INIT"
+name "sub:proto-IKE_SA_INIT"
 
 \end_inset
 
@@ -1259,7 +1259,17 @@ Child keys are derived from the SKEYSEED value resulting from the Diffie-Hellman
 \end_layout
 
 \begin_layout Standard
-The nonce 
+The nonce
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Nonce
+\end_layout
+
+\end_inset
+
+ 
 \begin_inset Formula $Ni$
 \end_inset
 
@@ -1359,7 +1369,7 @@ Critical IKE_SA_INIT payloads
 IKE_AUTH
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:IKE_AUTH"
+name "sub:proto-IKE_AUTH"
 
 \end_inset
 
@@ -1652,7 +1662,7 @@ Critical IKE_AUTH payloads
 CREATE_CHILD_SA
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:CREATE_CHILD_SA"
+name "sub:proto-CREATE_CHILD_SA"
 
 \end_inset
 
@@ -1689,7 +1699,7 @@ The
  section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:IKE_AUTH"
+reference "sub:proto-IKE_AUTH"
 
 \end_inset
 
@@ -1866,19 +1876,187 @@ reference "sub:IKEv2-protocol-analysis"
 \end_inset
 
 .
+ Graphs are used to illustrate the code flow which implement a certain functiona
+lity and possibilities to interfere with the current design are explored.
+ 
 \end_layout
 
 \begin_layout Subsubsection
 IKE_SA_INIT
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:flow-IKE_SA_INIT"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-SA-establishment"
+
+\end_inset
+
+ shows the code involved in the IKE SA establishment.
+ The exchange involves an initiator and a responder which are displayed
+ in separate blocks in the graph.
+ During IKE_SA_INIT two messages are exchanged which are indicated between
+ the initiator and responder code blocks.
+ Round labels, e.g.
+ the label 
+\emph on
+(CD
+\emph default
+) are references to subgraphs which illustrate a continuative process in
+ detail.
+\end_layout
+
+\begin_layout Standard
+IKE exchanges are implemented as task entities in charon and life in the
+ 
+\family typewriter
+libcharon/sa/ikev2/tasks
+\family default
+ directory.
+ The IKE SA establishment process is implemented in the 
+\family typewriter
+ike_init.c
+\family default
+ file in this directory.
+ The tasks are implemented as FSM
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Finite-state machine
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSM
+\end_layout
+
+\end_inset
+
+ which change state depending on internal or external events like received
+ messages.
+ The 
+\family typewriter
+NEED_MORE
+\family default
+ transition indicates that the state machine is expecting more data to proceed.
+ This state separates the sending path from the receiving path inside the
+ 
+\family typewriter
+build_i/process_i
+\family default
+ and 
+\family typewriter
+process_r/build_r
+\family default
+ blocks of figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-SA-establishment"
+
+\end_inset
+
+.
+ The tasks access required functionality by using requesting plugins from
+ different factories.
+ Examples of such plugins are RNGs
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Random number generator
+\end_layout
+
+\end_inset
+
+ or plugins which perform the DH exchange.
+\end_layout
+
+\begin_layout Standard
+The initiator creates the payloads of the initial message in the 
+\family typewriter
+build_i
+\family default
+ code block during which the initial steps of the Diffie-Hellman protocol
+ are performed.
+ The task calls the 
+\family typewriter
+create_dh
+\family default
+ function of the 
+\family typewriter
+keymat
+\family default
+ object which internally requests a new DH plugin instance from the crypto
+ factory and returns this instance to the calling task (
+\emph on
+CD
+\emph default
+).
+ A 
+\family typewriter
+keymat
+\family default
+ object stores the complete IKE SA key material and is used to derive IKE
+ and child SA keys.
+ A 
+\family typewriter
+keymat
+\family default
+ object is always associated with an IKE SA inside the IKE SA manager.
+\end_layout
+
+\begin_layout Standard
+After constructing all payloads, the initiator sends the IKE_SA_INIT message
+ to the peer and waits for a response (error handling if no peer answers
+ is omitted in this discussion).
+ The responder processes the request in the 
+\family typewriter
+process_r
+\family default
+ code block and performs the DH protocol on his side.
+ Since it already received the DH public value from the initiator, it is
+ able to complete the DH exchange without waiting for further data.
+ It then uses the SKEYSEED from the DH exchange to derive the IKE SA keying
+ material (
+\emph on
+DK
+\emph default
+) and creates an IKE_SA_INIT response containing its DH public value to
+ allow the initiator to complete the initial exchange on his side.
+\end_layout
+
+\begin_layout Standard
+The initiator then also derives IKE SA keying material used to protect the
+ following IKE_AUTH or CHILD_CREATE_SA exchanges (
+\emph on
+DK
+\emph default
+).
+ This completes phase 1.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename images/ike-sa-init.svg
 	width 100text%
@@ -1890,6 +2068,13 @@ status open
 
 \begin_layout Plain Layout
 IKE SA establishment
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:IKE-SA-establishment"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -1908,6 +2093,13 @@ IKE SA establishment
 
 \begin_layout Subsubsection
 IKE_AUTH
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:flow-IKE_AUTH"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1917,6 +2109,7 @@ sideways false
 status collapsed
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename images/ike-auth.svg
 	width 100text%
@@ -1931,14 +2124,17 @@ status collapsed
 
 \begin_layout Plain Layout
 IKE SA authentication
-\end_layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:IKE-SA-authentication"
 
 \end_inset
 
 
 \end_layout
 
-\begin_layout Plain Layout
+\end_inset
+
 
 \end_layout
 
@@ -1948,11 +2144,105 @@ IKE SA authentication
 \end_layout
 
 \begin_layout Standard
-Assumption: AUTH octets not critical if PRF strong enough
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-SA-authentication"
+
+\end_inset
+
+ shows the code involved during the authentication of an IKE SA.
+ This exchange is more complex than the IKE_SA_INIT exchange, that's the
+ reason why the graph contains seven subgraphs, including the one depicted
+ in the separate figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-Certificate-trustchain"
+
+\end_inset
+
+ which illustrates the trustchain verification code flow.
+ The subgraphs cross-reference themselves which is again indicated by round
+ labels.
 \end_layout
 
-\begin_layout Subsubsection
-CHILD_CREATE_SA
+\begin_layout Standard
+The initiator begins the exchange by building it's own AUTH payload used
+ to prove his identity to the responder.
+ This is done by creating a so called 'authenticator' (see the 
+\emph on
+CB
+\emph default
+ label) which is again implemented as a plugin.
+ After that, the authenticator's 
+\family typewriter
+build
+\family default
+ function is called which is illustrated by the 
+\emph on
+BA
+\emph default
+-subgraph.
+ To construct the signed AUTH octets the authenticator plugin requests a
+ private key (
+\emph on
+GP
+\emph default
+) matching a specific certificate configured for this connection.
+ The returned private key is used to sign the AUTH octets requested from
+ the keymat object (
+\emph on
+A8
+\emph default
+) of the associated IKE SA and is again implemented in a plugin.
+ It then sends a message containing the constructed payloads to the responder
+ and waits for a response message (error handling omitted).
+\end_layout
+
+\begin_layout Standard
+The responder creates a 'verifier' plugin to check the AUTH payload extracted
+ from the initiator's message.
+ The creation of a verifier plugin is depicted in the 
+\emph on
+CV
+\emph default
+ graph.
+ It then processes the AUTH octets of the initiator by calling the verifier's
+ 
+\family typewriter
+process
+\family default
+ function (
+\emph on
+PA
+\emph default
+).
+ The authenticator requests the AUTH octets from the IKE SA keymat (
+\emph on
+A8
+\emph default
+) and retrieves the associated public key needed to verfiy the signature
+ from the credential manager.
+ To use the public key, it's chain of trust must be verified.
+ 
+\end_layout
+
+\begin_layout Standard
+The trustchain verification process is shown in (
+\emph on
+PU
+\emph default
+) of figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-Certificate-trustchain"
+
+\end_inset
+
+.
+ The credential manager iterates over all certificates linked with the public
+ key until it reaches a trusted CA certificate.
+ TODO: explain more
 \end_layout
 
 \begin_layout Standard
@@ -1962,6 +2252,123 @@ sideways false
 status collapsed
 
 \begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/ike-auth-pu.svg
+	width 100text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+IKE Certificate trustchain verification
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:IKE-Certificate-trustchain"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To create the response message, the responder performs the same steps as
+ the initiator to create it's AUTH payload (
+\emph on
+CB
+\emph default
+, 
+\emph on
+BA
+\emph default
+).
+ The initiator verifies the AUTH payload of the responder using the same
+ steps as described for the responder (
+\emph on
+CV
+\emph default
+, 
+\emph on
+PA
+\emph default
+).
+\end_layout
+
+\begin_layout Subsubsection
+CHILD_CREATE_SA
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:flow-CHILD_CREATE_SA"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The CHILD_CREATE_SA exchange is implemented as task in the 
+\family typewriter
+child_create.c
+\family default
+ file.
+ The initiator starts by collecting the traffic selectors and proposals
+ from the configuration (not visible in the graph) and allocates a SPI by
+ calling the 
+\family typewriter
+allocate_spi
+\family default
+ function.
+ This function dispatches into the registered kernel plugin to acquire a
+ free SPI from the OS kernel.
+ If the connection has PFS
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Perfect forward secrecy
+\end_layout
+
+\end_inset
+
+ enabled, the initiator starts a new DH exchange and builds all required
+ payloads.
+ After sending the message, the task changes it's state to NEED_MORE and
+ waits for an answer.
+\end_layout
+
+\begin_layout Standard
+The responder processes the received CHILD_CREATE_SA message and extracts
+ the contained payloads.
+ It conducts the DH exchange and then directly installs the derived child
+ SA keying material in the kernel.
+ The complete process of deriving keys for the new child SA is depicted
+ in 
+\emph on
+(SI
+\emph default
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename images/child-create-sa.svg
 	width 100text%
@@ -1992,8 +2399,46 @@ Child SA establishment
 
 \end_layout
 
+\begin_layout Standard
+First the child SA data structure associated with the task is set into the
+ CHILD_INSTALLING state.
+ The derive_child_keys function of the keymat is called to derive keying
+ material for the child SA (
+\emph on
+DC
+\emph default
+).
+ The kernel plugin's add_policy (
+\emph on
+IP
+\emph default
+) and add_sa (
+\emph on
+IS
+\emph default
+) functions are used to install the new policy and state into the kernel's
+ SPD and SAD databases.
+ If no errors occured, the state of the child SA is set to CHILD_INSTALLED
+ and it it attached to the associated IKE SA object.
+\end_layout
+
+\begin_layout Standard
+The responder then builds the payloads of the response message and sends
+ it back to the initiator.
+ The initiator processes the message and after extracting the payloads,
+ it calls the select_and_install function to derive child keying material
+ and install the new policy and state in the kernel.
+\end_layout
+
 \begin_layout Subsubsection
-Source of randmoness
+Source of randomness
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:flow-Source-of-randomness"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2003,6 +2448,29 @@ Randomness is provided by requesting a random number generator plugin instance
 rng_t
 \family default
 ) from the crypto factory of libstrongswan.
+ This process is shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Nonce-generation"
+
+\end_inset
+
+ using the example of creating new nonces.
+ As explained in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:proto-IKE_SA_INIT"
+
+\end_inset
+
+, nonces are used to guarantee freshness in the key derivation process and
+ must be created using a good random source (TODO: explain good?).
+\end_layout
+
+\begin_layout Standard
+Depending on the requested quality (RNG_WEAK or RNG_STRONG) a suitable RNG
+ plugin providing the needed quality is created and returned to the caller
+ by the crypto factory.
 \end_layout
 
 \begin_layout Standard
@@ -2028,6 +2496,13 @@ status collapsed
 
 \begin_layout Plain Layout
 Nonce generation
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Nonce-generation"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -2046,6 +2521,79 @@ Nonce generation
 
 \begin_layout Subsubsection
 Payload encryption
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:flow-Payload-encryption"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-SA-payload-enc"
+
+\end_inset
+
+ schematically shows the code involved in the encryption of payloads in
+ the IKE message exchanges.
+ If a new connection is initiated by calling the initiate function of the
+ IKE SA, all tasks (see previous sections 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:flow-IKE_SA_INIT"
+
+\end_inset
+
+ to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:flow-CHILD_CREATE_SA"
+
+\end_inset
+
+) required to establish an IKE SA and the associated child SA are created
+ and run by the task manager.
+ The tasks then callback to the IKE SA 
+\family typewriter
+generate_message
+\family default
+ function to create the message sent to the peer in their exchange.
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+generate_message
+\family default
+ function calls the 
+\family typewriter
+generate
+\family default
+ function of the message which in turn checks if the message is required
+ to be encrypted.
+ If encryption is enabled, an encrypted payload is created by accessing
+ the key material of the IKE SA's 
+\family typewriter
+keymat
+\family default
+ object.
+ The actual encryption is done by a crypter plugin which in turn uses an
+ RNG plugin to retrieve random bytes needed for the IV
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Initialization vector
+\end_layout
+
+\end_inset
+
+.
+ TODO: explain AEAD
 \end_layout
 
 \begin_layout Standard
@@ -2055,6 +2603,7 @@ sideways false
 status collapsed
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename images/payload-encryption.svg
 	width 100text%
@@ -2069,6 +2618,13 @@ status collapsed
 
 \begin_layout Plain Layout
 IKE SA payload encryption
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:IKE-SA-payload-enc"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -2087,6 +2643,57 @@ IKE SA payload encryption
 
 \begin_layout Subsubsection
 Payload decryption
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:flow-Payload-decryption"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-SA-payload-dec"
+
+\end_inset
+
+ shows the process of payload decryption which reverses the process of payload
+ encryption explained in the previous chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:flow-Payload-encryption"
+
+\end_inset
+
+.
+ An incoming message is processed by calling the task managers 
+\family typewriter
+process_message
+\family default
+ function.
+ This function parses the message by calling the message 
+\family typewriter
+parse_body
+\family default
+ function with the keymat object from the IKE SA as function argument.
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+parse_body
+\family default
+ function calls 
+\family typewriter
+decrypt_payloads
+\family default
+ which determines if the payloads are encrypted or not.
+ If they are, it decrypts them by using an encryption payload object which
+ uses the keymat's keying material to decrypt and verify the payloads.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2096,6 +2703,7 @@ sideways false
 status collapsed
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename images/payload-decryption.svg
 	width 100text%
@@ -2110,6 +2718,13 @@ status collapsed
 
 \begin_layout Plain Layout
 IKE SA payload decryption
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:IKE-SA-payload-dec"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -2257,6 +2872,7 @@ sideways false
 status collapsed
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename images/design-overview.svg
 	width 100text%
@@ -2271,14 +2887,14 @@ status collapsed
 
 \begin_layout Plain Layout
 Split of IKE into trusted and untrusted parts
-\end_layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Split-of-IKE"
 
 \end_inset
 
 
-\begin_inset CommandInset label
-LatexCommand label
-name "fig-IKE-split"
+\end_layout
 
 \end_inset
 
