@@ -17,7 +17,7 @@
     <node id="n0">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="396.02432430640783" width="595.0" x="45.297968724279144" y="0.9505448111915484"/>
+          <y:Geometry height="317.02432430640783" width="595.0" x="45.297968724279144" y="0.9505448111915484"/>
           <y:Fill color="#F0EEEA" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="internal" modelPosition="tl" textColor="#000000" visible="true" width="317.02197265625" x="0.0" y="0.0">libstrongswan/credentials/credential_manager.c</y:NodeLabel>
@@ -83,7 +83,7 @@
     <node id="n6">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="65.66886142780004" width="280.0" x="350.87665711934096" y="107.46939758064855"/>
+          <y:Geometry height="65.66886142780004" width="280.0" x="350.87665711934096" y="24.444294811193686"/>
           <y:Fill color="#C0C0C0" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="102.67431640625" x="88.662841796875" y="0.0">get_issuer_cert</y:NodeLabel>
@@ -94,7 +94,7 @@
     <node id="n7">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="260.0" x="360.87665711934096" y="132.16960237708395"/>
+          <y:Geometry height="30.0" width="260.0" x="360.87665711934096" y="49.144499607629086"/>
           <y:Fill color="#EEEDED" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="161.47900390625" x="49.260498046875" y="5.43359375">this-&gt;cache-&gt;issued_by</y:NodeLabel>
@@ -105,7 +105,7 @@
     <node id="n8">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="102.03693054750715" width="300.0" x="650.876657119341" y="80.57877110136201"/>
+          <y:Geometry height="98.87152536452186" width="300.0" x="660.876657119341" y="0.9505448111915484"/>
           <y:Fill color="#F0EEEA" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="internal" modelPosition="tl" textColor="#000000" visible="true" width="288.43212890625" x="0.0" y="0.0">libstrongswan/credentials/sets/cert_cache.c</y:NodeLabel>
@@ -116,7 +116,7 @@
     <node id="n9">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="65.66886142780004" width="280.0" x="660.876657119341" y="105.17583544891613"/>
+          <y:Geometry height="65.66886142780004" width="280.0" x="670.876657119341" y="22.382203975760376"/>
           <y:Fill color="#C0C0C0" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="68.09228515625" x="105.953857421875" y="0.0">issued_by</y:NodeLabel>
@@ -127,7 +127,7 @@
     <node id="n10">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="260.0" x="670.876657119341" y="132.16960237708395"/>
+          <y:Geometry height="30.0" width="260.0" x="680.876657119341" y="49.37597090392819"/>
           <y:Fill color="#EEEDED" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="179.677734375" x="40.1611328125" y="5.43359375">subject-&gt;issued_by(issuer)</y:NodeLabel>
@@ -138,7 +138,7 @@
     <node id="n11">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="148.3252228556039" width="300.0" x="650.876657119341" y="200.84469687671617"/>
+          <y:Geometry height="148.3252228556039" width="300.0" x="660.876657119341" y="118.05106540356041"/>
           <y:Fill color="#F0EEEA" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="internal" modelPosition="tl" textColor="#000000" visible="true" width="263.24462890625" x="0.0" y="0.0">libstrongswan/plugins/x509/x509_cert.c</y:NodeLabel>
@@ -149,7 +149,7 @@
     <node id="n12">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="114.21568044960895" width="280.0" x="660.876657119341" y="226.33429039509838"/>
+          <y:Geometry height="114.21568044960895" width="280.0" x="670.876657119341" y="143.54065892194262"/>
           <y:Fill color="#C0C0C0" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="68.09228515625" x="105.953857421875" y="0.0">issued_by</y:NodeLabel>
@@ -160,7 +160,7 @@
     <node id="n13">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="260.0" x="670.876657119341" y="252.4355281524381"/>
+          <y:Geometry height="30.0" width="260.0" x="680.876657119341" y="169.64189667928235"/>
           <y:Fill color="#EEEDED" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="197.38134765625" x="31.309326171875" y="5.43359375">key = issuer-&gt;get_public_key</y:NodeLabel>
@@ -171,7 +171,7 @@
     <node id="n14">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="260.0" x="670.876657119341" y="304.12584527804165"/>
+          <y:Geometry height="30.0" width="260.0" x="680.876657119341" y="221.3322138048859"/>
           <y:Fill color="#EEEDED" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="130.013671875" x="64.9931640625" y="5.43359375">valid = key-&gt;verify</y:NodeLabel>
@@ -193,7 +193,7 @@
     <node id="n16">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="148.3252228556039" width="280.0" x="55.16666666666606" y="239.4450823236782"/>
+          <y:Geometry height="148.3252228556039" width="280.0" x="350.87665711934096" y="162.16960237708395"/>
           <y:Fill color="#C0C0C0" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.1328125" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="114.1572265625" x="82.92138671875" y="0.0">check_certificate</y:NodeLabel>
@@ -206,7 +206,7 @@
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="30.0" width="260.0" x="65.16666666666606" y="262.6457224141957"/>
+          <y:Geometry height="30.0" width="260.0" x="360.87665711934096" y="185.37024246760143"/>
           <y:Fill color="#FFFFFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="93.080078125" x="83.4599609375" y="6.015625">validity checks</y:NodeLabel>
@@ -218,7 +218,7 @@
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="30.0" width="260.0" x="65.16666666666606" y="302.7423564908695"/>
+          <y:Geometry height="30.0" width="260.0" x="360.87665711934096" y="225.46687654427524"/>
           <y:Fill color="#FFFFFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="109.6328125" x="75.18359375" y="6.015625">check constraints</y:NodeLabel>
@@ -230,7 +230,7 @@
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="30.0" width="260.0" x="65.16666666666606" y="342.8389905675433"/>
+          <y:Geometry height="30.0" width="260.0" x="360.87665711934096" y="265.56351062094905"/>
           <y:Fill color="#FFFFFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="166.09375" x="46.953125" y="6.015625">check crl, ocsp (if enabled)</y:NodeLabel>
@@ -257,7 +257,7 @@
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e2" source="n7" target="n10">
+    <edge id="e2" source="n13" target="n14">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -267,17 +267,7 @@
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e3" source="n13" target="n14">
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="e4" source="n10" target="n11">
+    <edge id="e3" source="n10" target="n11">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="-74.16261142780195"/>
@@ -287,17 +277,19 @@
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e5" source="n5" target="n6">
+    <edge id="e4" source="n5" target="n6">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="-140.0217474897114" ty="6.865774082535381"/>
+          <y:Path sx="0.0" sy="0.0" tx="-5.376657119340962" ty="-13.278725525093705">
+            <y:Point x="485.5" y="147.16960237708395"/>
+          </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e6" source="n5" target="n15">
+    <edge id="e5" source="n5" target="n15">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -307,10 +299,21 @@
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e7" source="n15" target="n16">
+    <edge id="e6" source="n15" target="n16">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:Path sx="0.0" sy="0.0" tx="1.6233428806590382" ty="-41.88713148120769"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e7" source="n7" target="n8">
+      <data key="d9"/>
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="3.2020312757208558" ty="13.758192114176609"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
           <y:BendStyle smoothed="false"/>

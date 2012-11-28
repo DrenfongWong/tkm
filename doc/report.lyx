@@ -167,12 +167,94 @@ LatexCommand tableofcontents
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+lstlistoflistings
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage clearpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Introduction
 \end_layout
 
+\begin_layout Standard
+This paper is organized as follows: The following overview section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Overview"
+
+\end_inset
+
+ provides an introduction into the concept and terms needed to understand
+ the scope of this work.
+ Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Related-work"
+
+\end_inset
+
+ describes existing projects in the same field and section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Threat-model"
+
+\end_inset
+
+ explains the threat model the separation of the IKEv2 protocol is trying
+ to solve.
+ The section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Scope-of-this-doc"
+
+\end_inset
+
+ defines the scope of this work.
+\end_layout
+
+\begin_layout Standard
+The chapter/section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Requirements"
+
+\end_inset
+
+ evaluates the ...
+ TODO
+\end_layout
+
+\begin_layout Standard
+Maybe omit the subsection and write all here as text?
+\end_layout
+
 \begin_layout Subsection
 Overview
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Overview"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -182,6 +264,13 @@ This section provides an overview about the terminology used in this project
 
 \begin_layout Subsubsection
 Trusted Computing Base
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Trusted-Computing-Base"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -200,17 +289,78 @@ TCB
 .
  To be trusted, this code must be as minimal as possible to allow (formal)
  verification of code correctness.
- In order to isolate code in a TCB, critical sections must be identified
- and the system must be separated into a critical (TCB) and non-critical
- (untrusted) part.
+ In order to isolate code in a TCB, critical sections (of existing code
+ or protocol) must be identified and the system must be separated into a
+ critical (TCB) and non-critical (untrusted) part.
  Communication mechanisms between the sections must be established, which
  itself must be robust and well defined.
+ If an attacker is able to compromise the untrusted-part of the system,
+ the security and integrity functions guaranteed by the TCB must still be
+ in place.
 \end_layout
 
 \begin_layout Standard
-If an attacker is able to compromise the untrusted-part of the system, the
- security and integrity functions guaranteed by the TCB must still be in
- place.
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Trusted-Computing-Base"
+
+\end_inset
+
+ depicts an example system involving a TCB.
+ Components colored in red specify trusted components inside the TCB.
+ The TCB normally consists of multiple such components which implement different
+, separated functionality.
+ One or more untrusted components colored in black exchange data with the
+ TCB over a well-defined interface.
+ This coloring scheme is used throughout this document to label untrusted
+ and untrusted components.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/trusted-untrusted.svg
+	width 50text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Trusted Computing Base
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Trusted-Computing-Base"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -221,6 +371,13 @@ status open
 \begin_layout Plain Layout
 strongSwan
 \end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:strongSwan"
 
 \end_inset
 
@@ -258,7 +415,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Flex URL
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -294,6 +451,13 @@ reference "sub:Trusted-Key-Manager"
 
 \begin_layout Subsubsection
 Ada
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Ada"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -451,22 +615,36 @@ Trusted Key Manager
  is a minimal TCB developed during this project which implements the identified
  security-critical functions of the IKEv2 protocol using the Ada programming
  language.
- It uses the Tkm-Rpc
+ It uses the tkm-rpc
 \begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
-Tkm-Rpc
+tkm-rpc
 \end_layout
 
 \end_inset
 
  library to communicate with the strongSwan charon daemon.
- The Tkm-Rpc library is also written in Ada.
+ The tkm-rpc library is also written in Ada, see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:tkm-rpc-library"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
 Related work
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Related-work"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -481,14 +659,26 @@ name "sub:Threat-model"
 \end_layout
 
 \begin_layout Standard
-It is assumed that charon, which is considered an untrusted software component,
- is under complete control of the attacker.
+It is assumed that the stringSwan charon IKEv2 daemon, which is considered
+ an untrusted software component in the designed architecture, is under
+ complete control of the attacker.
  This means the attacker has complete access to all data available to the
  IKEv2 daemon and can execute arbitrary code with the privileges of charon.
+ As a result of this assumption, charon is not allowed to have access to
+ any data classified as critical.
+ Also intermediate values which are needed to create critical values MUST
+ be protected from access by untrusted components.
 \end_layout
 
 \begin_layout Subsection
 Scope of this project
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Scope-of-this-doc"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -745,7 +935,7 @@ reference "tab:IKEv2-payloads"
 \begin_inset Float table
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -1306,7 +1496,7 @@ Values created by the responder can not be controlled by the TKM, these
 \begin_inset Float table
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -1915,6 +2105,44 @@ reference "fig:IKE-SA-establishment"
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/ike-sa-init.svg
+	width 100text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+IKE SA establishment
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:IKE-SA-establishment"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 IKE exchanges are implemented as task entities in charon and life in the
  
 \family typewriter
@@ -2049,48 +2277,6 @@ DK
  This completes phase 1.
 \end_layout
 
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/ike-sa-init.svg
-	width 100text%
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-IKE SA establishment
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:IKE-SA-establishment"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Subsubsection
 IKE_AUTH
 \begin_inset CommandInset label
@@ -2106,7 +2292,7 @@ name "sub:flow-IKE_AUTH"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -2182,7 +2368,14 @@ build
 \emph on
 BA
 \emph default
--subgraph.
+-subgraph shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-public-key-auth"
+
+\end_inset
+
+.
  To construct the signed AUTH octets the authenticator plugin requests a
  private key (
 \emph on
@@ -2195,7 +2388,56 @@ GP
 A8
 \emph default
 ) of the associated IKE SA and is again implemented in a plugin.
- It then sends a message containing the constructed payloads to the responder
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/ike-auth-ba-pa.svg
+	width 90text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+IKE public key authenticators
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:IKE-public-key-auth"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It then sends a message containing the constructed payloads to the responder
  and waits for a response message (error handling omitted).
 \end_layout
 
@@ -2249,7 +2491,7 @@ reference "fig:IKE-Certificate-trustchain"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -2304,6 +2546,19 @@ CV
 PA
 \emph default
 ).
+\end_layout
+
+\begin_layout Standard
+After the IKE SA is established, both peers normally install the first child
+ SA.
+ This step is omitted and explained in detail in the next section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:flow-CHILD_CREATE_SA"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2365,7 +2620,7 @@ The responder processes the received CHILD_CREATE_SA message and extracts
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -2383,6 +2638,13 @@ status collapsed
 
 \begin_layout Plain Layout
 Child SA establishment
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Child-SA-establishment"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -2474,17 +2736,17 @@ Depending on the requested quality (RNG_WEAK or RNG_STRONG) a suitable RNG
 \end_layout
 
 \begin_layout Standard
-\align center
+\align left
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
 	filename images/nonce-generation.svg
-	width 60text%
+	width 80text%
 
 \end_inset
 
@@ -2600,7 +2862,7 @@ Initialization vector
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -2700,7 +2962,7 @@ decrypt_payloads
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -2746,6 +3008,10 @@ Security-critical functionality
 \end_layout
 
 \begin_layout Standard
+TODO: remove this section?
+\end_layout
+
+\begin_layout Standard
 This section maps the identified security requirements defined in section
  
 \begin_inset CommandInset ref
@@ -2754,8 +3020,7 @@ reference "sub:Security-requirements"
 
 \end_inset
 
- to the concrete architecture of strongSwan layed out in the previous subsection
-s.
+ to the concrete architecture of strongSwan outlined in the previous subsections.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2821,9 +3086,9 @@ Design
 The main concept is to separate the security relevant services from all
  other IKEv2 services and split the IKEv2 key management daemon into two
  components: a trusted and an untrusted part.
- The trusted part performs the critical services.
- stores all relevant keying material and exposes the necessary services
- to the untrusted component via a well defined and minial interface.
+ The trusted part performs the critical services, stores all relevant keying
+ material and exposes the necessary services to the untrusted component
+ via a well defined and minimal interface.
  The split of the components must guarantee the fullfilment of the security
  requirements defined in section 
 \begin_inset CommandInset ref
@@ -2841,7 +3106,7 @@ Split of IKE
 
 \begin_layout Standard
 The charon software design is based on a plugin architecture.
- Almost every func- tional part of the daemon is implemented as a plugin.
+ Almost every functional part of the daemon is implemented as a plugin.
  This provides the flexibility to extend or exchange specific parts of the
  system.
  As outlined in the code analysis section 
@@ -2858,18 +3123,18 @@ reference "sub:Code-analysis"
  Therefore, the architecture depicted in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig-IKE-split"
+reference "fig:Split-of-IKE"
 
 \end_inset
 
- is proposed:
+ is proposed.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -2918,19 +3183,28 @@ By implementing custom plugins which act as proxy between the trusted and
  data.
  The critical parts extracted from charon are implemented by the trusted
  key manager which is part of the TCB.
- By using a well-defined interface, the internal functionality of the TCB’s
- key manager is completely hidden from the plugins.
+ 
+\end_layout
+
+\begin_layout Standard
+By using a well-defined interface, the internal functionality of the TCB’s
+ key manager is completely hidden from the charon plugins.
  The plugins reference the data (and their associated state) needed for
  processing via context identifiers.
- They have no diret access to the objects referenced by the identifiers
- but can tell the key manager to perform certain, allowed operations with
- the specified context(s).
+ They have no direct access to the objects referenced by the identifiers
+ but can instruct the key manager to perform certain, allowed operations
+ with the specified context(s).
  Only uncritical results of operations are returned to the caller plugin
  (e.g.
- public value of a DH exchange).
- This architecure allows the trusted part to be minimal while the bulk of
- the charon code can be used as is, in the untrusted part to handle the
+ the public value of a DH exchange).
+ This architecture allows the trusted part to be minimal while the bulk
+ of the charon code can be used as is, in the untrusted part to handle the
  vast majority of IKEv2 processing.
+\end_layout
+
+\begin_layout Standard
+TODO: make context/ID handling a sep.
+ section? explain upper limit of ID
 \end_layout
 
 \begin_layout Subsection
@@ -2968,6 +3242,8 @@ key "Aciicmez:2007:PSB:1229285.1266999"
 \end_inset
 
 .
+ TODO: explain why this is out of scope and how this could be solved (e.g.
+ SK, special algos for crypto).
 \end_layout
 
 \begin_layout Subsection
@@ -2980,6 +3256,14 @@ Nonce generation
 
 \begin_layout Subsubsection
 Diffie Hellman
+\end_layout
+
+\begin_layout Subsubsection
+Key derivation
+\end_layout
+
+\begin_layout Standard
+Only aes256-sha512 atm
 \end_layout
 
 \begin_layout Subsubsection
@@ -3083,11 +3367,18 @@ How is the protocol between charon and TKM specified? Example section, exchanges
 \end_layout
 
 \begin_layout Subsection
-Tkm-Rpc
+RPC: tkm-rpc library
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:tkm-rpc-library"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-What is Tkm-Rpc? How is it used by the components? How are the code files
+What is tkm-rpc? How is it used by the components? How are the code files
  generated? example code on usage.
  Finite statemachines with pre/postcons.
  exception on violation
@@ -3097,44 +3388,830 @@ What is Tkm-Rpc? How is it used by the components? How are the code files
 Untrusted component: charon-tkm
 \end_layout
 
-\begin_layout Subsubsection
-TKM nonce generation plugin
+\begin_layout Standard
+The charon daemon used in conjunction with the trusted key manager infrastructur
+e is implemented as a separate charon 'instance' in it's own directory below
+ the strongSwan top-level source directory (
+\family typewriter
+src/charon-tkm
+\family default
+).
+ This has the advantage that the TKM code is contained and does not mix
+ with other strongSwan files.
+ The charon-tkm binary startup code works like the already existing charon-nm
+ instance, a special charon daemon variant to be used with the GNOME NetworkMana
+ger project
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://projects.gnome.org/NetworkManager/
 \end_layout
 
-\begin_layout Subsubsection
-TKM Diffie Hellman plugin
+\end_inset
+
+
 \end_layout
 
-\begin_layout Subsubsection
-TKM private/public key plugin
+\end_inset
+
+.
+ The only difference is the registration of custom TKM plugins as final
+ step in the startup phase.
+ The charon-tkm daemon does not rely on the dynamic plugin loading mechanism
+ for it's core plugins, they are statically registered before entering the
+ main processing loop.
 \end_layout
 
-\begin_layout Subsubsection
-TKM keymat plugin
-\end_layout
+\begin_layout Standard
+Since the charon-tkm code uses the tkm-rpc library written in Ada, the daemon
+ has to be built using an Ada-aware toolchain.
+ This integration of Ada code into the strongSwan codebase is explained
+ in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:charon-Ada-integration"
 
-\begin_layout Subsubsection
-TKM kernel IPsec interface plugin
-\end_layout
+\end_inset
 
-\begin_layout Subsubsection
-TKM listener plugin
+.
+ Apart from the library, the ESP SA event service and the special exception
+ handler component are directly written in Ada inside the charon-tkm project
+ itself.
+ These subsystems are outlined in sections 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:charon-EES-Service"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:charon-Exception-handler-(EH)"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsubsection
 Ada integration
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:charon-Ada-integration"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-How can we call an Ada library from charon? Or even implement subsystems
- in Ada (EES)
+As explained in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:tkm-rpc-library"
+
+\end_inset
+
+, the tkm-rpc library is written in pure-Ada and uses the export feature
+ of Ada (
+\family typewriter
+pragma
+\family default
+ Export) to make procedures available to the charon-tkm C code.
+ To call Ada code from C requires an initialized Ada runtime (ZFP case ignored),
+ that's why the special 
+\family typewriter
+adainit
+\family default
+ and 
+\family typewriter
+adafinal
+\family default
+ procedures must be called before and after Ada code is used.
+ Setup and teardown of the Ada runtime is handled by the tkm-rpc library
+ (tkmlib_init/tkmlib_final) but still imposes the requirement that the charon-tk
+m code must be compiled with an Ada-aware toolchain to correctly compile,
+ bind and link the daemon binary.
+ TODO: explain why in detail.
+\end_layout
+
+\begin_layout Standard
+strongSwan uses the GNU build system, also known as the Autotools
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://en.wikipedia.org/wiki/GNU_build_system
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+, to configure, compile and install the project.
+ Ada projects using the GNAT Ada compiler normally use gnatmake or gprbuild
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+GNAT's Project Manager
+\end_layout
+
+\end_inset
+
+ to build projects.
+ Luckily these concepts are easily mixed by calling the respective GNAT
+ project manager from inside a Makefile.
+ The charon-tkm project provides a Makefile.am file which describes how to
+ build the charon-tkm binary with gprbuild.
+ The project uses the more advanced gprbuild manager because it provides
+ improved support for mixed language projects (C and Ada in this case).
+\end_layout
+
+\begin_layout Subsubsection
+Initialization
+\end_layout
+
+\begin_layout Standard
+Before entering the main loop, the charon-tkm daemon calls the 
+\family typewriter
+tkm_init
+\family default
+ function implemented in 
+\family typewriter
+tkm.c
+\family default
+.
+ This function initializes the tkm-rpc library explained above and also
+ starts the exception handler (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:charon-Exception-handler-(EH)"
+
+\end_inset
+
+) used to catch Ada exceptions.
+\end_layout
+
+\begin_layout Standard
+It then calls the 
+\family typewriter
+ike_init
+\family default
+ function to connect to the IKE interface of the TKM.
+ After that the ESP SA event service is started which accepts ESA acquire
+ and expire events from clients (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:charon-EES-Service"
+
+\end_inset
+
+).
+ If no error occurred (which would result in the termination of the daemon),
+ the initialization code instructs the TKM inside the TCB to reset itself
+ to a pristine state by calling the 
+\family typewriter
+ike_tkm
+\family default
+_reset function.
+ 
+\end_layout
+
+\begin_layout Standard
+Since the TKM supports a static number of contexts (see TODO), the upper
+ limit of context IDs is requested from the TKM.
+ This limit configuration is then passed on to the TKM ID manager which
+ is initialized as final step along with the TKM chunk map.
+\end_layout
+
+\begin_layout Subsubsection
+ID manager
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:ID-manager"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The TKM ID manager handles the management of the different context ID kinds.
+ It's interface is very simple.
+ The 
+\family typewriter
+acquire_id
+\family default
+ function can be used to acquire (reserve) a new ID for a given context
+ (e.g.
+ 
+\family typewriter
+TKM_CTX_DH
+\family default
+ for a new DH context ID).
+ The 
+\family typewriter
+release_id
+\family default
+ function releases an already reserved ID.
+ If no ID can be acquired because no one is available, the 
+\family typewriter
+acquire_id
+\family default
+ function indicates this error by returning zero.
+ The first valid ID of a given context always starts at one.
+\end_layout
+
+\begin_layout Subsubsection
+Chunk map
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Chunk-map"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The TKM code uses two main techniques to pass on information from one plugin
+ to another for cases where the strongSwan interface is not prepared to
+ handle the use case.
+ These two techniques allowed to implement the required TKM functionality
+ without being to invasive to the upstream strongSwan codebase.
+ This is especially true for use cases which are only relevant for the TKM
+ project with no benefit for the project as a whole.
+\end_layout
+
+\begin_layout Standard
+One of these mechanisms uses a chunk map, the other is explained in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Piggybacking"
+
+\end_inset
+
+.
+ The chunk map can be used to store mappings of context IDs to chunks (which
+ are chunks of binary data such as nonces or cryptographic keys).
+ This is required to preserve context ID information over plugin borders.
+ If for example the nonce plugin allocates a new nonce in a new context,
+ this relation has to be stored because the strongSwan interfaces have no
+ knowledge of context IDs, such IDs are only used inside the TKM code.
+ Therefore, the nonce plugin would store the chunk to context ID relation
+ in the chunk map.
+ Another plugin which receives the nonce chunk (which is random enough to
+ be unique) is able to retrieve the associated context ID by consulting
+ the chunk map.
+\end_layout
+
+\begin_layout Subsubsection
+Piggybacking
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Piggybacking"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Another method of passing TKM specific information over plugin borders uses
+ a piggybacking technique to store informational structs inside chunk (chunk_t)
+ objects.
+ strongSwan often treats such chunks as opaque values while passing them
+ between plugins.
+ This allows to store information like context IDs in it for other plugins
+ which need this information to initiate an action with the TKM.
+\end_layout
+
+\begin_layout Standard
+Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:isa_info_t-struct"
+
+\end_inset
+
+ shows the 
+\family typewriter
+isa_info_t
+\family default
+ informational structure used to transfer ISA information from the keymat
+ of a parent SA to the keymat of the new IKE SA while rekeying.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=C"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+struct isa_info_t {
+\end_layout
+
+\begin_layout Plain Layout
+
+	/** 	 
+\end_layout
+
+\begin_layout Plain Layout
+
+     * Parent isa context id.
+ 	 
+\end_layout
+
+\begin_layout Plain Layout
+
+     */
+\end_layout
+
+\begin_layout Plain Layout
+
+     isa_id_type parent_isa_id;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	/**
+\end_layout
+
+\begin_layout Plain Layout
+
+	 * Authenticated endpoint context id.
+\end_layout
+
+\begin_layout Plain Layout
+
+	 */
+\end_layout
+
+\begin_layout Plain Layout
+
+     ae_id_type ae_id;
+\end_layout
+
+\begin_layout Plain Layout
+
+};
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+isa_info_t struct
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:isa_info_t-struct"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For this purpose the skd data chunk returned by the 
+\family typewriter
+get_skd
+\family default
+ function is used.
+ This is possible since the sk_d chunk is treated as an opaque value and
+ handed to the 
+\family typewriter
+derive_ike_keys
+\family default
+ procedure of the new keymat as-is without  any processing.
+ The information is stored in the skd chunk as shown by listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:Piggybacking"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=C"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+isa_info_t *isa_info;
+\end_layout
+
+\begin_layout Plain Layout
+
+INIT(isa_info,
+\end_layout
+
+\begin_layout Plain Layout
+
+     .parent_isa_id = this->isa_ctx_id,
+\end_layout
+
+\begin_layout Plain Layout
+
+     .ae_id = this->ae_ctx_id,
+\end_layout
+
+\begin_layout Plain Layout
+
+);  
+\end_layout
+
+\begin_layout Plain Layout
+
+*skd = chunk_create((u_char *)isa_info, sizeof(isa_info_t)); 
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+Piggybacking
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:Piggybacking"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Nonce generation plugin
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Nonce-generation-plugin"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Nonce generation plugins are a new feature of strongSwan introduced during
+ this project.
+ A nonce generation plugin is responsible to create new nonces needed in
+ the IKE_SA_INIT and CHILD_CREATE_SA exchanges (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:proto-IKE_SA_INIT"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:proto-CREATE_CHILD_SA"
+
+\end_inset
+
+).
+ In case of the TKM, the nonce generation plugin requests a new nonce from
+ the TKM by calling the 
+\family typewriter
+ike_nc_create
+\family default
+ RPC and then registers the nonce in the chunk map to store the nonce to
+ context ID mapping.
+ This mapping is used by other plugins which need to pass on a nonce context
+ to the TKM for key derivation purposes.
+\end_layout
+
+\begin_layout Subsubsection
+Diffie-Hellman plugin
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Diffie-Hellman-plugin"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The TKM Diffie-Hellman plugin instructs the TKM to perform the DH protocol.
+ On creation, the plugin calls the 
+\family typewriter
+ike_dh_create
+\family default
+ RPC with a new context ID acquired from the ID manager.
+ This initiates the initial steps of the Diffie-Hellman protocol in the
+ TKM.
+ The plugin completes the DH exchange by calling the 
+\family typewriter
+ike_dh_generate_key
+\family default
+ function as soon it receives the public value when it's 
+\family typewriter
+set_other_public_value
+\family default
+ function is called as illustrated by figures 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-SA-establishment"
+
+\end_inset
+
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Child-SA-establishment"
+
+\end_inset
+
+.
+ No secret values leave the TCB at any time but the DH context stored in
+ the TKM can be referenced later for key derivation by using the correct
+ DH context ID.
+\end_layout
+
+\begin_layout Subsubsection
+Private key plugin
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Private-key-plugin"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The TKM private key plugin instructs the TKM to create and return the AUTH
+ octet signature for a given ISA context.
+ Since the code flow of the signature creation process involves two different
+ plugins, namely the keymat and the private key plugin, information must
+ be passed between these plugins.
+ The AUTH octet chunk returned by the keymat's 
+\family typewriter
+get_auth_octets
+\family default
+ function is piggybacked in this case.
+ See section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Piggybacking"
+
+\end_inset
+
+ for an explanation of the piggybacking mechanism.
+ The TKM keymat stores the associated ISA context ID and the initial message
+ in the chunk and returns it to the caller, which is a pubkey authenticator
+ in this case (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-public-key-auth"
+
+\end_inset
+
+).
+ The public key authenticator then calls the sign operation of the private
+ key plugin.
+ The private key code extracts the stored data and calls the
+\family typewriter
+ ike_isa_sign
+\family default
+ operation to create the AUTH octet signature.
+ The signature is then returned to the caller.
+\end_layout
+
+\begin_layout Standard
+In its current implementation, the TKM private key plugin is hardcoded to
+ a specific keypair (alice@strongswan.org used for strongSwan integration
+ testing).
+ The reason for this limitation lies in the way the code is searching for
+ a matching private key to authenticate a connection.
+ It uses the key fingerprint (which is encoded from the key's modulus and
+ public exponent values) of a public key contained in the user certificate
+ configured for a connection to find the corresponding private key.
+ Since no real private key exists in the TKM-case because the private key
+ never leaves the TCB, the TKM private key plugin must imitate a key fingerprint
+ to be found.
+\end_layout
+
+\begin_layout Standard
+The TKM private key handling must be rewritten at a later stage using a
+ TKM specific credential set which provides an own implementation of a private
+ key enumeration function (
+\family typewriter
+create_private_enumerator
+\family default
+ of 
+\family typewriter
+credential_set_t
+\family default
+).
+ This way a configured private key could be fetched and installed in the
+ credential manager on demand.
+\end_layout
+
+\begin_layout Subsubsection
+Public key plugin
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Public-key-plugin"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-public-key-auth"
+
+\end_inset
+
+ shows how the AUTH octet signature received from a peer is verified.
+ Since the verification is done in the TKM, a dummy public key plugin must
+ be provided which fakes the verification process in the untrusted part.
+\end_layout
+
+\begin_layout Standard
+To make sure charon always uses the TKM public key plugin when processing
+ public keys, it is registered first during daemon startup.
+\end_layout
+
+\begin_layout Subsubsection
+Keymat plugin
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Keymat-plugin"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The charon-tkm code uses the new keymat registration facility developed
+ during this project to register a special TKM keymat variant, which acts
+ as proxy for the remote keying material stored in the TKM.
+ The keymat is constructed together with an IKE SA and stays active for
+ the lifetime of the SA.
+ Upon construction, the TKM keymat plugin acquires an ISA context ID (
+\family typewriter
+TKM_CTX_ISA
+\family default
+) from the ID manager.
+ It then behaves like the standard IKEv2 keymat, except that it does not
+ store or receive any critical data.
+ Calls to 
+\family typewriter
+derive_ike_keys
+\family default
+ and 
+\family typewriter
+derive_child_keys
+\family default
+ are dispatched into the TCB by using context IDs.
+ The keys used to protect the IKE SA are returned to the keymat because
+ they are not classified as critical (see section TODO).
+\end_layout
+
+\begin_layout Standard
+The keymat plugin uses the piggybacking mechanism described in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Piggybacking"
+
+\end_inset
+
+ to forward information to other plugins or to extract required information
+ from other sources.
+ For example the 
+\family typewriter
+derive_child_keys
+\family default
+ function does nothing more than using the encryption key chunks to store
+ information needed in the kernel IPsec plugin explained in the next section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Kernel-IPsec-interface-plugin"
+
+\end_inset
+
+.
+ The actual child key derivation is postponed until the registered kernel
+ plugin's 
+\family typewriter
+add_sa
+\family default
+ function is called by the task which takes care of child creation, see
+ figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Child-SA-establishment"
+
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "fig:Child-SA-establishment"
+
+\end_inset
+
+ labels (
+\emph on
+SI
+\emph default
+) and (
+\emph on
+IS
+\emph default
+).
+\end_layout
+
+\begin_layout Subsubsection
+Kernel IPsec interface plugin
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Kernel-IPsec-interface-plugin"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After keying material for a new child SA has been derived in the TKM, the
+ child SA state must be established by using a kernel IPsec plugin.
+ In the case of the TKM where no child keying material leaves the TCB and
+ child SA policy handling is completely done by the TKM, the kernel plugin
+ can be kept very simple.
+ It only provides a custom 
+\family typewriter
+add_sa
+\family default
+ function used to instruct the TKM to derive child keys and install a new
+ ESA (ESP SA) state inside the TCB's encrypter component.
+ This is of course only possible if all preconditions for this operation
+ are met.
+\end_layout
+
+\begin_layout Subsubsection
+Bus listener plugin
 \end_layout
 
 \begin_layout Subsubsection
 ESP SA event service (EES)
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:EES-Service"
+name "sub:charon-EES-Service"
 
 \end_inset
 
@@ -3143,6 +4220,17 @@ name "sub:EES-Service"
 
 \begin_layout Subsubsection
 Exception handler (EH)
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:charon-Exception-handler-(EH)"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Make exceptions in Ada code visible in the daemon logfile
 \end_layout
 
 \begin_layout Subsection
@@ -3164,7 +4252,7 @@ reference "sub:xfrm-ada"
 ) developed in this project to communicate with charon's EES service (
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:EES-Service"
+reference "sub:charon-EES-Service"
 
 \end_inset
 
@@ -3267,7 +4355,7 @@ Anet is a networking library for the Ada programming language.
 Anet has been released as an opensource project under the GMGPL license
  and is available at 
 \begin_inset Flex URL
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -3317,7 +4405,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Flex URL
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -3397,7 +4485,7 @@ The TKM uses the XFRM interface via the xfrm-ada library, to manage the
 xfrm-ada has been released as an opensource project under the GMGPL license
  and is available at 
 \begin_inset Flex URL
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -3430,7 +4518,7 @@ es and private keys.
 x509-Ada has been released as an opensource project under the GMGPL license
  and is available at 
 \begin_inset Flex URL
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
