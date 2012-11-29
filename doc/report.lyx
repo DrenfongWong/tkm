@@ -4,11 +4,39 @@
 \begin_header
 \textclass report
 \begin_preamble
+\usepackage{tabu,longtable}
+\usepackage{booktabs}
+
 \definecolor{newyellow}{rgb}{1,1,0.8}
 \definecolor{colKeys}{rgb}{0,0,1}
 \definecolor{colIdentifier}{rgb}{0,0,0}
 \definecolor{colComments}{rgb}{1,0,0}
 \definecolor{colString}{rgb}{0,0.5,0}
+
+\newenvironment{typedefinition}[1]
+{\begin{longtabu} to \textwidth {>{\tt}l>{\tt}r>{\it}X}
+\caption{#1} \\
+\toprule
+\sf\bf Name & \sf\bf Size & \sf\bf Description \\
+\midrule
+}{\bottomrule
+\end{longtabu}}
+\newenvironment{vartypedefinition}[1]
+{\begin{longtabu} to \textwidth {>{\tt}l>{\tt}r>{\tt}r>{\it}X}
+\caption{#1} \\
+\toprule
+\sf\bf Name & \sf\bf Data & \sf\bf Size & \sf\bf Description \\
+\midrule
+}{\bottomrule
+\end{longtabu}}
+\newenvironment{constantdefinition}[1]
+{\begin{longtabu} to \textwidth {>{\tt}l>{\tt}l>{\it}X}
+\caption{#1} \\
+\toprule\sf\bf Name & \sf\bf Hexvalue & \sf\bf Description \\
+\midrule
+}{\bottomrule
+\end{longtabu}}
+\newcommand{\hex}[1]{\textrm{0x#1}}
 \end_preamble
 \use_default_options true
 \begin_modules
@@ -3447,6 +3475,57 @@ Rekeying of an IKE SA
 
 \begin_layout Subsection
 Rekeying of a Child SA
+\end_layout
+
+\begin_layout Section
+Data types and constants
+\end_layout
+
+\begin_layout Standard
+This section presents the data types and constants that are used in the
+ description of the TKM interface.
+\end_layout
+
+\begin_layout Subsection
+Integer types
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/types-integer.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Variable octet types
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/types-varoctets.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Constants
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/types-constants.tex"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
