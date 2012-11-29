@@ -3811,6 +3811,37 @@ filename "tex/interface-IKE-tkm_reset.tex"
 
 \end_layout
 
+\begin_layout Subsection
+ESP SA Event Service (EES) Exchanges
+\end_layout
+
+\begin_layout Standard
+The exchanges specified in this section are used by the xfrm-proxy to communicat
+e with IKE.
+ The ESP SA event service (EES) is used to send notifications about ESP
+ SA events such as acquire or expiry.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-EES-esa_acquire.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-EES-esa_expire.tex"
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Chapter
 Implementation
 \end_layout
