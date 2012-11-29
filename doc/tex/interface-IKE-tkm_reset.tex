@@ -1,0 +1,16 @@
+\subsubsection{tkm\_reset}
+Reset all contexts of the TKM - IKE interface to their initial state.
+\paragraph*{Exchange identifier}
+\hex{0002}
+
+\paragraph{Request} ~\\
+\begin{exchangeparameters}{tkm\_reset request parameter}
+req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+\end{exchangeparameters}
+
+\paragraph{Response} ~\\
+\begin{exchangeparameters}{tkm\_reset response parameters}
+req\_id & req\_id\_type & Request ID, returned identically \\
+status & status\_type & Error code \\
+\end{exchangeparameters}
+

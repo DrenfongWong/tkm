@@ -1,0 +1,19 @@
+\subsubsection{nc\_create}
+Creates and returns a nonce of a given length.
+\paragraph*{Exchange identifier}
+\hex{0101}
+
+\paragraph{Request} ~\\
+\begin{exchangeparameters}{nc\_create request parameters}
+req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+nc\_id & nc\_id\_type & Handle of nonce \\
+nonce\_length & nonce\_length\_type & Length of nonce in bytes \\
+\end{exchangeparameters}
+
+\paragraph{Response} ~\\
+\begin{exchangeparameters}{nc\_create response parameters}
+req\_id & req\_id\_type & Request ID, returned identically \\
+status & status\_type & Error code \\
+nonce & nonce\_type & Generated nonce \\
+\end{exchangeparameters}
+

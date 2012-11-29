@@ -1,0 +1,17 @@
+\subsubsection{dh\_reset}
+Resets a Diffie Hellman context to its initial dh\_clean state.
+\paragraph*{Exchange identifier}
+\hex{0200}
+
+\paragraph{Request} ~\\
+\begin{exchangeparameters}{dh\_reset request parameters}
+req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+dh\_id & dh\_id\_type & Handle of DH context to reset \\
+\end{exchangeparameters}
+
+\paragraph{Response} ~\\
+\begin{exchangeparameters}{dh\_reset response parameters}
+req\_id & req\_id\_type & Request ID, returned identically \\
+status & status\_type & Error code \\
+\end{exchangeparameters}
+

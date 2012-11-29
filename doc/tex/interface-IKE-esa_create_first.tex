@@ -1,0 +1,22 @@
+\subsubsection{esa\_create\_first}
+IKE uses this exchange to activate the initial child SA for a newly authenticated IKE SA using the security policy specified by sp\_id. As no explicit DH exchange is performed, the generic esa\_create exchange cannot be used. The parameter ea\_id defines the algorithms to use as pseudo-random function, encryption and integrity protection of the CHILD SA. TKM derives keying material for the CHILD SA by using the nonces and the sk\_d key of the IKE SA. The key derivation algorithm is specified in RFC 5996, section 2.17.
+\paragraph*{Exchange identifier}
+\hex{0A03}
+
+\paragraph{Request} ~\\
+\begin{exchangeparameters}{esa\_create\_first request parameters}
+req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+esa\_id & esa\_id\_type & Handle of ESP SA to create \\
+isa\_id & isa\_id\_type & Handle of associated IKE SA \\
+sp\_id & sp\_id\_type & Handle of associated security policy \\
+ea\_id & ea\_id\_type & Id of ESP algorithms to use \\
+esp\_spi\_loc & esp\_spi\_type & Local ESP security policy identifier \\
+esp\_spi\_rem & esp\_spi\_type & Remote ESP security policy identifier \\
+\end{exchangeparameters}
+
+\paragraph{Response} ~\\
+\begin{exchangeparameters}{esa\_create\_first response parameters}
+req\_id & req\_id\_type & Request ID, returned identically \\
+status & status\_type & Error code \\
+\end{exchangeparameters}
+

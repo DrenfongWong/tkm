@@ -1,0 +1,23 @@
+\subsubsection{tkm\_limits}
+Returns limits of various TKM IKE resources.
+\paragraph*{Exchange identifier}
+\hex{0001}
+
+\paragraph{Request} ~\\
+\begin{exchangeparameters}{tkm\_limits request parameter}
+req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+\end{exchangeparameters}
+
+\paragraph{Response} ~\\
+\begin{exchangeparameters}{tkm\_limits response parameters}
+req\_id & req\_id\_type & Request ID, returned identically \\
+status & status\_type & Error code \\
+max\_active\_requests & active\_requests\_type & Maximum number of simultaneously active requests \\
+nc\_contexts & nc\_id\_type & Maximum number of nonce contexts \\
+dh\_contexts & dh\_id\_type & Maximum number of Diffie Hellman contexts \\
+cc\_contexts & cc\_id\_type & Maximum number of certificate chain contexts \\
+ae\_contexts & ae\_id\_type & Maximum number of authenticated endpoint contexts \\
+isa\_contexts & isa\_id\_type & Maximum number of IKE SA contexts \\
+esa\_contexts & esa\_id\_type & Maximum number of ESP SA contexts \\
+\end{exchangeparameters}
+

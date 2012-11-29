@@ -1,0 +1,19 @@
+\subsubsection{dh\_create}
+Creates a new Diffie Hellman (DH) secret value for a given algorithm and returns its public value, using the DH context specified by id.
+\paragraph*{Exchange identifier}
+\hex{0201}
+
+\paragraph{Request} ~\\
+\begin{exchangeparameters}{dh\_create request parameters}
+req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+dh\_id & dh\_id\_type & Handle of Diffie Hellman context \\
+dha\_id & dha\_id\_type & Id of Diffie Hellman algorithm/group \\
+\end{exchangeparameters}
+
+\paragraph{Response} ~\\
+\begin{exchangeparameters}{dh\_create response parameters}
+req\_id & req\_id\_type & Request ID, returned identically \\
+status & status\_type & Error code \\
+pubvalue & dh\_pubvalue\_type & Diffie Hellman public value \\
+\end{exchangeparameters}
+

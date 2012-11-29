@@ -1,0 +1,25 @@
+\subsubsection{esa\_create\_no\_pfs}
+IKE uses this exchange to request derivation of key material for a CHILD SA specified by esa\_id in the context of an IKE SA specified by isa\_id. The security policy associated with the ESP SA is given by sp\_id. The nc\_loc\_id parameter specifies the nonce context to use in key derivation. It must have been created using the nc\_create exchange. nonce\_rem is the nonce received from peer. The initiator flag designates if IKE is the initiator or responder of the CHILD SA. The parameter ea\_id defines the algorithms to use as pseudo-random function, encryption and integrity protection of the CHILD SA. TKM derives keying material for the CHILD SA by using the nonces and the sk\_d key of the IKE SA. The key derivation algorithm is specified in RFC 5996, section 2.17.
+\paragraph*{Exchange identifier}
+\hex{0A02}
+
+\paragraph{Request} ~\\
+\begin{exchangeparameters}{esa\_create\_no\_pfs request parameters}
+req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+esa\_id & esa\_id\_type & Handle of ESP SA to create \\
+isa\_id & isa\_id\_type & Handle of associated IKE SA \\
+sp\_id & sp\_id\_type & Handle of associated security policy \\
+ea\_id & ea\_id\_type & Id of ESP algorithms to use \\
+nc\_loc\_id & nc\_id\_type & Handle of local nonce \\
+nonce\_rem & nonce\_type & Remote nonce of peer \\
+initiator & init\_type & Flag designating initiator or responder role \\
+esp\_spi\_loc & esp\_spi\_type & Local ESP security policy identifier \\
+esp\_spi\_rem & esp\_spi\_type & Remote ESP security policy identifier \\
+\end{exchangeparameters}
+
+\paragraph{Response} ~\\
+\begin{exchangeparameters}{esa\_create\_no\_pfs response parameters}
+req\_id & req\_id\_type & Request ID, returned identically \\
+status & status\_type & Error code \\
+\end{exchangeparameters}
+

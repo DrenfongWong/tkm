@@ -1,0 +1,17 @@
+\subsubsection{tkm\_version}
+Returns the version of the TKM - IKE interface.
+\paragraph*{Exchange identifier}
+\hex{0000}
+
+\paragraph{Request} ~\\
+\begin{exchangeparameters}{tkm\_version request parameter}
+req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+\end{exchangeparameters}
+
+\paragraph{Response} ~\\
+\begin{exchangeparameters}{tkm\_version response parameters}
+req\_id & req\_id\_type & Request ID, returned identically \\
+status & status\_type & Error code \\
+version & version\_type & Version of the IKE interface \\
+\end{exchangeparameters}
+

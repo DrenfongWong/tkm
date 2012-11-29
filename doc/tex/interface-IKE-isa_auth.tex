@@ -1,0 +1,20 @@
+\subsubsection{isa\_auth}
+This message exchange is initiated by IKE to authenticate an IKE SA identified by isa\_id. TKM reconstructs the authentication octets of the peer and verifies their signature against the (already validated) certificate of the peer, as specified in RFC 5996, section 2.15.
+\paragraph*{Exchange identifier}
+\hex{0903}
+
+\paragraph{Request} ~\\
+\begin{exchangeparameters}{isa\_auth request parameters}
+req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+isa\_id & isa\_id\_type & Handle of IKE SA to authenticate \\
+cc\_id & cc\_id\_type & Handle of certificate chain holding peer certificate \\
+init\_message & init\_message\_type & IKE init message needed to create authentication octets \\
+signature & signature\_type & Signed authentication octets from peer \\
+\end{exchangeparameters}
+
+\paragraph{Response} ~\\
+\begin{exchangeparameters}{isa\_auth response parameters}
+req\_id & req\_id\_type & Request ID, returned identically \\
+status & status\_type & Error code \\
+\end{exchangeparameters}
+

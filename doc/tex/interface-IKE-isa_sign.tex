@@ -1,0 +1,20 @@
+\subsubsection{isa\_sign}
+This exchange is used by IKE to request signed authentication octets for an IKE SA identified by isa\_id from TKM. TKM generates the authentication octets for the ISA context as described in RFC 5996, section 2.15 using the given IKE init message. TKM then computes the signature of the generated octets using the scheme and private key defined by the local certificate identified by lc\_id.
+\paragraph*{Exchange identifier}
+\hex{0902}
+
+\paragraph{Request} ~\\
+\begin{exchangeparameters}{isa\_sign request parameters}
+req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+isa\_id & isa\_id\_type & Handle of IKE SA to sign \\
+lc\_id & lc\_id\_type & Handle of local identity \\
+init\_message & init\_message\_type & IKE init message needed to create authentication octets \\
+\end{exchangeparameters}
+
+\paragraph{Response} ~\\
+\begin{exchangeparameters}{isa\_sign response parameters}
+req\_id & req\_id\_type & Request ID, returned identically \\
+status & status\_type & Error code \\
+signature & signature\_type & Signed local authentication octets \\
+\end{exchangeparameters}
+
