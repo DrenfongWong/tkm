@@ -3363,14 +3363,18 @@ What is tkm-rpc? How is it used by the components? How are the code files
  exception on violation
 \end_layout
 
+\begin_layout Standard
+explain the stream dispatcher generic.
+\end_layout
+
 \begin_layout Section
-Untrusted component: charon-tkm
+charon-tkm
 \end_layout
 
 \begin_layout Standard
-The charon daemon used in conjunction with the trusted key manager infrastructur
-e is implemented as a separate charon 'instance' in it's own directory below
- the strongSwan top-level source directory (
+The untrusted IKEv2 component used in conjunction with the trusted key manager
+ infrastructure is implemented as a separate charon 'instance' in it's own
+ directory below the strongSwan top-level source directory (
 \family typewriter
 src/charon-tkm
 \family default
@@ -3764,7 +3768,6 @@ struct isa_info_t {
 \begin_inset Caption
 
 \begin_layout Plain Layout
-
 isa_info_t struct
 \begin_inset CommandInset label
 LatexCommand label
@@ -3844,7 +3847,6 @@ INIT(isa_info,
 \begin_inset Caption
 
 \begin_layout Plain Layout
-
 Piggybacking
 \begin_inset CommandInset label
 LatexCommand label
@@ -4186,6 +4188,75 @@ add_sa
 Bus listener plugin
 \end_layout
 
+\begin_layout Standard
+To inform charon about the authorization result from the TKM, a mechanism
+ called authorization hooks is used.
+ The TKM bus listener plugin registers itself as listener for IKE messages
+ and is consulted in the final step of the authorization round whether the
+ peer has been correctly authorized.
+\end_layout
+
+\begin_layout Standard
+The message hook is needed to extract the authorization payload from the
+ incoming IKE_AUTH message from the peer and to store it in the keymat of
+ the corresponding IKE SA this exchange is currently performed.
+ This is done by calling the custom TKM keymat function 
+\family typewriter
+set_auth_payload
+\family default
+.
+ Later this payload is used in the authorize hook of the bus listener hook
+ to instruct the TKM to perform the authentication process in the TCB.
+\end_layout
+
+\begin_layout Standard
+The authorize hook retrieves the keymat by using the associated IKE SA object
+ received as function argument.
+ It then allocates a new certificate chain context ID and calls the internal
+ 
+\family typewriter
+build_cert_chain
+\family default
+ function to construct the certificate trust chain of the received peer
+ certificate.
+ The peer's user certificate stored in the authentication configuration
+ of the associated IKE SA is set as user certificate for this CC context
+ in the TKM by calling the 
+\family typewriter
+ike_cc_set_user_certificate
+\family default
+ function.
+ This is the certificate for which trust must be established.
+ For all intermediate certificates, the 
+\family typewriter
+build_cert_chain
+\family default
+ function calls the TKM 
+\family typewriter
+ike_cc_add_certificate
+\family default
+ RPC.
+ The TKM verifies the trust chain as explained in TODO.
+ At the end the CA certificate of the chain in question is passed on to
+ the TKM.
+ This certificate must be bitwise identical to the one the TKM trusts (currently
+ the TKM only trusts one CA certificate).
+ If the trust chain could not be verified, the authorize hook returns failure
+ and the authentication of the IKE SA does not succeed.
+\end_layout
+
+\begin_layout Standard
+The the trust chain verification is successful, the authorize hook retrieves
+ the authentication payload stored by the message hook from the keymat and
+ passes it to the TKM by using the 
+\family typewriter
+ike_isa_auth
+\family default
+ RPC.
+ The TKM uses the given certificate context which contains the now trusted
+ peer public key to verify the signature.
+\end_layout
+
 \begin_layout Subsection
 ESP SA event service (EES)
 \begin_inset CommandInset label
@@ -4195,6 +4266,33 @@ name "sub:charon-EES-Service"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+The ESP SA event service provides the EES interface specified in TODO to
+ clients.
+ The service is written in Ada but linked into and started alongside the
+ charon-tkm daemon.
+ It uses the tkm-rpc library outlined in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:tkm-rpc-library"
+
+\end_inset
+
+ to implement its RPC interface.
+\end_layout
+
+\begin_layout Standard
+The EES component accepts ESA acquire and expire events from clients and
+ dispatches them into charon by using callbacks written in C.
+ The callbacks use the strongSwan hydra kernel interface to initiate an
+ acquire or expire event.
+ The ESP SA service is used by the xfrm-proxy component to relay messages
+ from the kernel's XFRM subsystem to charon.
+ This is needed since charon, in this separation secnario, is no longer
+ allowed to talk to the kernels IPsec SAD database directly for obvious
+ reasons.
 \end_layout
 
 \begin_layout Subsection
@@ -4209,11 +4307,29 @@ name "sub:charon-Exception-handler-(EH)"
 \end_layout
 
 \begin_layout Standard
-Make exceptions in Ada code visible in the daemon logfile
+The charon TKM code provides a special exception handler which provides
+ the functionality to log exception messages from within Ada code into the
+ daemon's logfile.
+ This mechanism is implemented using the Exceptions_Actions framework of
+ the GNAT Ada runtime.
+ An Ada procedure with the correct signature can be registered as handler
+ for any exception occurring in the runtime.
+ This also includes internal exceptions which are normally not seen by user
+ code.
+\end_layout
+
+\begin_layout Standard
+The registered exception handler calls the imported C function 
+\family typewriter
+Charon_Terminate
+\family default
+ which logs the exception message into the daemon's logfile and instructs
+ it to terminate.
+ 
 \end_layout
 
 \begin_layout Section
-Trusted component: TKM
+TKM
 \end_layout
 
 \begin_layout Section
