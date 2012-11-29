@@ -3257,12 +3257,172 @@ Signature verification
 Certificate chain validation
 \end_layout
 
-\begin_layout Subsection
-Derivation of key material
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/trustchain-validation-overview.svg
+	width 85text%
+
+\end_inset
+
+
 \end_layout
 
-\begin_layout Section
-Mapping from requirements to specification
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+TKM trustchain validation overview
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:TKM-trustchain-validation-overview"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/trustchain-validation-set-user.svg
+	width 70text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+TKM trustchain set user certificate
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:TKM-trustchain-set-user"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/trustchain-validation-add-cert.svg
+	width 70text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+TKM trustchain add certificates
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:TKM-trustchain-add-certs"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/trustchain-validation-check-ca.svg
+	width 70text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+TKM trustchain check CA
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:TKM-trustchain-check-ca"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Derivation of key material
 \end_layout
 
 \begin_layout Chapter
