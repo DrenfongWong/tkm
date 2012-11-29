@@ -1,0 +1,17 @@
+\subsubsection{esa\_acquire}
+TKM uses this exchange to request the initiation of an ESP SA with associated Security Policy identified by sp\_id.
+\paragraph*{Exchange identifier}
+\hex{0100}
+
+\paragraph{Request} ~\\
+\begin{exchangeparameters}{esa\_acquire request parameters}
+req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+sp\_id & sp\_id\_type & Handle of associated security policy to acquire ESP SA for \\
+\end{exchangeparameters}
+
+\paragraph{Response} ~\\
+\begin{exchangeparameters}{esa\_acquire response parameters}
+req\_id & req\_id\_type & Request ID, returned identically \\
+status & status\_type & Error code \\
+\end{exchangeparameters}
+
