@@ -1,0 +1,30 @@
+\subsection{Certificate Chain Context (cc)}
+A certificate chain context is used to verify the trustchain of a user certificate by checking each certificate signature and asserting that the chain is attested by a trusted certificate authority.
+\subsubsection{States} ~\\
+\begin{contextstates}{Certificate Chain Context States}
+clean* & Initial clean state. \\
+invalid & Error state. \\
+stale & CC context is stale. \\
+linked & CC is linked. \\
+checked & CC has been checked and verified. \\
+\end{contextstates}
+\subsubsection{Transitions}
+\begin{contexttransitions}{Certificate Chain Context Transitions}
+create &clean& linked & Create new certificate chain. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+add\_certificate &linked& linked & Add new certificate to the certificate chain. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+check &linked& checked & Check that the current root of the CC is a trusted CA certificate. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+get\_last\_cert &linked& linked & Return the last certificate which is the current root of the CC. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+get\_certificate &checked& checked & Return user certificate. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+get\_not\_before &linked& linked & Return start of validity period. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+get\_not\_after &linked& linked & Return end of validity period. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+invalidate &*& invalid & Invalidate certificate chain; it can only be reused by explicitly resetting the context. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+reset &*& clean & Reset certificate chain to initial clean state. \\
+\end{contexttransitions}

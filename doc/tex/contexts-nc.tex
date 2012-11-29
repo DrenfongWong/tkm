@@ -1,0 +1,18 @@
+\subsection{Nonce Context (nc)}
+Nonce contexts provide random nonces of a specified length. In order to prevent uncontrolled reuse of nonces, NCs are destroyed whenever a nonce context is used within TKM.
+\subsubsection{States} ~\\
+\begin{contextstates}{Nonce Context States}
+clean* & No nonce is present. \\
+invalid & Due to an error the context is erased. It can only be reused after a reset exchange. \\
+created & A nonce is available for consumption. \\
+\end{contextstates}
+\subsubsection{Transitions}
+\begin{contexttransitions}{Nonce Context Transitions}
+create &clean& created & Create new nonce. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+consume &created& clean & Consume nonce. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+invalidate &*& invalid & Invalidate nonce context; it can only be reused by explicitly resetting the context. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+reset &*& clean & Reset nonce context to initial clean state. \\
+\end{contexttransitions}

@@ -1,0 +1,26 @@
+\subsection{Diffie Hellman Context (dh)}
+A Diffie Hellman context represents a Diffie Hellman exchange with the peer.
+\subsubsection{States} ~\\
+\begin{contextstates}{Diffie Hellman Context States}
+clean* & Initial clean state. \\
+invalid & Error state. \\
+stale & DH Context is stale. \\
+created & Waiting for remote pubvalue. \\
+generated & Diffie Hellman shared secret has been calculated and is ready to be used. \\
+\end{contextstates}
+\subsubsection{Transitions}
+\begin{contexttransitions}{Diffie Hellman Context Transitions}
+get\_dha\_id &created& created & Return DHA reference. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+get\_secvalue &created& created & Return local Diffie Hellman secret value. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+consume &generated& clean & Use Diffie Hellman shared secret thus consuming it. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+create &clean& created & Create new Diffie Hellman context. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+generate &created& generated & Generate the shared Diffie Hellman secret. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+invalidate &*& invalid & Invalidate Diffie Hellman context; it can only be reused by explicitly resetting the context. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+reset &*& clean & Reset Diffie Hellman context to initial clean state. \\
+\end{contexttransitions}

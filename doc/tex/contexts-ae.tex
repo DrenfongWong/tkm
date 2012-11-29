@@ -1,0 +1,37 @@
+\subsection{Authentication Endpoint Context (ae)}
+Authenticated endpoints represent peers of IKE connections. Multiple IKE SAs can be established to the same same authenticated endpoint.
+\subsubsection{States} ~\\
+\begin{contextstates}{Authentication Endpoint Context States}
+clean* & Initial clean state. \\
+invalid & Error state. \\
+stale & AE context is stale. \\
+unauth & AE context is unauthenticated. \\
+loc\_auth & Local identity of AE is authenticated. \\
+rem\_auth & Remote identity of AE is authenticated. \\
+authenticated & AE is authenticated. \\
+active & AE is authenticated and in use. \\
+\end{contextstates}
+\subsubsection{Transitions}
+\begin{contexttransitions}{Authentication Endpoint Context Transitions}
+create &clean& unauth & Create new authenticated endpoint. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+sign &unauth& loc\_auth & Sign local authentication octets. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+authenticate &loc\_auth& authenticated & Verify remote authentication octets. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+activate &authenticated& active & Use authenticated endpoint for IKE SA. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+is\_initiator &active \newline authenticated \newline loc\_auth \newline rem\_auth \newline unauth& active & Return local initiator role of authenticated endpoint. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+get\_nonce\_rem &active \newline authenticated \newline loc\_auth \newline rem\_auth \newline unauth& active & Return nonce of remote peer. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+get\_nonce\_loc &active \newline authenticated \newline loc\_auth \newline rem\_auth \newline unauth& active & Return local nonce. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+get\_sk\_ike\_auth\_loc &active \newline authenticated \newline loc\_auth \newline rem\_auth \newline unauth& active & Return local SK\_p value. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+get\_sk\_ike\_auth\_rem &active \newline authenticated \newline loc\_auth \newline rem\_auth \newline unauth& active & Return remote SK\_p value. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+reset &*& clean & Reset authenticated endpoint to initial clean state. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+invalidate &*& invalid & Invalidate authenticated endpoint; it can only be reused by explicitly resetting the context. \\
+\end{contexttransitions}

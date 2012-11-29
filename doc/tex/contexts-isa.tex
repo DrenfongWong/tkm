@@ -1,0 +1,21 @@
+\subsection{IKE SA Context (isa)}
+
+\subsubsection{States} ~\\
+\begin{contextstates}{IKE SA Context States}
+clean* & Initial clean state \\
+invalid & Error state \\
+stale & IKE SA stale. \\
+active & IKE SA is in active use. \\
+\end{contextstates}
+\subsubsection{Transitions}
+\begin{contexttransitions}{IKE SA Context Transitions}
+create &clean& active & Create new IKE SA. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+get\_sk\_d &active& active & Return SK\_D value. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+get\_ae\_id &active& active & Return AE reference. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+reset &*& clean & Reset IKE SA to initial clean state. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+invalidate &*& invalid & Invalidate IKE SA; it can only be reused by explicitly resetting the context. \\
+\end{contexttransitions}

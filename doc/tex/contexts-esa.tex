@@ -1,0 +1,22 @@
+\subsection{ESP SA Context (esa)}
+
+\subsubsection{States} ~\\
+\begin{contextstates}{ESP SA Context States}
+clean* & Initial clean state. \\
+invalid & Error state. \\
+stale & ESA context is stale. \\
+selected & ESA is selected. \\
+active & ESP SA is active. \\
+\end{contextstates}
+\subsubsection{Transitions}
+\begin{contexttransitions}{ESP SA Context Transitions}
+create &clean& active & Create a new ESP SA. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+select\_sa &active& selected & Select an ESP SA to be used for outgoing traffic matching the associated security policy. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+unselect\_sa &selected& active & Unselect an ESP SA so it is not used for encryption of outgoing traffic matching the associated security policy. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+invalidate &*& invalid & Invalidate ESP SA; it can only be reused by explicitly resetting the context. \\
+\tabucline[0.4pt on 0.4pt off 2pt]{-}
+reset &*& clean & Reset ESP SA to initial clean state. \\
+\end{contexttransitions}
