@@ -36,6 +36,23 @@
 \midrule
 }{\bottomrule
 \end{longtabu}}
+\newenvironment{contextstates}[1]
+{\begin{longtabu} to \textwidth{>{\tt}l>{\it}X}
+\caption{#1} \\
+\toprule
+\sf\bf Name & \sf\bf Description \\
+\midrule
+}{\bottomrule
+\end{longtabu}}
+\newenvironment{contexttransitions}[1]
+{\tabulinesep=4pt
+\begin{longtabu} to \textwidth{>{\tt}lp{2.5cm}l>{\it}X}
+\caption{#1} \\
+\toprule
+\sf\bf Name & \sf\bf Source  & \sf\bf Target & \sf\bf Description \\
+\midrule
+}{\bottomrule
+\end{longtabu}}
 \newenvironment{exchangeparameters}[1]
 {\begin{longtabu} to \textwidth{>{\tt}l>{\tt}l>{\it}X}
 \caption{#1} \\
@@ -3540,28 +3557,88 @@ filename "tex/types-constants.tex"
 State machines
 \end_layout
 
-\begin_layout Subsection
-Nonce 
+\begin_layout Standard
+Contexts are used to describe stateful entities within the TKM.
+ They are finite state machines (FSM
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSM
 \end_layout
 
-\begin_layout Subsection
-Diffie Hellman
+\end_inset
+
+) which have a set of states and transitions between those states.
+ The FSM is in a specific state at any given time and can only change its
+ state by performing a transition.
+ A transition prescribes the state the FSM has to be in, the actions to
+ execute and the new target state once the transition has completed.
 \end_layout
 
-\begin_layout Subsection
-Certificate chain
+\begin_layout Standard
+The state of the overall TKM system can be interpreted as the sum of the
+ state of all FSMs at any given time.
 \end_layout
 
-\begin_layout Subsection
-Authenticated endpoint
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/contexts-nc.tex"
+
+\end_inset
+
+
 \end_layout
 
-\begin_layout Subsection
-IKE SA
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/contexts-dh.tex"
+
+\end_inset
+
+
 \end_layout
 
-\begin_layout Subsection
-Child SA
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/contexts-cc.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/contexts-ae.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/contexts-isa.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/contexts-esa.tex"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
