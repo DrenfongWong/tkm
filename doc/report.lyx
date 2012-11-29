@@ -36,6 +36,14 @@
 \midrule
 }{\bottomrule
 \end{longtabu}}
+\newenvironment{exchangeparameters}[1]
+{\begin{longtabu} to \textwidth{>{\tt}l>{\tt}l>{\it}X}
+\caption{#1} \\
+\toprule
+\sf\bf Name & \sf\bf Type & \sf\bf Description \\
+\midrule
+}{\bottomrule
+\end{longtabu}}
 \newcommand{\hex}[1]{\textrm{0x#1}}
 \end_preamble
 \use_default_options true
@@ -3560,12 +3568,247 @@ Child SA
 Exchanges
 \end_layout
 
-\begin_layout Subsection
-nc_create
+\begin_layout Standard
+This section describes all exchanges of the different TKM interfaces.
 \end_layout
 
 \begin_layout Subsection
-...
+IKE Exchanges
+\end_layout
+
+\begin_layout Standard
+All the following exchanges are used by IKE to communicate with the TKM
+ and perform operations related IKE or ESP SA establishment.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-nc_create.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-nc_reset.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-dh_create.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-dh_generate_key.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-dh_reset.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-cc_set_user_certificate.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-cc_add_certificate.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-cc_check_ca.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-cc_reset.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-ae_reset.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-isa_create.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-isa_sign.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-isa_auth.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-isa_create_child.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-isa_reset.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-esa_create_first.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-esa_create.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-esa_create_no_pfs.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-esa_select.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-esa_reset.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-tkm_version.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-tkm_limits.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/interface-IKE-tkm_reset.tex"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Chapter
