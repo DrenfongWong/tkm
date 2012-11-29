@@ -1,0 +1,36 @@
+\subsubsection{result\_type constants}
+Status of a processed exchange (e.g. success or failure).
+\begin{constantdefinition}{result\_type constants}
+OK & \hex{0000000000000000} & Request was processed successfully \\
+Invalid\_Operation & \hex{0000000000000101} & The requested operation is invalid \\
+Invalid\_ID & \hex{0000000000000102} & The given identifier is invalid \\
+Invalid\_State & \hex{0000000000000103} & TKM is in an invalid state to process the given request \\
+Invalid\_Parameter & \hex{0000000000000104} & Invalid value given as request parameter \\
+Random\_Failure & \hex{0000000000000201} & The random number generator is inoperable \\
+Sign\_Failure & \hex{0000000000000202} & Signature could not be generated \\
+Aborted & \hex{0000000000000301} & Processing of request was aborted \\
+Math\_Error & \hex{0000000000000401} & Mathematical computation error \\
+\end{constantdefinition}
+
+\subsubsection{version\_type constants}
+Version of an interface implementation
+\begin{constantdefinition}{version\_type constants}
+CFG\_Version & \hex{0000000000000000} & Version of CFG interface \\
+EES\_Version & \hex{0000000000000000} & Version of EES interface \\
+IKE\_Version & \hex{0000000000000000} & Version of IKE interface \\
+\end{constantdefinition}
+
+\subsubsection{dh\_algorithm\_type constants}
+Diffie Hellman algorithm group IDs (IANA)
+\begin{constantdefinition}{dh\_algorithm\_type constants}
+Modp\_3072 & \hex{000000000000000f} & 3072-bit MODP Group (RFC 3526, section 4) \\
+Modp\_4096 & \hex{0000000000000010} & 4096-bit MODP Group (RFC 3526, section 5) \\
+\end{constantdefinition}
+
+\subsubsection{protocol\_type constants}
+Protocol numbers (IANA)
+\begin{constantdefinition}{protocol\_type constants}
+Proto\_ESP & \hex{32} & Encap Security Payload \\
+Proto\_AH & \hex{33} & Authentication Header \\
+\end{constantdefinition}
+

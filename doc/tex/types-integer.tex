@@ -1,0 +1,54 @@
+\begin{typedefinition}{Integer types}
+operation\_type & 8 & This type identifies the interface operation. Each exchange has a corresponding constant of this type. \\
+request\_id\_type & 8 & Identifier of a request which is part of an exchange. This allows communicating parties to associate corresponding request and response messages. \\
+result\_type & 8 & Status of a processed exchange (e.g. success or failure). \\
+version\_type & 8 & Version of an interface implementation \\
+active\_requests\_type & 8 & Number of concurrently active requests \\
+authag\_id\_type & 8 & Authentication algorithms group handle \\
+cag\_id\_type & 8 & Certificate Authority group handle \\
+li\_id\_type & 8 & Local identity handle \\
+ri\_id\_type & 8 & Remote identity handle \\
+iag\_id\_type & 8 & IKE algorithm group handle \\
+eag\_id\_type & 8 & ESP algorithm group handle \\
+dhag\_id\_type & 8 & Diffie Hellman algorithm group handle \\
+sp\_id\_type & 8 & Security Policy handle \\
+authp\_id\_type & 8 & Authentication parameter handle \\
+dhp\_id\_type & 8 & Diffie Hellman parameter handle \\
+autha\_id\_type & 8 & Authentication algorithm handle \\
+ca\_id\_type & 8 & Certificate Authority handle \\
+lc\_id\_type & 8 & Local certificate handle \\
+ia\_id\_type & 8 & IKE algorithms handle \\
+ea\_id\_type & 8 & ESP algorithms handle \\
+dha\_id\_type & 8 & Diffie Hellman algorithm handle \\
+nc\_id\_type & 8 & Nonce context handle \\
+dh\_id\_type & 8 & Diffie Hellman context handle \\
+cc\_id\_type & 8 & Certificate chain context handle \\
+ae\_id\_type & 8 & Authenticated endpoint context handle \\
+isa\_id\_type & 8 & IKE SA context handle \\
+esa\_id\_type & 8 & ESP SA context handle \\
+esp\_enc\_id\_type & 8 & ESP encryptor handle \\
+esp\_dec\_id\_type & 8 & ESP decryptor handle \\
+esp\_map\_id\_type & 8 & ESP map entry handle \\
+abs\_time\_type & 8 & Absolute time in seconds since unix epoch \\
+rel\_time\_type & 8 & Relative time in seconds \\
+duration\_type & 8 & Duration timespan in seconds \\
+counter\_type & 8 & Generic counter type \\
+pfs\_flag\_type & 8 & Perfect-Forward secrecy flag \\
+cc\_time\_flag\_type & 8 & Certificate chain time flag \\
+expiry\_flag\_type & 1 & Expiration flag \\
+auth\_algorithm\_type & 8 & Authentication algorithm identifier \\
+dh\_algorithm\_type & 8 & Diffie Hellman algorithm group IDs (IANA) \\
+iprf\_algorithm\_type & 8 & IKE Pseudo-random function algorithm IDs (IANA) \\
+iint\_algorithm\_type & 8 & IKE Integrity algorithm IDs (IANA) \\
+ienc\_algorithm\_type & 8 & IKE Encryption algorithm IDs (IANA) \\
+eprf\_algorithm\_type & 8 & ESP Pseudo-random function algorithm IDs (IANA) \\
+eint\_algorithm\_type & 8 & ESP Integrity algorithm IDs (IANA) \\
+eenc\_algorithm\_type & 8 & ESP Encryption algorithm IDs (IANA) \\
+key\_length\_bits\_type & 8 & Length of cryptographic keys in bits \\
+block\_length\_bits\_type & 8 & Length of block in bits \\
+protocol\_type & 4 & Protocol numbers (IANA) \\
+init\_type & 8 & Initiator role flag \\
+ike\_spi\_type & 8 & IKE SPI in network byte order \\
+esp\_spi\_type & 4 & ESP SPI in network byte order \\
+nonce\_length\_type & 8 & Length of nonce \\
+\end{typedefinition}
