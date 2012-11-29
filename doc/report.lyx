@@ -2,7 +2,7 @@
 \lyxformat 413
 \begin_document
 \begin_header
-\textclass article
+\textclass report
 \begin_preamble
 \definecolor{newyellow}{rgb}{1,1,0.8}
 \definecolor{colKeys}{rgb}{0,0,1}
@@ -115,13 +115,6 @@ The security and robustness of the IKEv2 implementation strongSwan has been
 \end_layout
 
 \begin_layout Abstract
-\begin_inset Newpage clearpage
-\end_inset
-
-
-\end_layout
-
-\begin_layout Abstract
 \begin_inset CommandInset toc
 LatexCommand tableofcontents
 
@@ -130,23 +123,9 @@ LatexCommand tableofcontents
 
 \end_layout
 
-\begin_layout Abstract
-\begin_inset Newpage clearpage
-\end_inset
-
-
-\end_layout
-
 \begin_layout Standard
 \begin_inset FloatList figure
 
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Newpage clearpage
 \end_inset
 
 
@@ -190,7 +169,7 @@ lstlistoflistings
 
 \end_layout
 
-\begin_layout Section
+\begin_layout Chapter
 Introduction
 \end_layout
 
@@ -246,7 +225,7 @@ reference "sec:Requirements"
 Maybe omit the subsection and write all here as text?
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Overview
 \begin_inset CommandInset label
 LatexCommand label
@@ -262,7 +241,7 @@ This section provides an overview about the terminology used in this project
  and explains the basic key concepts.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Trusted Computing Base
 \begin_inset CommandInset label
 LatexCommand label
@@ -363,7 +342,7 @@ name "fig:Trusted-Computing-Base"
 
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 strongSwan
 \begin_inset Index idx
 status open
@@ -449,7 +428,7 @@ reference "sub:Trusted-Key-Manager"
 ) architecture.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Ada
 \begin_inset CommandInset label
 LatexCommand label
@@ -590,7 +569,7 @@ Ada Lovelace - http://en.wikipedia.org/wiki/Ada_Lovelace
  who is considered to be the first computer programmer.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Trusted Key Manager
 \begin_inset CommandInset label
 LatexCommand label
@@ -636,7 +615,7 @@ reference "sub:tkm-rpc-library"
 .
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Related work
 \begin_inset CommandInset label
 LatexCommand label
@@ -647,7 +626,7 @@ name "sub:Related-work"
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Threat model
 \begin_inset CommandInset label
 LatexCommand label
@@ -670,7 +649,7 @@ It is assumed that the stringSwan charon IKEv2 daemon, which is considered
  be protected from access by untrusted components.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Scope of this project
 \begin_inset CommandInset label
 LatexCommand label
@@ -685,7 +664,7 @@ name "sub:Scope-of-this-doc"
 What did we omit? OCSP, CRL
 \end_layout
 
-\begin_layout Section
+\begin_layout Chapter
 Requirements
 \begin_inset CommandInset label
 LatexCommand label
@@ -724,7 +703,7 @@ reference "sub:Additional-requirements"
  describes additional requirements.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Security requirements
 \begin_inset CommandInset label
 LatexCommand label
@@ -748,7 +727,7 @@ reference "sub:Threat-model"
 ).
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Separation of key material
 \begin_inset CommandInset label
 LatexCommand label
@@ -775,7 +754,7 @@ Excluded from the critical material are the keys used to protect the IKE
  See section TODO for details.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Cryptographic operations
 \end_layout
 
@@ -793,7 +772,7 @@ reference "sub:Separation-of-key"
 .
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Authentication
 \end_layout
 
@@ -809,7 +788,7 @@ The authentication state in the TCB must always be unambiguously associated
  with the corresponding SA.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Integrity
 \end_layout
 
@@ -820,7 +799,7 @@ The security of the IKEv2 component must solely depend on the correct operation
  untrusted part.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Functional requirements
 \begin_inset CommandInset label
 LatexCommand label
@@ -836,7 +815,7 @@ Functional requirements define what a system is trying to accomplish.
  This section ...
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Separation
 \end_layout
 
@@ -854,7 +833,7 @@ reference "sub:Security-requirements"
 .
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Communication
 \end_layout
 
@@ -864,7 +843,7 @@ The communication protocol between the trusted and untrusted parts must
  
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Additional requirements
 \begin_inset CommandInset label
 LatexCommand label
@@ -875,7 +854,7 @@ name "sub:Additional-requirements"
 
 \end_layout
 
-\begin_layout Section
+\begin_layout Chapter
 Analysis of strongSwan
 \end_layout
 
@@ -894,7 +873,7 @@ reference "sec:Requirements"
 .
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 IKEv2 protocol analysis
 \begin_inset CommandInset label
 LatexCommand label
@@ -1379,7 +1358,7 @@ A value is considered 'critical' if the untrusted part may not know it at
  the untrusted part.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 IKE_SA_INIT
 \begin_inset CommandInset label
 LatexCommand label
@@ -1555,7 +1534,7 @@ Critical IKE_SA_INIT payloads
 
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 IKE_AUTH
 \begin_inset CommandInset label
 LatexCommand label
@@ -1848,7 +1827,7 @@ Critical IKE_AUTH payloads
 
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 CREATE_CHILD_SA
 \begin_inset CommandInset label
 LatexCommand label
@@ -2045,7 +2024,7 @@ Critical CREATE_CHILD_SA payloads
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Code analysis
 \begin_inset CommandInset label
 LatexCommand label
@@ -2071,7 +2050,7 @@ lity and possibilities to interfere with the current design are explored.
  
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 IKE_SA_INIT
 \begin_inset CommandInset label
 LatexCommand label
@@ -2277,7 +2256,7 @@ DK
  This completes phase 1.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 IKE_AUTH
 \begin_inset CommandInset label
 LatexCommand label
@@ -2561,7 +2540,7 @@ reference "sub:flow-CHILD_CREATE_SA"
 .
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 CHILD_CREATE_SA
 \begin_inset CommandInset label
 LatexCommand label
@@ -2692,7 +2671,7 @@ The responder then builds the payloads of the response message and sends
  and install the new policy and state in the kernel.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Source of randomness
 \begin_inset CommandInset label
 LatexCommand label
@@ -2781,7 +2760,7 @@ name "fig:Nonce-generation"
 
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Payload encryption
 \begin_inset CommandInset label
 LatexCommand label
@@ -2903,7 +2882,7 @@ name "fig:IKE-SA-payload-enc"
 
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Payload decryption
 \begin_inset CommandInset label
 LatexCommand label
@@ -3003,7 +2982,7 @@ name "fig:IKE-SA-payload-dec"
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Security-critical functionality
 \end_layout
 
@@ -3023,7 +3002,7 @@ reference "sub:Security-requirements"
  to the concrete architecture of strongSwan outlined in the previous subsections.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Key agreement (DH)
 \end_layout
 
@@ -3032,7 +3011,7 @@ No key material must be present in the untrusted part of the system ...
  outline which values are especially important (Xa etc).
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Nonce generation
 \end_layout
 
@@ -3042,7 +3021,7 @@ Nonces play an important role and guarantee freshness.
  The TCB must guarantee the freshness of the local nonce.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Handling of key material (creation/storage)
 \end_layout
 
@@ -3056,11 +3035,11 @@ also intermediate values.
 IKE keys: not critical, explain why
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Random numbers
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Cryptographic operations
 \end_layout
 
@@ -3068,7 +3047,7 @@ Cryptographic operations
 sections about the ops, also signature verification
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Enforcement of policy
 \end_layout
 
@@ -3078,7 +3057,7 @@ Only configured policy allowed, crypto ops must be strong enough -> at the
  we implement only a subset.
 \end_layout
 
-\begin_layout Section
+\begin_layout Chapter
 Design
 \end_layout
 
@@ -3100,7 +3079,7 @@ reference "sec:Requirements"
 .
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Split of IKE
 \end_layout
 
@@ -3207,11 +3186,11 @@ TODO: make context/ID handling a sep.
  section? explain upper limit of ID
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Security goals
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Assumptions
 \end_layout
 
@@ -3246,19 +3225,19 @@ key "Aciicmez:2007:PSB:1229285.1266999"
  SK, special algos for crypto).
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 TKM Functionality
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Nonce generation
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Diffie Hellman
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Key derivation
 \end_layout
 
@@ -3266,95 +3245,95 @@ Key derivation
 Only aes256-sha512 atm
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Signature generation
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Signature verification
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Certificate chain validation
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Derivation of key material
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Mapping from requirements to specification
 \end_layout
 
-\begin_layout Section
+\begin_layout Chapter
 TKM interface
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Protocol overview
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Creation of an IKE SA
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Creation of a Child SA
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Rekeying of an IKE SA
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Rekeying of a Child SA
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 State machines
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Nonce 
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Diffie Hellman
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Certificate chain
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Authenticated endpoint
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 IKE SA
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Child SA
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Exchanges
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 nc_create
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 ...
 \end_layout
 
-\begin_layout Section
+\begin_layout Chapter
 Implementation
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 XML-Specification
 \end_layout
 
@@ -3366,7 +3345,7 @@ How is the protocol between charon and TKM specified? Example section, exchanges
  Ada 2012 aspects, gnatprove and spark integration
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 RPC: tkm-rpc library
 \begin_inset CommandInset label
 LatexCommand label
@@ -3384,7 +3363,7 @@ What is tkm-rpc? How is it used by the components? How are the code files
  exception on violation
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Untrusted component: charon-tkm
 \end_layout
 
@@ -3460,7 +3439,7 @@ reference "sub:charon-Exception-handler-(EH)"
 .
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Ada integration
 \begin_inset CommandInset label
 LatexCommand label
@@ -3543,7 +3522,7 @@ GNAT's Project Manager
  improved support for mixed language projects (C and Ada in this case).
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Initialization
 \end_layout
 
@@ -3600,7 +3579,7 @@ Since the TKM supports a static number of contexts (see TODO), the upper
  is initialized as final step along with the TKM chunk map.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 ID manager
 \begin_inset CommandInset label
 LatexCommand label
@@ -3638,7 +3617,7 @@ acquire_id
  The first valid ID of a given context always starts at one.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Chunk map
 \begin_inset CommandInset label
 LatexCommand label
@@ -3682,7 +3661,7 @@ reference "sub:Piggybacking"
  the chunk map.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Piggybacking
 \begin_inset CommandInset label
 LatexCommand label
@@ -3886,7 +3865,7 @@ name "lis:Piggybacking"
 
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Nonce generation plugin
 \begin_inset CommandInset label
 LatexCommand label
@@ -3927,7 +3906,7 @@ ike_nc_create
  to the TKM for key derivation purposes.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Diffie-Hellman plugin
 \begin_inset CommandInset label
 LatexCommand label
@@ -3975,7 +3954,7 @@ reference "fig:Child-SA-establishment"
  DH context ID.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Private key plugin
 \begin_inset CommandInset label
 LatexCommand label
@@ -4055,7 +4034,7 @@ credential_set_t
  credential manager on demand.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Public key plugin
 \begin_inset CommandInset label
 LatexCommand label
@@ -4084,7 +4063,7 @@ To make sure charon always uses the TKM public key plugin when processing
  public keys, it is registered first during daemon startup.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Keymat plugin
 \begin_inset CommandInset label
 LatexCommand label
@@ -4176,7 +4155,7 @@ IS
 ).
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Kernel IPsec interface plugin
 \begin_inset CommandInset label
 LatexCommand label
@@ -4203,11 +4182,11 @@ add_sa
  are met.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Bus listener plugin
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 ESP SA event service (EES)
 \begin_inset CommandInset label
 LatexCommand label
@@ -4218,7 +4197,7 @@ name "sub:charon-EES-Service"
 
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Exception handler (EH)
 \begin_inset CommandInset label
 LatexCommand label
@@ -4233,11 +4212,11 @@ name "sub:charon-Exception-handler-(EH)"
 Make exceptions in Ada code visible in the daemon logfile
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Trusted component: TKM
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 xfrm-proxy
 \end_layout
 
@@ -4324,7 +4303,7 @@ To make rekeying work in such a scenario, kernel XFRM acquire and expire
  in question.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Additional components
 \end_layout
 
@@ -4334,7 +4313,7 @@ Certain functionality which was needed for the implementation of TKM has
  libraries.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Anet
 \begin_inset CommandInset label
 LatexCommand label
@@ -4367,7 +4346,7 @@ http://git.codelabs.ch/?p=anet.git
 .
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 xfrm-ada
 \begin_inset CommandInset label
 LatexCommand label
@@ -4497,7 +4476,7 @@ http://git.codelabs.ch/?p=xfrm-ada.git
 .
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 x509-Ada
 \end_layout
 
@@ -4530,7 +4509,7 @@ http://git.codelabs.ch/?p=x509-ada.git
 .
 \end_layout
 
-\begin_layout Section
+\begin_layout Chapter
 Conclusion
 \end_layout
 
@@ -4538,11 +4517,11 @@ Conclusion
 We have shown that...
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Achievements
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 Future work
 \end_layout
 
