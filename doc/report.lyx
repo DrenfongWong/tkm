@@ -328,9 +328,39 @@ TCB
 .
  To be trusted, this code must be as minimal as possible to allow (formal)
  verification of code correctness.
- In order to isolate code in a TCB, critical sections (of existing code
- or protocol) must be identified and the system must be separated into a
- critical (TCB) and non-critical (untrusted) part.
+ The TCB of a computer system is the set of all hardware, firmware, and/or
+ software components that are critical to its security, in the sense that
+ bugs or vulnerabilities occurring inside the TCB might jeopardize the security
+ properties of the entire system
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://en.wikipedia.org/wiki/Trusted_computing_base
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+It is much easier to design a system from scratch with separation properties
+ in mind than separating an existing project or protocol later.
+ But this is obviously not always possible, like in this case.
+ In order to isolate functionality in a TCB, critical sections of existing
+ protocols must be identified and the system must be separated into a critical
+ (TCB) and non-critical (untrusted) part.
  Communication mechanisms between the sections must be established, which
  itself must be robust and well defined.
  If an attacker is able to compromise the untrusted-part of the system,
@@ -684,6 +714,128 @@ name "sub:Related-work"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+The concept of separating larger systems into smaller, trusted parts dates
+ back to John Rushby in 1981 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Rushby:1981:DVS:1067627.806586"
+
+\end_inset
+
+.
+ The most prominent implementations of the concept exist in the form of
+ microkernels (µ-kernels), which provide the foundation to separate functionalit
+y into smaller, separated parts by providing compartments for subjects running
+ in userspace.
+ Examples of such systems are Fiasco
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://os.inf.tu-dresden.de/fiasco/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+, L4Ka::Pistachio
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.l4ka.org/65.php
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ and Coyotos
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.coyotos.org/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+ Type-1 (bare-metal) hypervisors like Xen are intentionally excluded from
+ the list because Xen requires a complete Linux kernel (dom0) with direct
+ access to hardware to work.
+ The fact that the dom0 kernel must be accounted as part of the trusted
+ system makes it unsuitable for in-depth review and therefore unusable as
+ a TCB.
+\end_layout
+
+\begin_layout Standard
+Even though the concept proposed by Rushby seems to offer many advantages
+ related to security and integrity, it has not been widely realized.
+ Common operating systems like Windows, Linux and *BSD variants use a monolithic
+ kernel, which itself must be trusted as a whole, even though the compromise
+ of a device driver can corrupt the complete system.
+\end_layout
+
+\begin_layout Standard
+One reason seems to be the tremendous effort needed to adapt existing software
+ to a separation concept.
+ In order to move critical parts into a TCB, the existing code must be studied
+ and sensitive parts re-implemented using the corresponding APIs and methods
+ of the underlying separation platform.
+ Of course, the complete system could be rewritten for the dedicated secure
+ environment, but often this is not possible and especially not desired
+ for code deemed as untrusted.
+ The dedicated goal is to only re-implement sensitive parts while leaving
+ the untrusted part mostly untouched.
+\end_layout
+
+\begin_layout Standard
+Research has been done in the formal analysis of the IKEv1 and IKEv2 protocols
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Cremers:2011:KEI:2041225.2041249,DBLP:conf/sp/Meadows99"
+
+\end_inset
+
+, pointing out weaknesses in both standards.
+ The separation of the sensitive part from the bulk of the IKE protocol
+ seems to be a valuable effort to minimize the working surface of attacks.
+ Nevertheless, the IKEv2 separation protocol described in this paper must
+ still undergo the same formal verification as the original protocols to
+ formally show the delivered security improvements compared to its un-separated
+ ancestor.
 \end_layout
 
 \begin_layout Section
