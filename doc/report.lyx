@@ -827,12 +827,19 @@ reference "sub:Separation-of-key"
 
 \begin_layout Subsection
 Authentication
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Authentication"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 The IKEv2 component must only allow IPSec SAs to be established for peers
- that have succesfully been authenticated.
- The authentication must be performed by the TCB to assure the correctnes
+ that have successfully been authenticated.
+ The authentication must be performed by the TCB to assure the correctness
  of the process.
 \end_layout
 
@@ -1470,8 +1477,8 @@ The
 \end_layout
 
 \begin_layout Standard
-Child keys are derived from the SKEYSEED value resulting from the Diffie-Hellman
- exchange after the IKE_SA_INIT messages.
+Child keys are derived from the shared secret value resulting from the Diffie-He
+llman exchange after the IKE_SA_INIT messages.
  Therefore the TKM MUST implement the DH protocol and provides the public
  
 \begin_inset Formula $KE$
@@ -3278,206 +3285,6 @@ key "Aciicmez:2007:PSB:1229285.1266999"
  SK, special algos for crypto).
 \end_layout
 
-\begin_layout Section
-TKM Functionality
-\end_layout
-
-\begin_layout Subsection
-Nonce generation
-\end_layout
-
-\begin_layout Subsection
-Diffie Hellman
-\end_layout
-
-\begin_layout Subsection
-Key derivation
-\end_layout
-
-\begin_layout Standard
-Only aes256-sha512 atm
-\end_layout
-
-\begin_layout Subsection
-Signature generation
-\end_layout
-
-\begin_layout Subsection
-Signature verification
-\end_layout
-
-\begin_layout Subsection
-Certificate chain validation
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/trustchain-validation-overview.svg
-	width 85text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-TKM trustchain validation overview
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:TKM-trustchain-validation-overview"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/trustchain-validation-set-user.svg
-	width 70text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-TKM trustchain set user certificate
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:TKM-trustchain-set-user"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/trustchain-validation-add-cert.svg
-	width 70text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-TKM trustchain add certificates
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:TKM-trustchain-add-certs"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/trustchain-validation-check-ca.svg
-	width 70text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-TKM trustchain check CA
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:TKM-trustchain-check-ca"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Derivation of key material
-\end_layout
-
 \begin_layout Chapter
 TKM interface
 \end_layout
@@ -5009,6 +4816,13 @@ add_sa
 
 \begin_layout Subsection
 Bus listener plugin
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:charon-Bus-listener-plugin"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5153,6 +4967,1453 @@ Charon_Terminate
 
 \begin_layout Section
 TKM
+\end_layout
+
+\begin_layout Standard
+The TKM component implements a minimal trusted key manager as depicted in
+ figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Split-of-IKE"
+
+\end_inset
+
+ on page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "fig:Split-of-IKE"
+
+\end_inset
+
+.
+ It provides the critical functionality extracted from the strongSwan code
+ base as explained in section TODO.
+ The TKM is written in the Ada programming language and uses the tkm-rpc
+ library described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:xfrm-ada"
+
+\end_inset
+
+ to provide the IKE interface (TODO) via remote procedure calls.
+ 
+\end_layout
+
+\begin_layout Standard
+The dispatching of incoming calls is done by providing a custom IKE server
+ implementation (
+\family typewriter
+Tkmrpc.Servers.Ike
+\family default
+).
+ From there the calls are forwarded to the appropriate subsystems explained
+ in the following sections.
+\end_layout
+
+\begin_layout Subsection
+Nonce generation
+\end_layout
+
+\begin_layout Standard
+Nonces are used to guarantee freshness in the cryptographic operations used
+ to derive keying material.
+ Hence nonce values must be random and must not be predictable.
+ The nonce handling is implemented in the 
+\family typewriter
+Tkm.Servers.Ike.Nonce
+\family default
+ package.
+\end_layout
+
+\begin_layout Standard
+Currently, 
+\family typewriter
+/dev/urandom
+\family default
+ is used as random source inside the TKM.
+ The quality of randomness provided by this source is considered strong
+ enough for the current initial iteration.
+ The design is such that the implementation could be easily replaced by
+ a stronger random source at a later time.
+\end_layout
+
+\begin_layout Standard
+The TKM guarantees that nonces are consumed once and can not be reused,
+ as specified by requirement TODO.
+ This is done using the auto-generated nonce FSM explained in section TODO.
+ Each nonce is an instantiation of such a FSM.
+ If the client requests to create a new context with a nonce ID which is
+ already created, an assertion exception is raised and an error status is
+ returned to the requester.
+\end_layout
+
+\begin_layout Subsection
+Diffie-Hellman
+\end_layout
+
+\begin_layout Standard
+Keying material used to protect a child SA is derived from the shared secret
+ computed by a Diffie-Hellman exchange.
+ This keying material is considered the most sensitive and must therefore
+ reside in the TCB only.
+ From this requirement follows that the TKM must implement the Diffie-Hellman
+ protocol to perform the exchange on behalf of clients like the untrusted
+ charon-tkm daemon.
+\end_layout
+
+\begin_layout Standard
+Currently the TKM provides a Diffie-Hellman implementation for the 3072-bit
+ and 4096-bit MODP Diffie-Hellman groups explained in RFC 3526 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc3526"
+
+\end_inset
+
+ using the The GNU Multiple Precision Arithmetic Library
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://gmplib.org/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+, for which an Ada binding exists
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://mtn-host.prjek.net/projects/libgmpada/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+An active DH exchange is stored in a DH FSM introduced in section TODO.
+ The FSM pre- and postconditions assure that only valid states and transitions
+ are allowed during an exchange.
+ If the protocol specified by the DH FSM is violated, an assertion exception
+ is raised and the requester is informed about the violation.
+ DH contexts can only be consumed if they are in 'generated' state as shown
+ by the state machine diagram TODO.
+\end_layout
+
+\begin_layout Subsection
+Key derivation
+\end_layout
+
+\begin_layout Standard
+The TKM implements the procedures needed to derive IKE and child keys as
+ described by the following subsections.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+IKE SA keys
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:IKE-SA-keys"
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:IKE-SA-keys"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The IKE SA (ISA) key derivation functionality in the TKM implements the
+ mechanism described in RFC 5996 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc5996"
+
+\end_inset
+
+, section 2.14.
+ To derive keys for an IKE SA, the derivation function first retrieves the
+ associated DH and nonce contexts which must be in the correct state, otherwise
+ an exception is raised.
+ It then instantiates a pseudo-random function (PRF
+\begin_inset Index idx
+status collapsed
+
+\begin_layout Plain Layout
+PRF
+\end_layout
+
+\end_inset
+
+) needed to generate the SKEYSEED value as shown by formula 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:skeyseed"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+SKEYSEED=prf(Ni|Nr,shared\, secret)\label{eq:skeyseed}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The TKM provides a PRF which uses a hash-based message authentication code
+ (HMAC
+\begin_inset Index idx
+status collapsed
+
+\begin_layout Plain Layout
+HMAC
+\end_layout
+
+\end_inset
+
+) as base.
+ The HMAC functionality is implemented as a flexible Ada generic which can
+ be instantiated using different hash functions.
+ The TKM currently does not implement it's own hash functions but instead
+ re-uses the ones provided by GNAT.
+ The HMAC generic is instantiated as shown by listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:tkm-hmac-sha512"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Ada"
+inline false
+status collapsed
+
+\begin_layout Plain Layout
+
+package Tkm.Crypto.Hmac_Sha512 is new Tkm.Crypto.Hmac
+\end_layout
+
+\begin_layout Plain Layout
+
+  (Hash_Block_Size => 128,
+\end_layout
+
+\begin_layout Plain Layout
+
+   Hash_Length     => 64,
+\end_layout
+
+\begin_layout Plain Layout
+
+   Hash_Ctx_Type   => GNAT.SHA512.Context,
+\end_layout
+
+\begin_layout Plain Layout
+
+   Initial_Ctx     => GNAT.SHA512.Initial_Context,
+\end_layout
+
+\begin_layout Plain Layout
+
+   Update          => GNAT.SHA512.Update,
+\end_layout
+
+\begin_layout Plain Layout
+
+   Digest          => GNAT.SHA512.Digest); 
+\begin_inset Caption
+
+\begin_layout Plain Layout
+TKM HMAC SHA-512
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:tkm-hmac-sha512"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To derive the IKE SA keys, the 
+\begin_inset Formula $prf+$
+\end_inset
+
+ function as specified in RFC 5996 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc5996"
+
+\end_inset
+
+, section 2.13 is required.
+ This functionality is again provided by an Ada generic, which can be instantiat
+ed using different PRF contexts matching the required signature.
+ The 
+\begin_inset Formula $prf+$
+\end_inset
+
+ function outputs a pseudorandom stream used for IKE SA encryption and integrity
+ keys.
+ The keys are returned to the untrusted caller as they are not considered
+ critical itself.
+ This is true under the assumption that the PRF function used to generate
+ the keys is strong enough to make it impossible to reverse the process
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+The TKM currently uses PRF-HMAC-SHA512 as PRF for the 
+\begin_inset Formula $prf+$
+\end_inset
+
+ function
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+An authentication context is created alongside the ISA context after the
+ IKE SA keying material has been successfully derived.
+ This AE context must first be authenticated properly until child SA keys
+ can be derived (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Signature-verification"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Subsubsection
+Child SA keys
+\end_layout
+
+\begin_layout Standard
+The process of deriving keying material for a child SA is described in RFC
+ 5996 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc5996"
+
+\end_inset
+
+, section 2.17.
+ The TKM only allows the derivation of child keys if the associated authenticati
+on context (AE) is in the 'authenticated' state:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Ada"
+inline false
+status collapsed
+
+\begin_layout Plain Layout
+
+pragma Precondition (Tkmrpc.Contexts.ae.Has_State
+\end_layout
+
+\begin_layout Plain Layout
+
+   (Id    => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
+\end_layout
+
+\begin_layout Plain Layout
+
+    State => Tkmrpc.Contexts.ae.authenticated)); 
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Create_Esa precondition
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:tkm-create-esa-precondition"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The actual keying material for the child SA is derived using the 
+\begin_inset Formula $prf+$
+\end_inset
+
+ function described in the previous section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:IKE-SA-keys"
+
+\end_inset
+
+.
+ Currently the TKM only supports PRF_HMAC_SHA512 as base for the 
+\begin_inset Formula $prf+$
+\end_inset
+
+, so the untrusted charon-tkm counterpart and the remote peer involved in
+ the connection must be configured accordingly.
+ The keys derived are pushed into the kernel's SA database (SAD
+\begin_inset Index idx
+status collapsed
+
+\begin_layout Plain Layout
+SAD
+\end_layout
+
+\end_inset
+
+) using functionality provided by the xfrm-ada project described in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:xfrm-ada"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The TKM supports different configurations for ESA creation only differing
+ in the way related nonce and DH contexts are consumed.
+ The first child SA of a connection does not depend on nonce or DH contexts
+ at all, because it is derived in conjunction with its IKE SA.
+ Then there is the configuration where no PFS
+\begin_inset Index idx
+status collapsed
+
+\begin_layout Plain Layout
+PFS
+\end_layout
+
+\end_inset
+
+ is desired, so no new DH context must be created beforehand.
+ TODO: cleanup, elaborate more
+\end_layout
+
+\begin_layout Subsection
+Private key
+\end_layout
+
+\begin_layout Standard
+The TKM only supports authentication schemes based on asymmetric cryptography.
+ To create a signature using such a scheme, a private key is needed.
+ The key to use can be specified on the command line using the 
+\family typewriter
+-k
+\family default
+ option.
+ The TKM expects the key to be a RSA PCKS#1 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc3447"
+
+\end_inset
+
+ private key in DER
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.itu.int/ITU-T/x.690
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ encoding and is loaded into the 
+\family typewriter
+Tkm.Private_Key
+\family default
+ package where it can be retrieved using a getter function.
+ The functionality to load and parse the private key is provided by the
+ x509-ada project described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:x509-Ada"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+CA certificate
+\end_layout
+
+\begin_layout Standard
+To establish assurance in a user certificate provided by a remote peer,
+ the trust chain of this certificate must be verified (see the following
+ section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Certificate-chain-validation"
+
+\end_inset
+
+).
+ Hence the TKM needs a trust anchor which is embodied in a certificate authority
+ (CA
+\begin_inset Index idx
+status collapsed
+
+\begin_layout Plain Layout
+CA
+\end_layout
+
+\end_inset
+
+).
+ Currently the TKM only trusts one CA certificate which can be specified
+ on the command line using the 
+\family typewriter
+-c
+\family default
+ option.
+ The CA certificate in X.509 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc5280"
+
+\end_inset
+
+ format is loaded into the 
+\family typewriter
+Tkm.Ca_Cert
+\family default
+ package using the x509-ada (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:x509-Ada"
+
+\end_inset
+
+) project.
+ The 
+\family typewriter
+Load
+\family default
+ procedure of the package checks the validity of the CA certificate and
+ raises an exception if it is not valid.
+\end_layout
+
+\begin_layout Subsection
+Authentication
+\end_layout
+
+\begin_layout Standard
+As dictated by the requirement described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Authentication"
+
+\end_inset
+
+, the authentication process must be performed by the TKM to assure the
+ correctness of the process.
+ The following sections outline the implemented mechanisms in detail.
+\end_layout
+
+\begin_layout Subsubsection
+Signature generation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Signature-generation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The TKM implements the RSASSA-PKCS1-v1_5 signature scheme with appendix
+ as specified by RFC 3447 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc3447"
+
+\end_inset
+
+, section 8.2.
+ The functionality is provided as Ada generic, allowing the instantiation
+ with different hashing algorithms.
+ Already instantiated instances are provided for SHA-1 and SHA-256 hash
+ algorithms.
+ The listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:tkm-signature-generation"
+
+\end_inset
+
+ shows how to create a signature using the PKCS#1 private key given on the
+ command line.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Ada"
+inline false
+status collapsed
+
+\begin_layout Plain Layout
+
+declare
+\end_layout
+
+\begin_layout Plain Layout
+
+   use X509.Keys;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   package RSA renames Crypto.Rsa_Pkcs1_Sha1;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   Signer  : RSA.Signer_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Privkey : constant RSA_Private_Key_Type 
+\end_layout
+
+\begin_layout Plain Layout
+
+      := Private_Key.Get;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Chunk   : Tkmrpc.Types.Byte_Sequence (1 ..
+ 5)
+\end_layout
+
+\begin_layout Plain Layout
+
+      := (others => 10);
+\end_layout
+
+\begin_layout Plain Layout
+
+begin
+\end_layout
+
+\begin_layout Plain Layout
+
+   RSA.Init 
+\end_layout
+
+\begin_layout Plain Layout
+
+    (Ctx   => Signer,
+\end_layout
+
+\begin_layout Plain Layout
+
+     N     => Get_Modulus (Key => Privkey),
+\end_layout
+
+\begin_layout Plain Layout
+
+     E     => Get_Pub_Exponent (Key => Privkey),
+\end_layout
+
+\begin_layout Plain Layout
+
+     D     => Get_Priv_Exponent (Key => Privkey),
+\end_layout
+
+\begin_layout Plain Layout
+
+     P     => Get_Prime_P (Key => Privkey),
+\end_layout
+
+\begin_layout Plain Layout
+
+     Q     => Get_Prime_Q (Key => Privkey),
+\end_layout
+
+\begin_layout Plain Layout
+
+     Exp1  => Get_Exponent1 (Key => Privkey),
+\end_layout
+
+\begin_layout Plain Layout
+
+     Exp2  => Get_Exponent2 (Key => Privkey),
+\end_layout
+
+\begin_layout Plain Layout
+
+     Coeff => Get_Coefficient (Key => Privkey));
+\end_layout
+
+\begin_layout Plain Layout
+
+   declare
+\end_layout
+
+\begin_layout Plain Layout
+
+      Sig : constant Tkmrpc.Types.Byte_Sequence
+\end_layout
+
+\begin_layout Plain Layout
+
+         := RSA.Generate (Ctx  => Signer,
+\end_layout
+
+\begin_layout Plain Layout
+
+                          Data => Octets);
+\end_layout
+
+\begin_layout Plain Layout
+
+   begin
+\end_layout
+
+\begin_layout Plain Layout
+
+      --  Do something with the signature
+\end_layout
+
+\begin_layout Plain Layout
+
+   end;
+\end_layout
+
+\begin_layout Plain Layout
+
+end;
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Signature generation
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:tkm-signature-generation"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+On Line 4 a RSA signer is instantiated.
+ Line 5 retrieves the private key stored in the 
+\family typewriter
+Tkm.Private_Key
+\family default
+ package and uses the parameters of this key to initialize the RSA signer
+ on line 10.
+ Finally, on line 21 the signature over the given data chunk is created
+ using the 
+\family typewriter
+Generate
+\family default
+ procedure of the RSA package.
+\end_layout
+
+\begin_layout Standard
+The same code is used to create a signature over the local AUTH octet chunk
+ during the IKE_AUTH exchange, as described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:flow-IKE_AUTH"
+
+\end_inset
+
+.
+ The charon IKEv2 daemon currently only supports AUTH octet signatures based
+ on the SHA-1 hash algorithm, this must be improved in a future iteration
+ so that other hash algorithms are possible.
+\end_layout
+
+\begin_layout Subsubsection
+Signature verification
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Signature-verification"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Similar to the signature generation outlined in the previous section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Signature-generation"
+
+\end_inset
+
+, the TKM provides an Ada generic to verify RSASSA-PKCS1-v1_5 signatures
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc3447"
+
+\end_inset
+
+.
+ To perform a verification, a 
+\family typewriter
+RSA.Verifier_Type
+\family default
+ must be initialized using a public key extracted from a trusted certificate.
+ The process of trust chain verification is explained in detail in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Certificate-chain-validation"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+During the IKE_AUTH exchange, the identity of a remote peer must be asserted.
+ This is done by verifying the remote AUTH octet signature.
+ If the signature validates, the authentication context (AE) of the IKE
+ SA in question is set into the 'authenticated' state, meaning that it is
+ now possible to establish child SAs (ESA) under this IKE SA (ISA).
+\end_layout
+
+\begin_layout Subsubsection
+Certificate chain validation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Certificate-chain-validation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:TKM-trustchain-validation-overview"
+
+\end_inset
+
+ provides an overview of the steps performed to establish trust in the user
+ certificate provided by a peer during the IKE_AUTH exchange.
+ The chosen example involves three certificates: The user certificate 
+\emph on
+A
+\emph default
+, the intermediate CA certificate 
+\emph on
+B
+\emph default
+ and the trusted 
+\emph on
+CA
+\emph default
+.
+ The goal of the process is to link the user's X.509 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc5280"
+
+\end_inset
+
+ certificate 
+\emph on
+A
+\emph default
+ to the 
+\emph on
+CA
+\emph default
+ trusted by the TKM.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/trustchain-validation-overview.svg
+	width 70text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+TKM trustchain validation overview
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:TKM-trustchain-validation-overview"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The user certificate depicted as certificate 
+\emph on
+A
+\emph default
+ in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:TKM-trustchain-validation-overview"
+
+\end_inset
+
+ must be validated using the intermediate CA certificate 
+\emph on
+B
+\emph default
+ and the intermediate certificate 
+\emph on
+B
+\emph default
+ must be validated using the trusted 
+\emph on
+CA
+\emph default
+ certificate.
+ Validation in the context of a certificate trust chain means to perform
+ the following steps:
+\end_layout
+
+\begin_layout Enumerate
+Checking the validity period of the certificate: The current time (
+\family typewriter
+Now
+\family default
+) must be within this period as illustrated by listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:tkm-certificate-validity-check"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Verify the signature stored in the certificate by using the public key of
+ the subsequent certificate (the issuer certificate).
+\end_layout
+
+\begin_layout Enumerate
+TODO: additional checks? Issuer etc
+\end_layout
+
+\begin_layout Standard
+\SpecialChar \textcompwordmark{}
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Ada"
+inline false
+status collapsed
+
+\begin_layout Plain Layout
+
+function Is_Valid (V : Validity_Type) return Boolean
+\end_layout
+
+\begin_layout Plain Layout
+
+is
+\end_layout
+
+\begin_layout Plain Layout
+
+   use Ada.Calendar;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Now : constant Time := Clock;
+\end_layout
+
+\begin_layout Plain Layout
+
+begin
+\end_layout
+
+\begin_layout Plain Layout
+
+   return V.Not_Before < Now and then Now < V.Not_After;
+\end_layout
+
+\begin_layout Plain Layout
+
+end Is_Valid;
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Certificate validity check
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:tkm-certificate-validity-check"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To initiate the trust chain validation process in the TKM, a new CC context
+ must be instantiated by calling the 
+\family typewriter
+Cc_Set_User_Certificate
+\family default
+ RPC as illustrated by figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:TKM-trustchain-set-user"
+
+\end_inset
+
+.
+ This call stores the user certificate in the CC for which trust must be
+ established.
+ Before storing the user certificate in the context, the validity is checked.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/trustchain-validation-set-user.svg
+	width 60text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+TKM trustchain set user certificate
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:TKM-trustchain-set-user"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Intermediate CAs and the final CA are added to the CC context by calling
+ the 
+\family typewriter
+Cc_Add_Certificate
+\family default
+ remote procedure call as shown by figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:TKM-trustchain-add-certs"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/trustchain-validation-add-cert.svg
+	width 60text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+TKM trustchain add certificates
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:TKM-trustchain-add-certs"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The TKM checks the validity of the intermediate CA (certificate 
+\emph on
+B
+\emph default
+ in this example) and performs a signature verification of the signature
+ stored in the user certificate 
+\emph on
+A
+\emph default
+ using the public key of 
+\emph on
+B
+\emph default
+.
+ The signature is checked using a RSA verifier as explained in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Signature-verification"
+
+\end_inset
+
+.
+ If the signature verifies, the intermediate certificate 
+\emph on
+B
+\emph default
+ is stored in the context along with the user certificate 
+\emph on
+A
+\emph default
+.
+ The 
+\family typewriter
+Cc_Add_Certificate
+\family default
+ procedure must be called multiple times for all intermediate CAs in the
+ trust chain and also for the final root CA.
+ The ordering of certificates delivered to the TKM is performed by the charon-tk
+m bus listener plugin described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:charon-Bus-listener-plugin"
+
+\end_inset
+
+.
+ If the ordering is incorrect, the verification of the chain fails and the
+ IKE SA can not be authenticated.
+\end_layout
+
+\begin_layout Standard
+The next step is to link the intermediate certificate 
+\emph on
+B
+\emph default
+ with certificate 
+\emph on
+CA
+\emph default
+, which is also handed to the trusted part by charon-tkm using 
+\family typewriter
+Cc_Add_Certificate
+\family default
+.
+ The signature contained in certificate 
+\emph on
+B
+\emph default
+ must be validated using the public key stored in the 
+\emph on
+CA
+\emph default
+ certificate received.
+ If the verification is successful, the last step is to check that the top-level
+ certificate matches the trusted root 
+\emph on
+CA
+\emph default
+, this is done by calling the 
+\family typewriter
+Cc_Check_Ca
+\family default
+ RPC as shown by figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:TKM-trustchain-check-ca"
+
+\end_inset
+
+.
+ The last certificate added by the 
+\family typewriter
+Cc_Add_Certificate
+\family default
+ must be bit-wise identical to the CA trusted by the TKM.
+ If this check succeeds, the CC context is set into the 'checked' state
+ and the context can be used to verify signatures as explained in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Signature-verification"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/trustchain-validation-check-ca.svg
+	width 60text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+TKM trustchain check CA
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:TKM-trustchain-check-ca"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Kernel SPD/SAD management
+\end_layout
+
+\begin_layout Standard
+Since the Linux kernel stores sensitive keying material in its security-associat
+ion database, the untrusted part is not allowed to access these databases.
+ This must be assured by security mechanisms which are outside of the scope
+ of this document.
+ As a result, the TKM must manage the kernel's security-policy (SPD
+\begin_inset Index idx
+status collapsed
+
+\begin_layout Plain Layout
+SPD
+\end_layout
+
+\end_inset
+
+) and security-association (SAD
+\begin_inset Index idx
+status collapsed
+
+\begin_layout Plain Layout
+SAD
+\end_layout
+
+\end_inset
+
+) databases itself.
+\end_layout
+
+\begin_layout Standard
+The xfrm-ada project (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:xfrm-ada"
+
+\end_inset
+
+), which has been developed during this TKM project, is used to install
+ security policies on TKM startup and also to manage SA states.
 \end_layout
 
 \begin_layout Section
@@ -5417,6 +6678,13 @@ http://git.codelabs.ch/?p=xfrm-ada.git
 
 \begin_layout Subsection
 x509-Ada
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:x509-Ada"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
