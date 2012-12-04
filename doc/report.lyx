@@ -149,8 +149,12 @@ theorems-ams
 \begin_body
 
 \begin_layout Title
-IKE Separation – Extraction of security critical components into a Trusted
- Computing Base (TCB)
+IKEv2 Separation:
+\begin_inset Newline newline
+\end_inset
+
+Extraction of security critical components into a Trusted Computing Base
+ (TCB)
 \end_layout
 
 \begin_layout Author
