@@ -6296,7 +6296,7 @@ isa_info_t
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "language=C"
+lstparams "float,language=C"
 inline false
 status open
 
@@ -6404,7 +6404,7 @@ reference "lis:Piggybacking"
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "language=C"
+lstparams "float,language=C"
 inline false
 status open
 
@@ -7106,13 +7106,6 @@ name "sub:IKE-SA-keys"
 \end_inset
 
 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:IKE-SA-keys"
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -7188,9 +7181,9 @@ reference "lis:tkm-hmac-sha512"
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "language=Ada"
+lstparams "float,language=Ada"
 inline false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -7323,9 +7316,9 @@ on context (AE) is in the 'authenticated' state:
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "language=Ada"
+lstparams "float,language=Ada"
 inline false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -7592,9 +7585,9 @@ reference "lis:tkm-signature-generation"
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "language=Ada"
+lstparams "float,language=Ada"
 inline false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -7995,15 +7988,10 @@ TODO: additional checks? Issuer etc
 \end_layout
 
 \begin_layout Standard
-\SpecialChar \textcompwordmark{}
-
-\end_layout
-
-\begin_layout Standard
 \begin_inset listings
-lstparams "language=Ada"
+lstparams "float,language=Ada"
 inline false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
