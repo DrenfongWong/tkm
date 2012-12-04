@@ -6,6 +6,7 @@
 \begin_preamble
 \usepackage{tabu,longtable}
 \usepackage{booktabs}
+\usepackage{ifthen}
 
 \definecolor{newyellow}{rgb}{1,1,0.8}
 \definecolor{colKeys}{rgb}{0,0,1}
@@ -61,7 +62,17 @@
 \midrule
 }{\bottomrule
 \end{longtabu}}
+\newenvironment{messages}{\bigskip
+\begin{tabu} to \textwidth{l>{\tt}c>{\tt}ccc>{\it}X}}
+{\end{tabu}\bigskip}
+\newcommand{\msg}[4]{\ifthenelse{\equal{#1}{}}{}{#1\quad }
+& \texttt{#2}
+& \ifthenelse{\equal{#3}{}}{}{$\rightarrow$}
+& \texttt{#3}
+& \ifthenelse{\equal{#3}{}}{}{\ :\quad}
+& \it{#4}\\}
 \newcommand{\hex}[1]{\textrm{0x#1}}
+\newcommand{\subscript}[1]{\ensuremath{_{\textrm{#1}}}}
 \end_preamble
 \use_default_options true
 \begin_modules
@@ -3083,6 +3094,13 @@ Nonces play an important role and guarantee freshness.
 
 \begin_layout Subsection
 Handling of key material (creation/storage)
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Handling-of-key"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3289,24 +3307,1205 @@ key "Aciicmez:2007:PSB:1229285.1266999"
 TKM interface
 \end_layout
 
+\begin_layout Standard
+This chapter specifies the interface between the trusted and the untrusted
+ parts of the system.
+ In a first step an overview of the communication between IKE and TKM is
+ given by describing how the main operations of IKE are achieved through
+ the usage of the services provided by the interface.
+ After the abstract illustration of the protocol, the data types and constants
+ are specified.
+ These are the building blocks of the message exchanges which are described
+ in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Exchanges"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+TODO: Are state machines really part of the interface or are they part of
+ how the TKM server-side of the interface is implemented?
+\end_layout
+
 \begin_layout Section
 Protocol overview
+\end_layout
+
+\begin_layout Standard
+This section gives an overview of the main IKE operations: creation and
+ rekeying of IKE and Child SAs.
+ The description presents the success case and specifies which parameters
+ are passed back and forth between IKE and the TKM using the exchanges specified
+ in the chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:IKE-Exchanges"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In the illustrated negotiation of SAs with the peer IKE is assuming the
+ role of the initiator of the exchanges.
+ The responder case varies only slightly and is thus not presented here.
+ Where necessary the exchanges provide a parameter called 
+\shape italic
+
+\begin_inset Quotes eld
+\end_inset
+
+initiator
+\begin_inset Quotes erd
+\end_inset
+
+
+\shape default
+ which is used to specify whether IKE is the initiator or responder of an
+ IKEv2 message exchange with the remote peer.
+\end_layout
+
+\begin_layout Standard
+Note that child SA and ESP
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ESP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Encapsulating Security Payload is part of the IPsec protocol suite and provides
+ authenticity, integrity and confidentiality of data packets.
+\end_layout
+
+\end_inset
+
+ SA are used interchangeably.
 \end_layout
 
 \begin_layout Subsection
 Creation of an IKE SA
 \end_layout
 
+\begin_layout Standard
+In a first step the client gets a nonce and a Diffie Hellman public value
+ from the TKM using the 
+\family typewriter
+nc_create
+\family default
+ and 
+\family typewriter
+dh_create
+\family default
+ operations:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{nc
+\backslash
+_create}{IKE}{TKM}{nc
+\backslash
+_id}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{}{TKM}{IKE}{Ni}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{dh
+\backslash
+_create}{IKE}{TKM}{dh
+\backslash
+_id, dh
+\backslash
+_group}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{}{TKM}{IKE}{KEi}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The IKE daemon then initiates an IKE SA exchange with the remote peer, which
+ is described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:proto-IKE_SA_INIT"
+
+\end_inset
+
+.
+ Upon receipt of the peer's response the Diffie Hellman shared secret can
+ be calculated.
+ Thus IKE issues the 
+\family typewriter
+dh_generate_key
+\family default
+ operation:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{dh
+\backslash
+_generate
+\backslash
+_key}{IKE}{TKM}{dh
+\backslash
+_id, KEr}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TKM performs the calculation and stores the DH key for future consumption.
+ No data other than the status code of the operation is passed back to IKE.
+\end_layout
+
+\begin_layout Standard
+Using the previously created nonce and Diffie Hellman value plus the nonce
+ (
+\shape italic
+Nr
+\shape default
+) received from the remote peer, a new IKE SA is created:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{isa
+\backslash
+_create}{IKE}{TKM}{isa
+\backslash
+_id, ae
+\backslash
+_id, ia
+\backslash
+_id, dh
+\backslash
+_id, nc
+\backslash
+_id, Nr, init, spi
+\backslash
+subscript{local}, spi
+\backslash
+subscript{rem}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{}{TKM}{IKE}{sk
+\backslash
+_ai, sk
+\backslash
+_ar, sk
+\backslash
+_ei, sk
+\backslash
+_er}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The returned encryption and integrity protection keys can now be used by
+ the IKE daemon to send encrypted and integrity protected IKEv2 messages
+ to the remote peer.
+ For a consideration of why these keys can be handed out by TKM to the untrusted
+ side, please refer to section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Handling-of-key"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+To authenticate itself to the remote peer the IKE daemon requests signed
+ local authentication data from TKM using the 
+\family typewriter
+isa_sign
+\family default
+ exchange:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{isa
+\backslash
+_sign}{IKE}{TKM}{isa
+\backslash
+_id, lc
+\backslash
+_id, init
+\backslash
+_message}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{}{TKM}{IKE}{AUTH
+\backslash
+subscript{local}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In possesion of the necessary data and keys, the IKE_AUTH protocol step,
+ described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:proto-IKE_AUTH"
+
+\end_inset
+
+, is performed with the remote peer.
+\end_layout
+
+\begin_layout Standard
+Upon reception of the peer's response the IKE daemon starts to validate
+ the certificate chain of the remote peer certificate 
+\shape italic
+CERT
+\shape default
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{cc
+\backslash
+_set
+\backslash
+_user
+\backslash
+_certificate}{IKE}{TKM}{cc
+\backslash
+_id, ri
+\backslash
+_id, autha
+\backslash
+_id, CERT}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Each certificate in the chain is added by issuing the 
+\family typewriter
+cc_add_certificate
+\family default
+ operation:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{cc
+\backslash
+_add
+\backslash
+_certificate}{IKE}{TKM}{cc
+\backslash
+_id, autha
+\backslash
+_id, CERT}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Once the root of the certificate chain is reached it must be asserted that
+ the CA is trusted.
+ This is done using the 
+\family typewriter
+cc_check_ca
+\family default
+ exchange:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{cc
+\backslash
+_check
+\backslash
+_ca}{IKE}{TKM}{cc
+\backslash
+_id, ca
+\backslash
+_id}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After successful verification of the remote certificate, IKE can authenticate
+ the peer:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{isa
+\backslash
+_auth}{IKE}{TKM}{isa
+\backslash
+_id, cc
+\backslash
+_id, init
+\backslash
+_message, AUTH
+\backslash
+subscript{remote}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As a final step the first child SA can be created issuing the 
+\family typewriter
+esa_create_first
+\family default
+ exchange:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{esa
+\backslash
+_create
+\backslash
+_first}{IKE}{TKM}{esa
+\backslash
+_id, isa
+\backslash
+_id, sp
+\backslash
+_id, ea
+\backslash
+_id, esp
+\backslash
+_spi
+\backslash
+subscript{local}, esp
+\backslash
+_spi
+\backslash
+subscript{remote}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With this exchange processed successfully by TKM, IKE has established an
+ IKE and one ESP SA which can be used to encrypt application data according
+ to the associated security policy identified by 
+\shape italic
+sp_id
+\shape default
+.
+\end_layout
+
 \begin_layout Subsection
 Creation of a Child SA
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Child-SA-creation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Creating a child SA is quite similar to creating an IKE SA.
+ All steps related to peer authentication can be omitted since the remote
+ identity has already been authenticated.
+\end_layout
+
+\begin_layout Standard
+To create a new child SA with perfect forward secrecy (PFS) a fresh nonce
+ and Diffie Hellman value must be created:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{nc
+\backslash
+_create}{IKE}{TKM}{nc
+\backslash
+_id}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{}{TKM}{IKE}{Ni}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{dh
+\backslash
+_create}{IKE}{TKM}{dh
+\backslash
+_id, dh
+\backslash
+_group}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{}{TKM}{IKE}{KEi}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The IKE daemon then initiates a CREATE_CHILD_SA exchange with the remote
+ peer (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:proto-CREATE_CHILD_SA"
+
+\end_inset
+
+).
+ Upon receipt of the peer's response the Diffie Hellman shared secret is
+ calculated by issuing the 
+\family typewriter
+dh_generate_key
+\family default
+ operation:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{dh
+\backslash
+_generate
+\backslash
+_key}{IKE}{TKM}{dh
+\backslash
+_id, KEr}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TKM performs the calculation and stores the DH key for future consumption.
+ Only the status code of the operation is passed back to IKE.
+\end_layout
+
+\begin_layout Standard
+Finally the child SA can be created using the 
+\family typewriter
+esa_create
+\family default
+ operation:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{esa
+\backslash
+_create}{IKE}{TKM}{esa
+\backslash
+_id, isa
+\backslash
+_id, sp
+\backslash
+_id, ea
+\backslash
+_id, dh
+\backslash
+_id, nc
+\backslash
+_id, Nr, initiator, esp
+\backslash
+_spi
+\backslash
+subscript{local}, esp
+\backslash
+_spi
+\backslash
+subscript{rem}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After this final step the IKE daemon has successfully established a new
+ child SA.
 \end_layout
 
 \begin_layout Subsection
 Rekeying of an IKE SA
 \end_layout
 
+\begin_layout Standard
+An IKE SA is rekeyed by replacing it with a new IKE SA.
+ For this purpose a fresh nonce and a DH public value is needed:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{nc
+\backslash
+_create}{IKE}{TKM}{nc
+\backslash
+_id}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{}{TKM}{IKE}{Ni}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{dh
+\backslash
+_create}{IKE}{TKM}{dh
+\backslash
+_id, dh
+\backslash
+_group}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{}{TKM}{IKE}{KEi}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The IKE daemon then initiates a CREATE_CHILD_SA exchange to rekey the existing
+ IKE SA with the peer.
+ Upon receipt of the peers response the Diffie Hellman shared secret can
+ be calculated:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{dh
+\backslash
+_generate
+\backslash
+_key}{IKE}{TKM}{dh
+\backslash
+_id, KEr}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Rekeying of the IKE SA, identified by 
+\shape italic
+parent_isa_id
+\shape default
+, is performed using the 
+\family typewriter
+isa_create_child
+\family default
+ operation:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{isa
+\backslash
+_create
+\backslash
+_child}{IKE}{TKM}{isa
+\backslash
+_id, parent
+\backslash
+_isa
+\backslash
+_id, ia
+\backslash
+_id, dh
+\backslash
+_id, nc
+\backslash
+_id, Nr, initiator, spi
+\backslash
+subscript{local}, spi
+\backslash
+subscript{rem}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{}{TKM}{IKE}{sk
+\backslash
+_ai, sk
+\backslash
+_ar, sk
+\backslash
+_ei, sk
+\backslash
+_er}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TKM returns the new encryption and integrity keys of the new IKE SA, which
+ from this point on is used to exchange IKEv2 messages with the remote peer.
+\end_layout
+
+\begin_layout Standard
+To effectively complete the rekeying operation, the superseded IKE SA must
+ be reset:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{isa
+\backslash
+_reset}{IKE}{TKM}{isa
+\backslash
+_id
+\backslash
+subscript{old}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that 
+\shape italic
+isa_id
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+subscript{old}
+\end_layout
+
+\end_inset
+
+
+\shape default
+ is the same as the 
+\shape italic
+parent_isa_id
+\shape default
+ used in the 
+\family typewriter
+isa_create_child
+\family default
+ operation.
+\end_layout
+
 \begin_layout Subsection
 Rekeying of a Child SA
+\end_layout
+
+\begin_layout Standard
+A child SA is rekeyed by replacing it with a new child SA.
+ In order to achieve this, the steps described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Child-SA-creation"
+
+\end_inset
+
+ must be performed.
+ After the new child SA has been established the new SA must be selected,
+ making it the for ESP encryption:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{esa
+\backslash
+_select}{IKE}{TKM}{esa
+\backslash
+_id}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The only thing left to do is to reset the old, rekeyed child SA:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{esa
+\backslash
+_reset}{IKE}{TKM}{esa
+\backslash
+_id
+\backslash
+subscript{old}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -3315,11 +4514,37 @@ Data types and constants
 
 \begin_layout Standard
 This section presents the data types and constants that are used in the
- description of the TKM interface.
+ specification of the TKM interface.
+ They are referenced in the description of the interface exchanges, which
+ follows in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Exchanges"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
 Integer types
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Integer-types"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These types are numeric integers.
+ Their 
+\family typewriter
+size
+\family default
+ is specified in bytes, which is also the amount of memory an object of
+ such a type consumes.
 \end_layout
 
 \begin_layout Standard
@@ -3337,6 +4562,20 @@ Variable octet types
 \end_layout
 
 \begin_layout Standard
+These types are octet sequences of variable size.
+ 
+\family typewriter
+Data
+\family default
+ is the maximum number of data bytes that can be stored in the octet sequence,
+ while 
+\family typewriter
+size
+\family default
+ is the number of bytes an object of this type occupies in memory.
+\end_layout
+
+\begin_layout Standard
 \begin_inset CommandInset include
 LatexCommand input
 filename "tex/types-varoctets.tex"
@@ -3348,6 +4587,13 @@ filename "tex/types-varoctets.tex"
 
 \begin_layout Subsection
 Constants
+\end_layout
+
+\begin_layout Standard
+The TKM interface specifies various numeric constants, which can be referenced
+ by the IKE daemon or the TKM.
+ All constants are typed which restricts their range of valid values.
+ All constants are given in hexadecimal form.
 \end_layout
 
 \begin_layout Standard
@@ -3379,13 +4625,45 @@ FSM
 ) which have a set of states and transitions between those states.
  The FSM is in a specific state at any given time and can only change its
  state by performing a transition.
- A transition prescribes the state the FSM has to be in, the actions to
- execute and the new target state once the transition has completed.
+ A transition prescribes the source state the FSM has to be in, the actions
+ to execute and the new target state once the transition has completed.
+\end_layout
+
+\begin_layout Standard
+The state machine transitions to a known failure state if an error occurs.
+ To recover from such an error the FSM has to be reinitialized by explicitly
+ performing a reset operation.
 \end_layout
 
 \begin_layout Standard
 The state of the overall TKM system can be interpreted as the sum of the
- state of all FSMs at any given time.
+ states of all FSMs and their associated data at any given time.
+\end_layout
+
+\begin_layout Subsection
+Graph notation
+\end_layout
+
+\begin_layout Standard
+Each state machine is depicted by a diagram.
+ Transitions are drawn as directed arrows from the source to the target
+ state with a label identifying the name of the transition.
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+Reset
+\shape default
+ and 
+\shape italic
+error
+\shape default
+ transitions are treated differently in order to create less cluttered graphs.
+ These two transitions can be triggered from any state so their labels are
+ omitted and their arrows have different styles.
+ Reset transitions are shown using blue lines and error transitions are
+ marked with red dashed lines.
 \end_layout
 
 \begin_layout Standard
@@ -3409,7 +4687,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename images/fsm-nc.svg
-	width 100text%
+	width 57text%
 
 \end_inset
 
@@ -3458,7 +4736,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename images/fsm-dh.svg
-	width 100text%
+	width 85text%
 
 \end_inset
 
@@ -3604,7 +4882,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename images/fsm-isa.svg
-	width 100text%
+	width 72text%
 
 \end_inset
 
@@ -3653,7 +4931,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename images/fsm-esa.svg
-	width 100text%
+	width 85text%
 
 \end_inset
 
@@ -3683,19 +4961,158 @@ ESP SA context state machine
 
 \begin_layout Section
 Exchanges
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Exchanges"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 This section describes all exchanges of the different TKM interfaces.
+ The interface is comprised of two service-specific parts: IKE and ESP Event
+ Service (EES).
+\end_layout
+
+\begin_layout Standard
+Communication is seen as an exchange of request and response message pairs
+ between a client and a server.
+ In the concrete implementation, which is presented in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:charon-tkm"
+
+\end_inset
+
+, the untrusted charon daemon takes the role of the client while TKM is
+ the server of the IKE interface.
+ Contrary charon acts as a server of the EES interface, described in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:charon-EES-Service"
+
+\end_inset
+
+, while the xfrm-proxy (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:xfrm-proxy"
+
+\end_inset
+
+) implements the client side.
+\end_layout
+
+\begin_layout Standard
+Exchanges are allocated an identifier (
+\family typewriter
+operation_type
+\family default
+ defined in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Integer-types"
+
+\end_inset
+
+) which is unique on a per-interface basis.
+\end_layout
+
+\begin_layout Standard
+Requests contain an identifier (
+\family typewriter
+req_id
+\family default
+)
+\shape italic
+ 
+\shape default
+which is chosen by the client of an exchange.
+ The server must set the 
+\family typewriter
+req_id
+\family default
+ of the corresponding response to be identical.
+ This enables the client to match responses to their requests and handle
+ multiple pending exchanges with possible 
+\shape italic
+out-of-order
+\shape default
+ arrival of responses.
+\end_layout
+
+\begin_layout Standard
+The basic layout of a request and response object is show in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Request-and-response"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/request-response-structure.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Request and response structure
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Request-and-response"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
 IKE Exchanges
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:IKE-Exchanges"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 All the following exchanges are used by IKE to communicate with the TKM
- and perform operations related IKE or ESP SA establishment.
+ and perform operations related to IKE or ESP SA establishment.
 \end_layout
 
 \begin_layout Standard
@@ -3930,13 +5347,20 @@ filename "tex/interface-IKE-tkm_reset.tex"
 
 \begin_layout Subsection
 ESP SA Event Service (EES) Exchanges
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:ESP-SA-Event"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 The exchanges specified in this section are used by the xfrm-proxy to communicat
 e with IKE.
- The ESP SA event service (EES) is used to send notifications about ESP
- SA events such as acquire or expiry.
+ EES is used to send notifications about ESP SA events such as acquire or
+ expire.
 \end_layout
 
 \begin_layout Standard
@@ -3999,6 +5423,13 @@ explain the stream dispatcher generic.
 
 \begin_layout Section
 charon-tkm
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:charon-tkm"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6418,6 +7849,12 @@ reference "sub:xfrm-ada"
 
 \begin_layout Section
 xfrm-proxy
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:xfrm-proxy"
+
+\end_inset
+
 \end_layout
 
 \begin_layout Standard
