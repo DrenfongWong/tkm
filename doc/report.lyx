@@ -263,14 +263,6 @@ reference "sub:Threat-model"
 
  explains the threat model the separation of the IKEv2 protocol is trying
  to solve.
- The section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Scope-of-this-doc"
-
-\end_inset
-
- defines the scope of this work.
 \end_layout
 
 \begin_layout Standard
@@ -711,218 +703,6 @@ It is assumed that the stringSwan charon IKEv2 daemon, which is considered
  any data classified as critical.
  Also intermediate values which are needed to create critical values MUST
  be protected from access by untrusted components.
-\end_layout
-
-\begin_layout Section
-Scope of this project
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Scope-of-this-doc"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-What did we omit? OCSP, CRL
-\end_layout
-
-\begin_layout Chapter
-Requirements
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Requirements"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This section outlines the identified requirements of the separated system
- in detail.
- The following section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Security-requirements"
-
-\end_inset
-
- specifies the security requirements, while section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Functional-requirements"
-
-\end_inset
-
- covers the functional requirements.
- Section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Additional-requirements"
-
-\end_inset
-
- describes additional requirements.
-\end_layout
-
-\begin_layout Section
-Security requirements
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Security-requirements"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The security requirements identified in this section specify the properties
- the TCB must enforce even in the event of a complete compromise of the
- untrusted part of the system (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Threat-model"
-
-\end_inset
-
-).
-\end_layout
-
-\begin_layout Subsection
-Separation of key material
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Separation-of-key"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The untrusted part of the IKEv2 component must not have access to generated
- key material that is used for authentication of peers, encryption and integrity
- protection of user data (i.e.
- child SA keys).
- This also includes critical intermediate values, which may result from
- the key generation and key derivation process.
- 
-\end_layout
-
-\begin_layout Standard
-Excluded from the critical material are the keys used to protect the IKE
- SA.
- See section TODO for details.
-\end_layout
-
-\begin_layout Subsection
-Cryptographic operations
-\end_layout
-
-\begin_layout Standard
-All relevant cryptographic operations must be performed by the trusted computing
- base (TCB) to assure the correctness of the resulting values.
- Since key material is needed to perform crypto operations, this is also
- a consequence of the requirement specified in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Separation-of-key"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Subsection
-Authentication
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Authentication"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The IKEv2 component must only allow IPSec SAs to be established for peers
- that have successfully been authenticated.
- The authentication must be performed by the TCB to assure the correctness
- of the process.
-\end_layout
-
-\begin_layout Standard
-The authentication state in the TCB must always be unambiguously associated
- with the corresponding SA.
-\end_layout
-
-\begin_layout Subsection
-Integrity
-\end_layout
-
-\begin_layout Standard
-The security of the IKEv2 component must solely depend on the correct operation
- of the trusted part.
- The security operation of the system must not be violated by a misbehaving
- untrusted part.
-\end_layout
-
-\begin_layout Section
-Functional requirements
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Functional-requirements"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Functional requirements define what a system is trying to accomplish.
- This section ...
-\end_layout
-
-\begin_layout Subsection
-Separation
-\end_layout
-
-\begin_layout Standard
-The IKEv2 component must be separated into a trusted and untrusted part,
- to minimize the size and complexity of the TCB.
- The trusted part must enforce all security requirements specified in section
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Security-requirements"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Subsection
-Communication
-\end_layout
-
-\begin_layout Standard
-The communication protocol between the trusted and untrusted parts must
- be simple, robust and well-defined to allow a verifiable implementation.
- 
-\end_layout
-
-\begin_layout Section
-Additional requirements
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Additional-requirements"
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Chapter
@@ -3053,90 +2833,15 @@ name "fig:IKE-SA-payload-dec"
 
 \end_layout
 
-\begin_layout Section
-Security-critical functionality
-\end_layout
-
-\begin_layout Standard
-TODO: remove this section?
-\end_layout
-
-\begin_layout Standard
-This section maps the identified security requirements defined in section
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Security-requirements"
-
-\end_inset
-
- to the concrete architecture of strongSwan outlined in the previous subsections.
-\end_layout
-
-\begin_layout Subsection
-Key agreement (DH)
-\end_layout
-
-\begin_layout Standard
-No key material must be present in the untrusted part of the system ...
- outline which values are especially important (Xa etc).
-\end_layout
-
-\begin_layout Subsection
-Nonce generation
-\end_layout
-
-\begin_layout Standard
-Nonces play an important role and guarantee freshness.
- TODO: explain.
- The TCB must guarantee the freshness of the local nonce.
-\end_layout
-
-\begin_layout Subsection
-Handling of key material (creation/storage)
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Handling-of-key"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-also intermediate values.
- Howto store them? Wipe and lock memory, limitations (does not work well
- -> use better mechanisms)
-\end_layout
-
-\begin_layout Paragraph
-IKE keys: not critical, explain why
-\end_layout
-
-\begin_layout Subsection
-Random numbers
-\end_layout
-
-\begin_layout Subsection
-Cryptographic operations
-\end_layout
-
-\begin_layout Standard
-sections about the ops, also signature verification
-\end_layout
-
-\begin_layout Subsection
-Enforcement of policy
-\end_layout
-
-\begin_layout Standard
-Only configured policy allowed, crypto ops must be strong enough -> at the
- moment no problem.
- we implement only a subset.
-\end_layout
-
 \begin_layout Chapter
 Design
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:Design"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3265,10 +2970,288 @@ TODO: make context/ID handling a sep.
 \end_layout
 
 \begin_layout Section
-Security goals
+Requirements
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Requirements"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This section outlines the identified requirements of the separated system
+ in detail.
+ The following section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Security-requirements"
+
+\end_inset
+
+ specifies the security requirements, while section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Functional-requirements"
+
+\end_inset
+
+ covers the functional requirements.
+ Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Additional-requirements"
+
+\end_inset
+
+ describes additional requirements.
 \end_layout
 
 \begin_layout Subsection
+Security requirements
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Security-requirements"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The security requirements identified in this section specify the properties
+ the TCB must enforce even in the event of a complete compromise of the
+ untrusted part of the system (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Threat-model"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Subsubsection
+Separation of key material
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Separation-of-key"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The untrusted part of the IKEv2 component must not have access to generated
+ key material that is used for authentication of peers, encryption and integrity
+ protection of user data (i.e.
+ child SA keys).
+ This also includes critical intermediate values, which may result from
+ the key generation and key derivation process.
+ 
+\end_layout
+
+\begin_layout Standard
+Excluded from the critical material are the keys used to protect the IKE
+ SA.
+ See section TODO for details.
+\end_layout
+
+\begin_layout Subsubsection
+Cryptographic operations
+\end_layout
+
+\begin_layout Standard
+All relevant cryptographic operations must be performed by the trusted computing
+ base (TCB) to assure the correctness of the resulting values.
+ Since key material is needed to perform crypto operations, this is also
+ a consequence of the requirement specified in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Separation-of-key"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Authentication
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Authentication"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The IKEv2 component must only allow IPSec SAs to be established for peers
+ that have successfully been authenticated.
+ The authentication must be performed by the TCB to assure the correctness
+ of the process.
+\end_layout
+
+\begin_layout Standard
+The authentication state in the TCB must always be unambiguously associated
+ with the corresponding SA.
+\end_layout
+
+\begin_layout Subsubsection
+Integrity
+\end_layout
+
+\begin_layout Standard
+The security of the IKEv2 component must solely depend on the correct operation
+ of the trusted part.
+ The security operation of the system must not be violated by a misbehaving
+ untrusted part.
+\end_layout
+
+\begin_layout Subsection
+Functional requirements
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Functional-requirements"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Functional requirements define what a system is trying to accomplish.
+ This section ...
+\end_layout
+
+\begin_layout Subsubsection
+Separation
+\end_layout
+
+\begin_layout Standard
+The IKEv2 component must be separated into a trusted and untrusted part,
+ to minimize the size and complexity of the TCB.
+ The trusted part must enforce all security requirements specified in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Security-requirements"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Communication
+\end_layout
+
+\begin_layout Standard
+The communication protocol between the trusted and untrusted parts must
+ be simple, robust and well-defined to allow a verifiable implementation.
+ 
+\end_layout
+
+\begin_layout Subsection
+Additional requirements
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Additional-requirements"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Critical components
+\end_layout
+
+\begin_layout Standard
+This section maps the identified security requirements defined in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Security-requirements"
+
+\end_inset
+
+ to the concrete architecture of strongSwan outlined in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Code-analysis"
+
+\end_inset
+
+ and describes functionality and data which must be moved to the TCB.
+\end_layout
+
+\begin_layout Subsection
+Key agreement (DH)
+\end_layout
+
+\begin_layout Standard
+No key material must be present in the untrusted part of the system ...
+ outline which values are especially important (Xa etc).
+\end_layout
+
+\begin_layout Subsection
+Nonce generation
+\end_layout
+
+\begin_layout Standard
+Nonces play an important role and guarantee freshness.
+ TODO: explain.
+ The TCB must guarantee the freshness of the local nonce.
+\end_layout
+
+\begin_layout Subsection
+Handling of key material (creation/storage)
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Handling-of-key"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+also intermediate values.
+ Howto store them? Wipe and lock memory, limitations (does not work well
+ -> use better mechanisms)
+\end_layout
+
+\begin_layout Paragraph
+IKE keys: not critical, explain why
+\end_layout
+
+\begin_layout Subsection
+Random numbers
+\end_layout
+
+\begin_layout Subsection
+Cryptographic operations
+\end_layout
+
+\begin_layout Standard
+sections about the ops, also signature verification
+\end_layout
+
+\begin_layout Subsection
+Enforcement of policy
+\end_layout
+
+\begin_layout Standard
+Only configured policy allowed, crypto ops must be strong enough -> at the
+ moment no problem.
+ we implement only a subset.
+\end_layout
+
+\begin_layout Section
 Assumptions
 \end_layout
 
@@ -4607,359 +4590,6 @@ filename "tex/types-constants.tex"
 \end_layout
 
 \begin_layout Section
-State machines
-\end_layout
-
-\begin_layout Standard
-Contexts are used to describe stateful entities within the TKM.
- They are finite state machines (FSM
-\begin_inset Index idx
-status open
-
-\begin_layout Plain Layout
-FSM
-\end_layout
-
-\end_inset
-
-) which have a set of states and transitions between those states.
- The FSM is in a specific state at any given time and can only change its
- state by performing a transition.
- A transition prescribes the source state the FSM has to be in, the actions
- to execute and the new target state once the transition has completed.
-\end_layout
-
-\begin_layout Standard
-The state machine transitions to a known failure state if an error occurs.
- To recover from such an error the FSM has to be reinitialized by explicitly
- performing a reset operation.
-\end_layout
-
-\begin_layout Standard
-The state of the overall TKM system can be interpreted as the sum of the
- states of all FSMs and their associated data at any given time.
-\end_layout
-
-\begin_layout Subsection
-Graph notation
-\end_layout
-
-\begin_layout Standard
-Each state machine is depicted by a diagram.
- Transitions are drawn as directed arrows from the source to the target
- state with a label identifying the name of the transition.
-\end_layout
-
-\begin_layout Standard
-
-\shape italic
-Reset
-\shape default
- and 
-\shape italic
-error
-\shape default
- transitions are treated differently in order to create less cluttered graphs.
- These two transitions can be triggered from any state so their labels are
- omitted and their arrows have different styles.
- Reset transitions are shown using blue lines and error transitions are
- marked with red dashed lines.
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset include
-LatexCommand input
-filename "tex/contexts-nc.tex"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/fsm-nc.svg
-	width 57text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Nonce context state machine
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset include
-LatexCommand input
-filename "tex/contexts-dh.tex"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/fsm-dh.svg
-	width 85text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Diffie Hellman context state machine
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset include
-LatexCommand input
-filename "tex/contexts-cc.tex"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/fsm-cc.svg
-	width 100text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Certificate chain context state machine
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset include
-LatexCommand input
-filename "tex/contexts-ae.tex"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways true
-status collapsed
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/fsm-ae.svg
-	width 100text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Authenticated endpoint context state machine
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset include
-LatexCommand input
-filename "tex/contexts-isa.tex"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/fsm-isa.svg
-	width 72text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-IKE SA context state machine
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset include
-LatexCommand input
-filename "tex/contexts-esa.tex"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename images/fsm-esa.svg
-	width 85text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-ESP SA context state machine
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section
 Exchanges
 \begin_inset CommandInset label
 LatexCommand label
@@ -5377,6 +5007,335 @@ filename "tex/interface-EES-esa_acquire.tex"
 \begin_inset CommandInset include
 LatexCommand input
 filename "tex/interface-EES-esa_expire.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+State machines
+\end_layout
+
+\begin_layout Standard
+Contexts are used to describe stateful entities within the TKM.
+ They are finite state machines (FSM
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSM
+\end_layout
+
+\end_inset
+
+) which have a set of states and transitions between those states.
+ The FSM is in a specific state at any given time and can only change its
+ state by performing a transition.
+ A transition prescribes the source state the FSM has to be in, the actions
+ to execute and the new target state once the transition has completed.
+\end_layout
+
+\begin_layout Standard
+The state machine transitions to a known failure state if an error occurs.
+ To recover from such an error the FSM has to be reinitialized by explicitly
+ performing a reset operation.
+\end_layout
+
+\begin_layout Standard
+The state of the overall TKM system can be interpreted as the sum of the
+ states of all FSMs and their associated data at any given time.
+\end_layout
+
+\begin_layout Subsection
+Graph notation
+\end_layout
+
+\begin_layout Standard
+Each state machine is depicted by a diagram.
+ Transitions are drawn as directed arrows from the source to the target
+ state with a label identifying the name of the transition.
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+Reset
+\shape default
+ and 
+\shape italic
+error
+\shape default
+ transitions are treated differently in order to create less cluttered graphs.
+ These two transitions can be triggered from any state so their labels are
+ omitted and their arrows have different styles.
+ Reset transitions are shown using blue lines and error transitions are
+ marked with red dashed lines.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/contexts-nc.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/fsm-nc.svg
+	width 57text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Nonce context state machine
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/contexts-dh.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/fsm-dh.svg
+	width 85text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Diffie Hellman context state machine
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/contexts-cc.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/fsm-cc.svg
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Certificate chain context state machine
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/contexts-ae.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways true
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/fsm-ae.svg
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Authenticated endpoint context state machine
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/contexts-isa.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/fsm-isa.svg
+	width 72text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+IKE SA context state machine
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand input
+filename "tex/contexts-esa.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/fsm-esa.svg
+	width 85text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+ESP SA context state machine
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -7855,6 +7814,7 @@ name "sec:xfrm-proxy"
 
 \end_inset
 
+
 \end_layout
 
 \begin_layout Standard
@@ -8147,6 +8107,22 @@ status open
 
 http://git.codelabs.ch/?p=x509-ada.git
 \end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Limitations
+\end_layout
+
+\begin_layout Standard
+This section describes the limitations of the current realisation of the
+ design outlined in chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:Design"
 
 \end_inset
 
