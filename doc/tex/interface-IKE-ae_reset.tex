@@ -5,12 +5,16 @@ Resets an authenticated endpoint context to its initial ae\_clean state. All dep
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{ae\_reset request parameters}
+operation & operation\_type & Exchange ID: \hex{0800} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 ae\_id & ae\_id\_type & Handle of AE context to reset \\
 \end{exchangeparameters}
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{ae\_reset response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0800} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 \end{exchangeparameters}

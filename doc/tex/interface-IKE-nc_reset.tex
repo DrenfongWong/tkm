@@ -5,12 +5,16 @@ Resets a NC context to its initial nc\_clean state.
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{nc\_reset request parameters}
+operation & operation\_type & Exchange ID: \hex{0100} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 nc\_id & nc\_id\_type & Handle of nonce context to reset \\
 \end{exchangeparameters}
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{nc\_reset response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0100} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 \end{exchangeparameters}

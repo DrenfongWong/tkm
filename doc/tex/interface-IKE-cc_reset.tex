@@ -5,12 +5,16 @@ Resets a certificate chain context to its initial cc\_clean state.
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{cc\_reset request parameters}
+operation & operation\_type & Exchange ID: \hex{0300} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 cc\_id & cc\_id\_type & Handle of certificate chain to reset \\
 \end{exchangeparameters}
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{cc\_reset response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0300} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 \end{exchangeparameters}

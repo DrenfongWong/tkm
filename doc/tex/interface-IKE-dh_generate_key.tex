@@ -5,6 +5,8 @@ Calculate a DH shared secret based on the given remote public value and the priv
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{dh\_generate\_key request parameters}
+operation & operation\_type & Exchange ID: \hex{0202} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 dh\_id & dh\_id\_type & Handle of Diffie Hellman context holding private value \\
 pubvalue & dh\_pubvalue\_type & Public value of remote \\
@@ -12,6 +14,8 @@ pubvalue & dh\_pubvalue\_type & Public value of remote \\
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{dh\_generate\_key response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0202} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 \end{exchangeparameters}

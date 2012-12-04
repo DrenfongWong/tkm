@@ -5,6 +5,8 @@ TKM uses this exchange to signal the expiration of an ESP SA with associated Sec
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{esa\_expire request parameters}
+operation & operation\_type & Exchange ID: \hex{0101} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 sp\_id & sp\_id\_type & Handle of associated security policy \\
 spi\_rem & esp\_spi\_type & Remote ESP security policy identifier \\
@@ -14,6 +16,8 @@ hard & expiry\_flag\_type & Flag designating a hard or soft expiry event \\
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{esa\_expire response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0101} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 \end{exchangeparameters}

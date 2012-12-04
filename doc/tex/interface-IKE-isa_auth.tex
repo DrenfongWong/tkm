@@ -5,6 +5,8 @@ This message exchange is initiated by IKE to authenticate an IKE SA identified b
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{isa\_auth request parameters}
+operation & operation\_type & Exchange ID: \hex{0903} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 isa\_id & isa\_id\_type & Handle of IKE SA to authenticate \\
 cc\_id & cc\_id\_type & Handle of certificate chain holding peer certificate \\
@@ -14,6 +16,8 @@ signature & signature\_type & Signed authentication octets from peer \\
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{isa\_auth response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0903} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 \end{exchangeparameters}

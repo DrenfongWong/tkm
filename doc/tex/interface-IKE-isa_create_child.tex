@@ -5,6 +5,8 @@ IKE uses this exchange to request derivation of IKE key material for a new IKE S
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{isa\_create\_child request parameters}
+operation & operation\_type & Exchange ID: \hex{0904} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 isa\_id & isa\_id\_type & Handle of IKE SA to create \\
 parent\_isa\_id & isa\_id\_type & Handle of parent IKE SA \\
@@ -19,6 +21,8 @@ spi\_rem & ike\_spi\_type & Remote IKE security policy identifier \\
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{isa\_create\_child response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0904} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 sk\_ai & key\_type & Integrity protection key of initiator \\

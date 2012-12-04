@@ -5,6 +5,8 @@ Creates a new Diffie Hellman (DH) secret value for a given algorithm and returns
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{dh\_create request parameters}
+operation & operation\_type & Exchange ID: \hex{0201} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 dh\_id & dh\_id\_type & Handle of Diffie Hellman context \\
 dha\_id & dha\_id\_type & Id of Diffie Hellman algorithm/group \\
@@ -12,6 +14,8 @@ dha\_id & dha\_id\_type & Id of Diffie Hellman algorithm/group \\
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{dh\_create response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0201} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 pubvalue & dh\_pubvalue\_type & Diffie Hellman public value \\

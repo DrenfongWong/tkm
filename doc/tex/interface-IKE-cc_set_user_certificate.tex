@@ -5,6 +5,8 @@ Sets the user certificate of a specified, clean certificate chain context. The u
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{cc\_set\_user\_certificate request parameters}
+operation & operation\_type & Exchange ID: \hex{0301} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 cc\_id & cc\_id\_type & Handle of certificate chain to store certificate \\
 ri\_id & ri\_id\_type & Handle of remote identity \\
@@ -14,6 +16,8 @@ certificate & certificate\_type & ASN.1/DER encoded user certificate \\
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{cc\_set\_user\_certificate response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0301} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 \end{exchangeparameters}

@@ -5,6 +5,8 @@ Determine whether the current root of the certificate chain stored in the identi
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{cc\_check\_ca request parameters}
+operation & operation\_type & Exchange ID: \hex{0303} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 cc\_id & cc\_id\_type & Handle of certificate chain to check \\
 ca\_id & ca\_id\_type & Handle of CA to check against \\
@@ -12,6 +14,8 @@ ca\_id & ca\_id\_type & Handle of CA to check against \\
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{cc\_check\_ca response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0303} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 \end{exchangeparameters}

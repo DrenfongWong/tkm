@@ -5,12 +5,16 @@ Resets an ESP SA context to its initial esa\_clean state.
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{esa\_reset request parameters}
+operation & operation\_type & Exchange ID: \hex{0A00} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 esa\_id & esa\_id\_type & Handle of ESP SA to reset \\
 \end{exchangeparameters}
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{esa\_reset response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0A00} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 \end{exchangeparameters}

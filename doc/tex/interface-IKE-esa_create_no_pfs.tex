@@ -5,6 +5,8 @@ IKE uses this exchange to request derivation of key material for a CHILD SA spec
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{esa\_create\_no\_pfs request parameters}
+operation & operation\_type & Exchange ID: \hex{0A02} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 esa\_id & esa\_id\_type & Handle of ESP SA to create \\
 isa\_id & isa\_id\_type & Handle of associated IKE SA \\
@@ -19,6 +21,8 @@ esp\_spi\_rem & esp\_spi\_type & Remote ESP security policy identifier \\
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{esa\_create\_no\_pfs response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0A02} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 \end{exchangeparameters}

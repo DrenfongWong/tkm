@@ -5,6 +5,8 @@ This exchange is used by IKE to request signed authentication octets for an IKE 
 
 \paragraph{Request} ~\\
 \begin{exchangeparameters}{isa\_sign request parameters}
+operation & operation\_type & Exchange ID: \hex{0902} \\
+
 req\_id & req\_id\_type & Request ID, chosen by untrusted \\
 isa\_id & isa\_id\_type & Handle of IKE SA to sign \\
 lc\_id & lc\_id\_type & Handle of local identity \\
@@ -13,6 +15,8 @@ init\_message & init\_message\_type & IKE init message needed to create authenti
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{isa\_sign response parameters}
+
+operation & operation\_type & Exchange ID: \hex{0902} \\
 req\_id & req\_id\_type & Request ID, returned identically \\
 status & status\_type & Error code \\
 signature & signature\_type & Signed local authentication octets \\
