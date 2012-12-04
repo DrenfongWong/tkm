@@ -5171,6 +5171,13 @@ filename "tex/interface-EES-esa_expire.tex"
 
 \begin_layout Section
 State machines
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:State-machines"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5502,16 +5509,425 @@ ESP SA context state machine
 Implementation
 \end_layout
 
+\begin_layout Standard
+This chapter describes the implementation of the design outlined in the
+ previous chapter.
+ The first section briefly presents how the interface is described in XML,
+ how that specification is transformed into various formats and what parts
+ of the system are generated based on that specification.
+ The next section then describes the remote procedure call library (RPC
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+RPC
+\end_layout
+
+\end_inset
+
+) which is used by the various components for communication.
+\end_layout
+
+\begin_layout Standard
+Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:charon-tkm"
+
+\end_inset
+
+ gives an in-depth characterization of the changes to the strongSwan project,
+ the newly implemented plugins and how the integration of Ada code into
+ the existing project is realized.
+ Following that the trusted key manager TKM implementation is presented.
+\end_layout
+
+\begin_layout Standard
+The new component xfrm-proxy which provides ESP SA events to charon-tkm
+ is described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:xfrm-proxy"
+
+\end_inset
+
+.
+ Additional libraries that are used by either TKM or xfrm-proxy are illustrated
+ in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Additional-components"
+
+\end_inset
+
+.
+ Finally limitations of the current implementation with regards to the design
+ are listed in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Limitations"
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Section
 XML-Specification
 \end_layout
 
 \begin_layout Standard
-How is the protocol between charon and TKM specified? Example section, exchanges
-, types etc.
- How is this specification used to create doc/code/fsm/graphs.
- examples.
- Ada 2012 aspects, gnatprove and spark integration
+The specification of the interface which is the basis of the communication
+ of system components is done in XML.
+ Extensible stylesheet language transformations (XSLT
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+XSLT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+XSLT is a language standardized by the W3C (World Wide Web Consortium) for
+ transforming XML documents
+\end_layout
+
+\end_inset
+
+) are used to generate many different representations of the XML document.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/xsl-transformations.svg
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+XSL Transformation of XML specification
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:XSL-Transformation"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+By automatically generating code and documentation from one single XML document
+ assures that the generated documents are always in sync and there is no
+ mismatch between the implementation and the specification.
+ The cost of interface change and extension is lowered considerably since
+ the generation process is automated and no manual steps are necessary.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:XSL-Transformation"
+
+\end_inset
+
+ shows the process of applying the XSL transformations to the specification
+ and the various generated outputs.
+\end_layout
+
+\begin_layout Standard
+An interesting example of such a transformation is the generation of the
+ Ada context state machine code.
+ Leveraging the newly added contract feature of Ada 2012, the transitions
+ of a context state machine are translated into pre- and postconditions.
+ Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:nc_create-spec"
+
+\end_inset
+
+ shows the specification of the 
+\family typewriter
+nc_create
+\family default
+ transition.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "float,language=XML"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<transition name="create">
+\end_layout
+
+\begin_layout Plain Layout
+
+	<descr>Create new nonce.</descr>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<source_states>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<state name="clean"/>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</source_states>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<target>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<state name="created"/>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<field name="nonce"> nonce </field>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</target>
+\end_layout
+
+\begin_layout Plain Layout
+
+</transition> 
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Specification of nonce create transition
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:nc_create-spec"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+The generated Ada code is shown in listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:nc_create-ada"
+
+\end_inset
+
+.
+ The preconditions state that the nonce context with the given id must be
+ in the 
+\begin_inset Quotes eld
+\end_inset
+
+clean
+\begin_inset Quotes erd
+\end_inset
+
+ state.
+ This corresponds to the source state element of the XML specification.
+ Transitioning to the target state 
+\begin_inset Quotes eld
+\end_inset
+
+created
+\begin_inset Quotes erd
+\end_inset
+
+ is assured by the postcondition.
+ If a violation of a pre- or postcondition occurs a 
+\begin_inset Quotes eld
+\end_inset
+
+System.Assertions.Assert_Failure
+\begin_inset Quotes erd
+\end_inset
+
+ exception is raised by the Ada runtime.
+ This assures that only transitions conforming to the specification are
+ possible.
+ Confidence that the code implements the specification can be raised further
+ by applying the GNATprove
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GNATprove
+\end_layout
+
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+GNATprove is a formal verification tool for Ada 2012 contracts.
+ It can prove that subprograms respect their preconditions and postconditions.
+\end_layout
+
+\end_inset
+
+ tool 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "gnatprove"
+
+\end_inset
+
+ to the source.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "float,language=Ada"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+procedure create (Id : Types.nc_id_type;
+\end_layout
+
+\begin_layout Plain Layout
+
+				  nonce : Types.nonce_type)
+\end_layout
+
+\begin_layout Plain Layout
+
+with
+\end_layout
+
+\begin_layout Plain Layout
+
+  Pre  => Is_Valid (Id) and then
+\end_layout
+
+\begin_layout Plain Layout
+
+		 (Has_State (Id, clean)),
+\end_layout
+
+\begin_layout Plain Layout
+
+  Post => Has_State (Id, created) and
+\end_layout
+
+\begin_layout Plain Layout
+
+		  Has_nonce (Id, nonce);
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Generated Ada nonce create procedure
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:nc_create-ada"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Another example of generated output are the state machine diagrams show
+ in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:State-machines"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The following list enumerates the main XSLT output that is generated from
+ the specification:
+\end_layout
+
+\begin_layout Description
+Types Ada and C type definitions
+\end_layout
+
+\begin_layout Description
+Constants Ada and C constant definitions
+\end_layout
+
+\begin_layout Description
+RPC Ada RPC library with exported C functions, includes request/response
+ marshaling and server-side exchange id to service procedure dispatching
+\end_layout
+
+\begin_layout Description
+Contexts Ada context state machines including Ada 2012 contracts
+\end_layout
+
+\begin_layout Description
+Documentation Types, constants and exchange description as well as state
+ machine diagrams
 \end_layout
 
 \begin_layout Section
@@ -8058,6 +8474,13 @@ To make rekeying work in such a scenario, kernel XFRM acquire and expire
 
 \begin_layout Section
 Additional components
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Additional-components"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8271,6 +8694,13 @@ http://git.codelabs.ch/?p=x509-ada.git
 
 \begin_layout Section
 Limitations
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Limitations"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
