@@ -242,80 +242,9 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-This paper is organized as follows: The following overview section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Overview"
-
-\end_inset
-
- provides an introduction into the concept and terms needed to understand
- the scope of this work.
- Section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Related-work"
-
-\end_inset
-
- describes existing projects in the same field and section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Threat-model"
-
-\end_inset
-
- explains the threat model the separation of the IKEv2 protocol is trying
- to solve.
-\end_layout
-
-\begin_layout Standard
-The chapter/section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:Requirements"
-
-\end_inset
-
- evaluates the ...
- TODO
-\end_layout
-
-\begin_layout Standard
-Maybe omit the subsection and write all here as text?
-\end_layout
-
-\begin_layout Section
-Overview
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Overview"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This section provides an overview about the terminology used in this project
- and explains the basic key concepts.
-\end_layout
-
-\begin_layout Subsection
-Trusted Computing Base
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Trusted-Computing-Base"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In a system with a high demand for security or integrity, functions relevant
- to guarantee this demand must be isolated from the rest of the system in
- a Trusted Computing Base (TCB)
+In a system with high requirements on security, functions relevant to guarantee
+ these requirements must be isolated from the rest of the system in a Trusted
+ Computing Base (TCB)
 \begin_inset Index idx
 status open
 
@@ -326,46 +255,41 @@ TCB
 \end_inset
 
 .
- To be trusted, this code must be as minimal as possible to allow (formal)
+ To be trusted, this code must be as minimal as possible to allow formal
  verification of code correctness.
- The TCB of a computer system is the set of all hardware, firmware, and/or
- software components that are critical to its security, in the sense that
- bugs or vulnerabilities occurring inside the TCB might jeopardize the security
- properties of the entire system
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-\begin_inset Flex URL
-status collapsed
-
-\begin_layout Plain Layout
-
-https://en.wikipedia.org/wiki/Trusted_computing_base
-\end_layout
+ Lampson et al.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Lampson:1991:ADS:121133.121160"
 
 \end_inset
 
-
+ define the TCB of a computer system as:
 \end_layout
 
-\end_inset
-
-.
+\begin_layout Quote
+A small amount of software and hardware that security depends on and that
+ we distinguish from a much larger amount that can misbehave without affecting
+ security.
 \end_layout
 
 \begin_layout Standard
 It is much easier to design a system from scratch with separation properties
  in mind than separating an existing project or protocol later.
- But this is obviously not always possible, like in this case.
- In order to isolate functionality in a TCB, critical sections of existing
- protocols must be identified and the system must be separated into a critical
- (TCB) and non-critical (untrusted) part.
+ But this is not always possible, or even more important, not intended.
+ Functionality in an existing system identified as uncritical should be
+ left as is, if possible.
+\end_layout
+
+\begin_layout Standard
+In order to isolate functionality in a TCB, critical sections of existing
+ systems must be identified and they must be separated into a critical (trusted)
+ and non-critical (untrusted) part.
  Communication mechanisms between the sections must be established, which
  itself must be robust and well defined.
  If an attacker is able to compromise the untrusted-part of the system,
- the security and integrity functions guaranteed by the TCB must still be
- in place.
+ the security and integrity functions guaranteed by the TCB must still hold.
 \end_layout
 
 \begin_layout Standard
@@ -430,6 +354,227 @@ name "fig:Trusted-Computing-Base"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Section
+Synopsis
+\end_layout
+
+\begin_layout Standard
+This section provides an introduction into the terminology and systems used
+ in this project and explains the basic key concepts.
+ Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:ipsec-IKEv2"
+
+\end_inset
+
+ briefly outlines IPsec and the IKEv2 protocol, section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:strongSwan"
+
+\end_inset
+
+ introduces an implementation of this protocol in the form of the strongSwan
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+strongSwan
+\end_layout
+
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.strongswan.org/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ project.
+ Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Ada"
+
+\end_inset
+
+ summarizes the most important aspects of the Ada programming language which
+ is used to implement the Trusted Key Manager (TKM) specified by this paper.
+ The term TKM is explained in the following section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Trusted-Key-Manager"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+IPsec and IKEv2
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:ipsec-IKEv2"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Internet Protocol Security (IPsec
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IPsec
+\end_layout
+
+\end_inset
+
+) provides, as the name implies, security services to the Internet Protocol
+ (IP
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IP
+\end_layout
+
+\end_inset
+
+).
+ This is done by encrypting and authenticating IP packets of communication
+ sessions.
+ The protection is transparent to the communicating applications because
+ it is performed by the IP layer.
+ To protect IP packets, cryptographic transforms are applied to them which
+ in turn require cryptographic keys.
+ The bundle of algorithms and data that provide the parameters necessary
+ to operate these cryptographic transforms are called a security association
+ (SA).
+ Parameters and keys needed to establish an SA are normally provided to
+ the IPsec protocol suite by means of the Internet Key Exchange (IKE
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IKE
+\end_layout
+
+\end_inset
+
+) protocol.
+ For more information on the IPsec protocol suites, the reader is directed
+ to the corresponding 
+\emph on
+
+\begin_inset Quotes eld
+\end_inset
+
+Security Architecture for the Internet Protocol
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\emph default
+RFC 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc4301"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The IKE
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Internet Key Exchange
+\end_layout
+
+\end_inset
+
+ protocol is used within IPsec to establish a security association (SA).
+ It is responsible for the key establishment phase and the negotiation of
+ the cryptographic algorithms between communicating endpoints.
+ There are two versions of the IKE protocol: IKEv1
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IKEv1
+\end_layout
+
+\end_inset
+
+ and IKEv2 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc2409,rfc5996"
+
+\end_inset
+
+.
+ IKEv2
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IKEv2
+\end_layout
+
+\end_inset
+
+ was designed to add new features and correct some problems found in the
+ previous version.
+ This project exclusively targets the newer IKEv2 protocol, IKEv1 is not
+ considered.
+\end_layout
+
+\begin_layout Standard
+To negotiate cryptographic keys and corresponding parameters, the peers
+ exchange message request, response pairs as described in detail in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:IKEv2-protocol-analysis"
+
+\end_inset
+
+.
+ TODO: explain more details here? AUTH etc...
+ The service implementing the IKE protocol is normally provided by a user
+ space application like strongSwan's charon daemon as described in the following
+ section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:strongSwan"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -850,15 +995,113 @@ name "sub:Threat-model"
 \end_layout
 
 \begin_layout Standard
-It is assumed that the stringSwan charon IKEv2 daemon, which is considered
+An example system separated in a trusted and untrusted component is shown
+ in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Trusted-Computing-Base"
+
+\end_inset
+
+ on page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "fig:Trusted-Computing-Base"
+
+\end_inset
+
+.
+ This section describes the thread model used during the development of
+ this project.
+\end_layout
+
+\begin_layout Standard
+It is assumed that the strongSwan charon IKEv2 daemon, which is considered
  an untrusted software component in the designed architecture, is under
  complete control of the attacker.
  This means the attacker has complete access to all data available to the
  IKEv2 daemon and can execute arbitrary code with the privileges of charon.
  As a result of this assumption, charon is not allowed to have access to
- any data classified as critical.
- Also intermediate values which are needed to create critical values MUST
+ any sensitive data.
+ Also, intermediate values which are needed to create critical values must
  be protected from access by untrusted components.
+ The following list summarizes the capabilities of an attacker in th model
+ used:
+\end_layout
+
+\begin_layout Enumerate
+The attacker is also able to analyze network traffic leaving the system.
+ 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:thread-model-2"
+
+\end_inset
+
+The attacker is able to compromise the untrusted IKE daemon and read all
+ its memory
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:thread-model-3"
+
+\end_inset
+
+As a result of point 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:thread-model-2"
+
+\end_inset
+
+, the attacker knows everything the IKE daemon knows including IKE SA keys,
+ IP addresses of endpoints, authentication methods and algorithms.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:thread-model-4"
+
+\end_inset
+
+The attacker can send arbitrary commands to the TCB (deduced from point
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:thread-model-3"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Enumerate
+Resulting from point 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:thread-model-4"
+
+\end_inset
+
+, the attacker can abuse the signature service (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Creation-of-an-ike-sa"
+
+\end_inset
+
+) provided by the TKM.
+ It is able to control parts of the data (
+\emph on
+init_message
+\emph default
+) which is signed.
 \end_layout
 
 \begin_layout Chapter
@@ -3535,6 +3778,13 @@ Encapsulating Security Payload is part of the IPsec protocol suite and provides
 
 \begin_layout Subsection
 Creation of an IKE SA
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Creation-of-an-ike-sa"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
