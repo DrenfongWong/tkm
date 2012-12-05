@@ -1399,10 +1399,36 @@ key "rfc5996"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
-\begin{flalign}
-Initiator\rightarrow Responder\; & HDR,SAi1,KEi,Ni
-\end{flalign}
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{1}{A}{B}{HDR, SAi1, KEi, Ni}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{2}{B}{A}{HDR, SAr1, KEr, Nr, [CERTREQ]}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
 
 \end_inset
 
@@ -1411,26 +1437,26 @@ Initiator\rightarrow Responder\; & HDR,SAi1,KEi,Ni
 
 \begin_layout Standard
 The 
-\begin_inset Formula $SAi1$
-\end_inset
-
+\emph on
+SAi1
+\emph default
  payload states the cryptographic algorithms the initiator supports for
  the IKE SA.
- This payload is not considered critical since the TKM only supports a subset
- of cryptographic algorithms which are strong enough and believed to be
- secure.
- A misconfiguration of allowed proposals would only result in a not working
+ This payload is not considered critical because the TKM only supports a
+ subset of cryptographic algorithms, which are strong enough and believed
+ to be secure.
+ A misconfiguration of allowed proposals would only result in a non-functional
  configuration.
 \end_layout
 
 \begin_layout Standard
 Child keys are derived from the shared secret value resulting from the Diffie-He
 llman exchange after the IKE_SA_INIT messages.
- Therefore the TKM MUST implement the DH protocol and provides the public
- 
-\begin_inset Formula $KE$
-\end_inset
-
+ Therefore the TKM must implement the DH protocol in the TCB and provides
+ the public 
+\emph on
+KE
+\emph default
  payload to the untrusted part.
 \end_layout
 
@@ -1446,36 +1472,25 @@ Nonce
 \end_inset
 
  
-\begin_inset Formula $Ni$
-\end_inset
-
+\emph on
+Ni
+\emph default
  is used as input to cryptographic functions and provides freshness to the
  key derivation technique used to obtain keys for the child SA, and to ensure
  creation of strong pseudorandom bits from the Diffie-Hellman key.
  Therefore, the nonce 
-\begin_inset Formula $Ni$
-\end_inset
-
- used in the initial exchange MUST be randomly chosen, MUST be at least
- 128 bits in size, and MUST be at least half the key size of the negotiated
+\emph on
+Ni
+\emph default
+ used in the initial exchange must be randomly chosen, must be at least
+ 128 bits in size, and must be at least half the key size of the negotiated
  pseudorandom function (PRF).
- The TKM MUST enforce these constraints.
+ These constraints are enforced again by the TKM.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
-\begin{flalign}
-Initiator\leftarrow Responder\; & HDR,SAr1,KEr,Nr,[CERTREQ]
-\end{flalign}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Values created by the responder can not be controlled by the TKM, these
- values are taken as is.
+Obviously, values created by the responder can not be controlled by the
+ TKM so these values are taken as is.
 \end_layout
 
 \begin_layout Standard
@@ -1563,8 +1578,8 @@ IKE_AUTH
 \end_layout
 
 \begin_layout Standard
-After the completion of the IKE_SA_INIT exchange, each party can generate
- SKEYSEED, from which all keys are derived for that IKE SA.
+After the completion of the IKE_SA_INIT exchange, each party is able to
+ compute SKEYSEED, from which all keys are derived for that IKE SA.
  The messages that follow are encrypted and integrity protected in their
  entirety, with the exception of the message headers.
  The keys used for the encryption and integrity protection are derived from
@@ -1587,9 +1602,9 @@ key "rfc5996"
 The DH protocol is implemented in the TKM so the SK_e and SK_a keys must
  be provided to the untrusted part.
  The generated IKE keys 
-\begin_inset Formula $SK$
-\end_inset
-
+\emph on
+SK
+\emph default
  are not considered critical because an attacker taking over the untrusted
  part is already able to extract all information protected by these keys
  (see the threat model section 
@@ -1610,40 +1625,36 @@ status open
 
 
 \backslash
-begin{flalign}
-\end_layout
-
-\begin_layout Plain Layout
-
-Initiator 
-\backslash
-rightarrow Responder
-\backslash
-; & HDR,SK
-\backslash
-{ IDi,[CERT,][CERTREQ,][IDr,]
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-& 
-\backslash
-hspace{2cm}AUTH,SAi2,TSi,TSr
-\backslash
-}
-\backslash
-nonumber
+begin{messages}
 \end_layout
 
 \begin_layout Plain Layout
 
 
 \backslash
-end{flalign}
+msg{3}{A}{B}{HDR, SK 
+\backslash
+{IDi, [CERT,] [CERTREQ,] [IDr,] AUTH, SAi2, TSi, TSr
+\backslash
+}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{4}{B}{A}{HDR, SK 
+\backslash
+{IDr, [CERT,] AUTH, SAr2, TSi, TSr
+\backslash
+}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
 \end_layout
 
 \end_inset
@@ -1653,102 +1664,54 @@ end{flalign}
 
 \begin_layout Standard
 The initiator asserts its identity with the 
-\begin_inset Formula $IDi$
-\end_inset
-
+\emph on
+IDi
+\emph default
  payload.
- This value is not critical so it's directly configured using the standard
+ This value is not sensitive so it's directly configured using the standard
  strongSwan configuration mechanism.
  Nevertheless, the TKM must enforce correct identities to assure that only
- trusted identities are allowed.
+ trusted ones are allowed.
  This is done during the authentication process.
 \end_layout
 
 \begin_layout Standard
-The Authentication payload (
-\begin_inset Formula $AUTH$
-\end_inset
-
-) contains data used for authentication purposes and is created by the TKM
- because it results from critical values.
+The Authentication payload 
+\emph on
+AUTH
+\emph default
+ contains data used for authentication purposes and is created by the TKM
+ since it is created using data identified as sensitive.
  Only certificate-based authentication is supported (no PSK) and only the
- TKM MUST know the private key used to generate the AUTH signature.
- The AUTH payload is then handed to the untrusted part because the TKM assured
+ TKM can know the private key to generate the AUTH signature.
+ The AUTH payload is handed to the untrusted part because the TKM assures
  that the PRF used to generate AUTH (see TODO) is strong enough.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $SAi2$
-\end_inset
 
+\emph on
+SAi2
+\emph default
  is not considered critical and can be configured directly in the untrusted
  part.
  The TKM enforces the correct algorithms before deriving child keys.
  The same is true for the 
-\begin_inset Formula $TS$
-\end_inset
-
+\emph on
+TS
+\emph default
  payloads.
  TODO CERT.
  The 
-\begin_inset Formula $CERTREQ$
-\end_inset
-
- payload can be used but makes no difference because the TKM currently trusts
- only one CA.
+\emph on
+CERTREQ
+\emph default
+ used to TODO payload can be used but makes no difference because the TKM
+ currently trusts only one CA.
 \end_layout
 
 \begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-begin{flalign}
-\end_layout
-
-\begin_layout Plain Layout
-
-Initiator 
-\backslash
-leftarrow Responder
-\backslash
-; & HDR,SK
-\backslash
-{IDr,[CERT,]
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-& 
-\backslash
-hspace{2cm}AUTH,SAr2, TSi, TSr
-\backslash
-}
-\backslash
-nonumber
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-end{flalign}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Payloads created by the responder can obviously not be controlled.
+Payloads created by the responder can again not be controlled.
  The TKM enforces the selected algorithms before deriving child keys by
  consulting the policy.
 \end_layout
@@ -1856,21 +1819,10 @@ CREATE_CHILD_SA
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
-\begin{flalign}
-Initiator\rightarrow Responder\; & HDR,SK\left\{ SA,Ni,[KEi],TSi,TSr\right\} 
-\end{flalign}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 The 
-\begin_inset Formula $SK$
-\end_inset
-
+\emph on
+SK
+\emph default
  used to protect the CREATE_CHILD_SA exchange is the same as described in
  section 
 \begin_inset CommandInset ref
@@ -1881,9 +1833,9 @@ reference "sub:proto-IKE_AUTH"
 
 .
  The 
-\begin_inset Formula $SK$
-\end_inset
-
+\emph on
+SK
+\emph default
  is created by the TKM but handed to the untrusted part to protect the IKE
  exchanges from outside attackers.
  Attackers which have taken over the untrusted part are already able to
@@ -1891,32 +1843,90 @@ reference "sub:proto-IKE_AUTH"
 \end_layout
 
 \begin_layout Standard
-The 
-\begin_inset Formula $SA$
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{messages}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{5}{A}{B}{HDR, SK 
+\backslash
+{SA, Ni, [KEi], TSi, TSr
+\backslash
+}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+msg{6}{B}{A}{HDR, SK 
+\backslash
+{SA, Nr, [KEr], TSi, TSr
+\backslash
+}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{messages}
+\end_layout
+
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
+The 
+\emph on
+SA
+\emph default
  is again not considered critical and can be configured directly in the
  untrusted part.
  The TKM enforces the correct algorithms before deriving new child keys.
  The same is true for the 
-\begin_inset Formula $TS$
-\end_inset
-
+\emph on
+TS
+\emph default
  payloads.
 \end_layout
 
 \begin_layout Standard
-Depending on the PRF configuration of the connection, the CREATE_CHILD_SA
- request MAY optionally contain a 
-\begin_inset Formula $KE$
+Depending on the PFS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+PFS
+\end_layout
+
 \end_inset
 
+ configuration of the connection, the CREATE_CHILD_SA request may optionally
+ contain a 
+\emph on
+KE
+\emph default
  payload for an additional Diffie-Hellman exchange to enable stronger guarantees
  of forward secrecy for the child SA.
- The keying material for the child SA is a function of SK_d established
- during the establishment of the IKE SA, the nonces exchanged during the
- CREATE_CHILD_SA exchange, and the Diffie-Hellman value (if KE payloads
- are included in the CREATE_CHILD_SA exchange) (
+ The keying material for the child SA is a function of SK_d created during
+ the establishment of the IKE SA, the nonces exchanged during the CREATE_CHILD_S
+A exchange, and the Diffie-Hellman value (if 
+\emph on
+KE
+\emph default
+ payloads are included in the CREATE_CHILD_SA exchange) (
 \begin_inset CommandInset citation
 LatexCommand cite
 key "rfc5996"
@@ -1927,27 +1937,16 @@ key "rfc5996"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
-\begin{flalign}
-Initiator\leftarrow Responder\; & HDR,SK\left\{ SA,Nr,[KEr],TSi,TSr\right\} 
-\end{flalign}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 Payloads created by the responder can not be controlled but the algorithms
  selected from 
-\begin_inset Formula $SA$
-\end_inset
-
+\emph on
+SA
+\emph default
  and the traffic selectors selected from 
-\begin_inset Formula $TS$
-\end_inset
-
- MUST be checked by the TKM.
+\emph on
+TS
+\emph default
+ must be checked by the TKM.
 \end_layout
 
 \begin_layout Standard
