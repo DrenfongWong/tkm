@@ -75,9 +75,6 @@
 \newcommand{\subscript}[1]{\ensuremath{_{\textrm{#1}}}}
 \end_preamble
 \use_default_options true
-\begin_modules
-theorems-ams
-\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
