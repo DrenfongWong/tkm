@@ -598,8 +598,18 @@ name "sub:strongSwan"
 \begin_layout Standard
 The strongSwan project is an OpenSource IPsec-based VPN solution for Unix-like
  operating systems.
- It provides the charon daemon, which is a feature-rich implementation of
- the Internet key exchange protocol version 2 (IKEv2
+ It provides the charon
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+charon
+\end_layout
+
+\end_inset
+
+ daemon, which is a feature-rich implementation of the Internet key exchange
+ protocol version 2 (IKEv2
 \begin_inset Index idx
 status open
 
@@ -617,8 +627,17 @@ key "rfc5996"
 \end_inset
 
 .
- The software is implemented using the C programming language with an object
- oriented (OO) approach.
+ The software is implemented using the C
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+C
+\end_layout
+
+\end_inset
+
+ programming language with an object oriented (OO) approach.
  This allows to emulate modern programming paradigms while still using a
  standard C compiler and tool set
 \begin_inset Foot
@@ -646,11 +665,30 @@ http://wiki.strongswan.org/projects/strongswan/wiki/ObjectOrientedC
 \begin_layout Standard
 The strongSwan architecture is very flexible and easy to extend with new
  features.
- Almost every part of the daemon works as a plugin and new functionality
- can be added by simply writing a new plugin.
+ Almost every part of the daemon works as a plugin
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Plugin
+\end_layout
+
+\end_inset
+
+ and new functionality can be added by simply writing a new plugin.
  This architecture proved very helpful in this present project, as very
  few changes were required in the upstream strongSwan code to implement
- the Trusted Key Manager (TKM, see 
+ the Trusted Key Manager (TKM
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+TKM
+\end_layout
+
+\end_inset
+
+, see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Trusted-Key-Manager"
@@ -695,7 +733,7 @@ Pascal
 
 \end_inset
 
- and is often used for systems with a demand for security and integritiy
+ and is often used for systems with a demand for security and integrity
  or which have a huge code base.
 \end_layout
 
@@ -823,6 +861,16 @@ Trusted Key Manager
 
 \end_inset
 
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+TKM
+\end_layout
+
+\end_inset
+
  is a minimal TCB developed during this project which implements the identified
  security-critical functions of the IKEv2 protocol using the Ada programming
  language.
@@ -869,8 +917,18 @@ key "Rushby:1981:DVS:1067627.806586"
 
 .
  The most prominent implementations of the concept exist in the form of
- microkernels (µ-kernels), which provide the foundation to separate functionalit
-y into smaller, separated parts by providing compartments for subjects running
+ microkernels
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Microkernel
+\end_layout
+
+\end_inset
+
+ (µ-kernels), which provide the foundation to separate functionality into
+ smaller, separated parts by providing compartments for subjects running
  in userspace.
  Examples of such systems are Fiasco
 \begin_inset Foot
@@ -888,6 +946,16 @@ http://os.inf.tu-dresden.de/fiasco/
 \end_inset
 
 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Fiasco
 \end_layout
 
 \end_inset
@@ -912,6 +980,16 @@ http://www.l4ka.org/65.php
 
 \end_inset
 
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+L4Ka::Pistachio
+\end_layout
+
+\end_inset
+
  and Coyotos
 \begin_inset Foot
 status open
@@ -932,19 +1010,77 @@ http://www.coyotos.org/
 
 \end_inset
 
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Coyotos
+\end_layout
+
+\end_inset
+
 .
- Type-1 (bare-metal) hypervisors like Xen are intentionally excluded from
- the list because Xen requires a complete Linux kernel (dom0) with direct
- access to hardware to work.
+ Type-1 (bare-metal) hypervisors
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Hypervisor
+\end_layout
+
+\end_inset
+
+ like Xen are intentionally excluded from the list because Xen requires
+ a complete Linux kernel (dom0) with direct access to hardware to work.
  The fact that the dom0 kernel must be accounted as part of the trusted
  system makes it unsuitable for in-depth review and therefore unusable as
  a TCB.
 \end_layout
 
 \begin_layout Standard
-Even though the concept proposed by Rushby seems to offer many advantages
- related to security and integrity, it has not been widely realized.
- Common operating systems like Windows, Linux and *BSD variants use a monolithic
+Even though the concept proposed by Rushby offers many advantages related
+ to security and integrity, it has not been widely realized.
+ Common operating systems like Windows
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Windows
+\end_layout
+
+\end_inset
+
+, Linux
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Linux
+\end_layout
+
+\end_inset
+
+ and *BSD
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+BSD
+\end_layout
+
+\end_inset
+
+ variants use a monolithic
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+monolithic
+\end_layout
+
+\end_inset
+
  kernel, which itself must be trusted as a whole, even though the compromise
  of a device driver can corrupt the complete system.
 \end_layout
@@ -963,8 +1099,27 @@ One reason seems to be the tremendous effort needed to adapt existing software
 \end_layout
 
 \begin_layout Standard
-Research has been done in the formal analysis of the IKEv1 and IKEv2 protocols
- 
+Research has been done in the formal analysis of the IKEv1
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IKEv1
+\end_layout
+
+\end_inset
+
+ and IKEv2
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IKEv2
+\end_layout
+
+\end_inset
+
+ protocols 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Cremers:2011:KEI:2041225.2041249,DBLP:conf/sp/Meadows99"
@@ -976,7 +1131,7 @@ key "Cremers:2011:KEI:2041225.2041249,DBLP:conf/sp/Meadows99"
  seems to be a valuable effort to minimize the working surface of attacks.
  Nevertheless, the IKEv2 separation protocol described in this paper must
  still undergo the same formal verification as the original protocols to
- formally show the delivered security improvements compared to its un-separated
+ formally show the delivered security improvements compared to its monolithic
  ancestor.
 \end_layout
 
@@ -1015,14 +1170,34 @@ reference "fig:Trusted-Computing-Base"
 \begin_layout Standard
 It is assumed that the strongSwan charon IKEv2 daemon, which is considered
  an untrusted software component in the designed architecture, is under
- complete control of the attacker.
+ complete control of the attacker
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Attacker
+\end_layout
+
+\end_inset
+
+.
  This means the attacker has complete access to all data available to the
- IKEv2 daemon and can execute arbitrary code with the privileges of charon.
+ IKEv2 daemon and can execute arbitrary code with the privileges of charon
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+charon
+\end_layout
+
+\end_inset
+
+.
  As a result of this assumption, charon is not allowed to have access to
  any sensitive data.
  Also, intermediate values which are needed to create critical values must
  be protected from access by untrusted components.
- The following list summarizes the capabilities of an attacker in th model
+ The following list summarizes the capabilities of an attacker in the model
  used:
 \end_layout
 
@@ -1094,15 +1269,66 @@ reference "sub:Creation-of-an-ike-sa"
 \end_inset
 
 ) provided by the TKM.
- It is able to control parts of the data (
+ It is able to control parts of the to be signed data (i.e.
+
 \emph on
-init_message
+ init_message
 \emph default
-) which is signed.
+).
+\end_layout
+
+\begin_layout Section
+TCB properties
+\end_layout
+
+\begin_layout Standard
+TODO: describe these as well?
+\end_layout
+
+\begin_layout Standard
+Even if an attacker manages to take over control of the untrusted part of
+ the system as described by the thread model in the previous section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Threat-model"
+
+\end_inset
+
+, the TCB still guarantees the following properties:
+\end_layout
+
+\begin_layout Itemize
+The attacker has no access to the IPsec SA keying material.
+\end_layout
+
+\begin_layout Itemize
+The attacker has no mean to draw conclusions about the IPsec SA keying material
+ from sensitive intermediate values.
+\end_layout
+
+\begin_layout Itemize
+The attacker is not able to forge authentication exchanges with unauthorized
+ peers.
+ 
+\end_layout
+
+\begin_layout Itemize
+The attacker is not able to derive child keying material for an unauthorized
+ connection.
 \end_layout
 
 \begin_layout Chapter
 Analysis of strongSwan
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+Analysis
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1567,18 +1793,18 @@ name "tab:IKEv2-payloads"
 
 \begin_layout Standard
 Every IKE message contains a Message 
-\begin_inset Formula $ID$
-\end_inset
-
+\emph on
+ID
+\emph default
  as part of its fixed header (
-\begin_inset Formula $HDR$
-\end_inset
-
+\emph on
+HDR
+\emph default
 ).
  This Message 
-\begin_inset Formula $ID$
-\end_inset
-
+\emph on
+ID
+\emph default
  is used to match up requests and responses, and to identify retransmissions
  of messages 
 \begin_inset CommandInset citation
@@ -1594,15 +1820,26 @@ key "rfc5996"
 \end_layout
 
 \begin_layout Standard
-A value is considered 'critical' if the untrusted part may not know it at
- all (i.e.
- is not allowed to be present in the untrusted parts memory region).
- Other payloads (such as 
-\begin_inset Formula $AUTH$
+A value declared as 'critical' or 'sensitive
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+sensitive values
+\end_layout
+
 \end_inset
 
-) are calculated from critical values inside the TKM and then handed to
- the untrusted part.
+' in the following sections must not be accessible by the untrusted part,
+ i.e.
+ it must not be present in memory or storage accessible by the untrusted
+ part.
+ Other payloads (such as 
+\emph on
+AUTH
+\emph default
+) are calculated from critical values inside the TKM but then handed to
+ the untrusted part for further processing and transmission.
 \end_layout
 
 \begin_layout Subsection
@@ -1614,6 +1851,10 @@ name "sub:proto-IKE_SA_INIT"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+The first pair of messages (IKE_SA_INIT
 \begin_inset Index idx
 status open
 
@@ -1623,12 +1864,17 @@ IKE_SA_INIT
 
 \end_inset
 
+) negotiate cryptographic algorithms, exchange nonces, and do a Diffie-Hellman
+\begin_inset Index idx
+status open
 
+\begin_layout Plain Layout
+Diffie-Hellman
 \end_layout
 
-\begin_layout Standard
-The first pair of messages (IKE_SA_INIT) negotiate cryptographic algorithms,
- exchange nonces, and do a Diffie-Hellman exchange 
+\end_inset
+
+ exchange 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "rfc5996"
@@ -1681,23 +1927,33 @@ The
 SAi1
 \emph default
  payload states the cryptographic algorithms the initiator supports for
- the IKE SA.
+ an IKE SA.
  This payload is not considered critical because the TKM only supports a
  subset of cryptographic algorithms, which are strong enough and believed
  to be secure.
- A misconfiguration of allowed proposals would only result in a non-functional
+ A deviation from allowed proposals would only result in a non-functional
  configuration.
 \end_layout
 
 \begin_layout Standard
-Child keys are derived from the shared secret value resulting from the Diffie-He
-llman exchange after the IKE_SA_INIT messages.
- Therefore the TKM must implement the DH protocol in the TCB and provides
+Child keys are derived from the shared secret
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+shared secret
+\end_layout
+
+\end_inset
+
+ value resulting from the Diffie-Hellman exchange after the IKE_SA_INIT
+ messages.
+ Therefore the TKM must implement the DH protocol in the TCB and compute
  the public 
 \emph on
 KE
 \emph default
- payload to the untrusted part.
+ payload on behalf of the untrusted part.
 \end_layout
 
 \begin_layout Standard
@@ -1725,12 +1981,13 @@ Ni
  used in the initial exchange must be randomly chosen, must be at least
  128 bits in size, and must be at least half the key size of the negotiated
  pseudorandom function (PRF).
- These constraints are enforced again by the TKM.
+ These constraints must be enforced by the TKM.
 \end_layout
 
 \begin_layout Standard
-Obviously, values created by the responder can not be controlled by the
- TKM so these values are taken as is.
+Values created by the responder can not be controlled by the TKM so these
+ values are taken as is.
+ This is true for all IKE message exchanges of course.
 \end_layout
 
 \begin_layout Standard
@@ -1744,7 +2001,7 @@ status open
 \begin_inset Tabular
 <lyxtabular version="3" rows="1" columns="2">
 <features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0">
 <row>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
@@ -1819,7 +2076,17 @@ IKE_AUTH
 
 \begin_layout Standard
 After the completion of the IKE_SA_INIT exchange, each party is able to
- compute SKEYSEED, from which all keys are derived for that IKE SA.
+ compute SKEYSEED
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+SKEYSEED
+\end_layout
+
+\end_inset
+
+, from which all keys are derived for that SA.
  The messages that follow are encrypted and integrity protected in their
  entirety, with the exception of the message headers.
  The keys used for the encryption and integrity protection are derived from
@@ -1912,7 +2179,6 @@ IDi
  strongSwan configuration mechanism.
  Nevertheless, the TKM must enforce correct identities to assure that only
  trusted ones are allowed.
- This is done during the authentication process.
 \end_layout
 
 \begin_layout Standard
@@ -1920,12 +2186,17 @@ The Authentication payload
 \emph on
 AUTH
 \emph default
- contains data used for authentication purposes and is created by the TKM
- since it is created using data identified as sensitive.
- Only certificate-based authentication is supported (no PSK) and only the
- TKM can know the private key to generate the AUTH signature.
- The AUTH payload is handed to the untrusted part because the TKM assures
- that the PRF used to generate AUTH (see TODO) is strong enough.
+ contains data used for authentication purposes and must be created by the
+ TKM since it is signed by a private key only known to the TCB.
+ The signed AUTH payload is handed to the untrusted part because the TKM
+ assures that the PRF used to generate AUTH (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Signature-generation"
+
+\end_inset
+
+) is strong enough.
 \end_layout
 
 \begin_layout Standard
@@ -1967,10 +2238,10 @@ status open
 \begin_inset Tabular
 <lyxtabular version="3" rows="2" columns="2">
 <features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0pt">
 <row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1992,7 +2263,7 @@ SK, AUTH
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -3364,6 +3635,10 @@ TODO: make context/ID handling a sep.
  section? explain upper limit of ID
 \end_layout
 
+\begin_layout Standard
+TODO: further elaborate the design
+\end_layout
+
 \begin_layout Section
 Requirements
 \begin_inset CommandInset label
@@ -3381,18 +3656,18 @@ This section outlines the identified requirements of the separated system
  The following section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Security-requirements"
-
-\end_inset
-
- specifies the security requirements, while section 
-\begin_inset CommandInset ref
-LatexCommand ref
 reference "sub:Functional-requirements"
 
 \end_inset
 
- covers the functional requirements.
+ covers functional requirements, while section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Security-requirements"
+
+\end_inset
+
+ specifies security requirements.
  Section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3401,6 +3676,77 @@ reference "sub:Additional-requirements"
 \end_inset
 
  describes additional requirements.
+\end_layout
+
+\begin_layout Standard
+TODO: remove functional, security requirements sub-sections? The definition
+ of 
+\begin_inset Quotes eld
+\end_inset
+
+functional requirement
+\begin_inset Quotes erd
+\end_inset
+
+ does not match our usage, see wikipedia.
+\end_layout
+
+\begin_layout Subsection
+Functional requirements
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Functional-requirements"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This section specifies the functional requirements of the separated IKEv2
+ system.
+\end_layout
+
+\begin_layout Subsubsection
+Separation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:req-Separation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The IKEv2 component must be separated into a trusted and untrusted part,
+ to minimize the size and complexity of the TCB.
+ The trusted part must enforce all security requirements specified in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Security-requirements"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Communication
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:req-Communication"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The communication protocol between the trusted and untrusted parts must
+ be simple, robust and well-defined to allow a verifiable implementation.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -3417,7 +3763,8 @@ name "sub:Security-requirements"
 \begin_layout Standard
 The security requirements identified in this section specify the properties
  the TCB must enforce even in the event of a complete compromise of the
- untrusted part of the system (
+ untrusted part of the system (see also the section explaining the thread
+ model 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Threat-model"
@@ -3431,7 +3778,7 @@ reference "sub:Threat-model"
 Separation of key material
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Separation-of-key"
+name "sub:req-Separation-of-key"
 
 \end_inset
 
@@ -3444,28 +3791,52 @@ The untrusted part of the IKEv2 component must not have access to generated
  protection of user data (i.e.
  child SA keys).
  This also includes critical intermediate values, which may result from
- the key generation and key derivation process.
+ the key agreement, generation and derivation process.
  
 \end_layout
 
 \begin_layout Standard
-Excluded from the critical material are the keys used to protect the IKE
- SA.
- See section TODO for details.
+Excluded from the critical material are keys used to protect the IKE SA.
+ As defined by the thread model in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Threat-model"
+
+\end_inset
+
+, an attacker might be able to compromise the untrusted IKE daemon and read
+ all its memory (point 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:thread-model-2"
+
+\end_inset
+
+).
+ If an attacker is able to do that, protecting the IKE SA keys is unneeded
+ since the attacker already knows everything these keys are intended to
+ protect.
 \end_layout
 
 \begin_layout Subsubsection
 Cryptographic operations
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:req-Cryptographic-operations"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 All relevant cryptographic operations must be performed by the trusted computing
  base (TCB) to assure the correctness of the resulting values.
  Since key material is needed to perform crypto operations, this is also
- a consequence of the requirement specified in section 
+ a consequence of the requirement specified in the previous section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Separation-of-key"
+reference "sub:req-Separation-of-key"
 
 \end_inset
 
@@ -3476,7 +3847,7 @@ reference "sub:Separation-of-key"
 Authentication
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Authentication"
+name "sub:req-Authentication"
 
 \end_inset
 
@@ -3497,6 +3868,13 @@ The authentication state in the TCB must always be unambiguously associated
 
 \begin_layout Subsubsection
 Integrity
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:req-Integrity"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3504,50 +3882,6 @@ The security of the IKEv2 component must solely depend on the correct operation
  of the trusted part.
  The security operation of the system must not be violated by a misbehaving
  untrusted part.
-\end_layout
-
-\begin_layout Subsection
-Functional requirements
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Functional-requirements"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Functional requirements define what a system is trying to accomplish.
- This section ...
-\end_layout
-
-\begin_layout Subsubsection
-Separation
-\end_layout
-
-\begin_layout Standard
-The IKEv2 component must be separated into a trusted and untrusted part,
- to minimize the size and complexity of the TCB.
- The trusted part must enforce all security requirements specified in section
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Security-requirements"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Subsubsection
-Communication
-\end_layout
-
-\begin_layout Standard
-The communication protocol between the trusted and untrusted parts must
- be simple, robust and well-defined to allow a verifiable implementation.
- 
 \end_layout
 
 \begin_layout Subsection
@@ -3561,89 +3895,226 @@ name "sub:Additional-requirements"
 
 \end_layout
 
+\begin_layout Standard
+The resulting system must be freely available to guarantee broader review
+ and allow it to be extended by other interested parties.
+ The TKM-specific changes and plugins should be integrated into the upstream
+ strongSwan project.
+ Also, integration tests must be provided for the TKM use-case.
+\end_layout
+
+\begin_layout Standard
+TODO: specify TCB specific requirements? Coding practices, pair programming,
+ Ada etc.
+\end_layout
+
 \begin_layout Section
-Critical components
+Fulfillment of requirements
 \end_layout
 
 \begin_layout Standard
-This section maps the identified security requirements defined in section
- 
+This section describes how the proposed design meets the requirements defined
+ in the previous section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Security-requirements"
+reference "sec:Requirements"
 
 \end_inset
 
- to the concrete architecture of strongSwan outlined in section 
+.
+\end_layout
+
+\begin_layout Itemize
+TKM, how is it written? Coding style, language etc.
+ What makes it improve the trust?
+\end_layout
+
+\begin_layout Itemize
+The separation and communication requirements 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Code-analysis"
+reference "sub:req-Separation"
 
 \end_inset
 
- and describes functionality and data which must be moved to the TCB.
-\end_layout
-
-\begin_layout Subsection
-Key agreement (DH)
-\end_layout
-
-\begin_layout Standard
-No key material must be present in the untrusted part of the system ...
- outline which values are especially important (Xa etc).
-\end_layout
-
-\begin_layout Subsection
-Nonce generation
-\end_layout
-
-\begin_layout Standard
-Nonces play an important role and guarantee freshness.
- TODO: explain.
- The TCB must guarantee the freshness of the local nonce.
-\end_layout
-
-\begin_layout Subsection
-Handling of key material (creation/storage)
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Handling-of-key"
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:req-Communication"
 
 \end_inset
 
+ demand that the untrusted and trusted parts of the system are separated
+ and communication is only possible over a well-defined, minimal interface.
+ These requirements are guaranteed by automatically creating the interface
+ code from an XML-specification as described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:XML-Specification"
 
+\end_inset
+
+ and by using a simple library providing RPC services by exporting the generated
+ interface over UNIX domain sockets (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:tkm-rpc-library"
+
+\end_inset
+
+).
 \end_layout
 
-\begin_layout Standard
-also intermediate values.
- Howto store them? Wipe and lock memory, limitations (does not work well
- -> use better mechanisms)
+\begin_layout Itemize
+Requirements 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:req-Separation-of-key"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:req-Cryptographic-operations"
+
+\end_inset
+
+ require that the untrusted part must not have access to critical keying
+ material and that the cryptographic operations using this material must
+ be implemented in the TCB to guarantee proper operation.
+ These requirements are fulfilled in the design by implementing plugins
+ which act as proxy objects between the untrusted charon-tkm daemon and
+ the TKM.
+ These plugins operate with references to the real, sensitive data and are
+ kept very simple.
+ No sensitive data leaves the TCB.
+ This directly demands that critical cryptographic operations used to either
+ create sensitive material or operating on sensitive material must be implemente
+d in the TCB as well.
+ The following TKM-specific strongSwan plugins are responsible to achieve
+ the desired degree of separation:
 \end_layout
 
-\begin_layout Paragraph
-IKE keys: not critical, explain why
+\begin_deeper
+\begin_layout Itemize
+Nonce generation plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:plugin-Nonce-generation"
+
+\end_inset
+
+)
 \end_layout
 
-\begin_layout Subsection
-Random numbers
+\begin_layout Itemize
+DH plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:plugin-Diffie-Hellman"
+
+\end_inset
+
+)
 \end_layout
 
-\begin_layout Subsection
-Cryptographic operations
+\begin_layout Itemize
+Keymat plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:plugin-Keymat"
+
+\end_inset
+
+)
 \end_layout
 
-\begin_layout Standard
-sections about the ops, also signature verification
+\begin_layout Itemize
+Kernel IPsec plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:pluginKernel-IPsec"
+
+\end_inset
+
+)
 \end_layout
 
-\begin_layout Subsection
-Enforcement of policy
+\end_deeper
+\begin_layout Itemize
+Requirement 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:req-Authentication"
+
+\end_inset
+
+ requires that the TCB must enforce proper authentication.
+ The system supports strong authentication methods based on public-key cryptogra
+phy only.
+ The secret private key required to create valid signatures and the trusted
+ CA certificate used to verify the peer's authentication data must reside
+ in the TCB.
+ To make this separation possible, the following TKM-specific strongSwan
+ plugins are proposed:
 \end_layout
 
-\begin_layout Standard
-Only configured policy allowed, crypto ops must be strong enough -> at the
- moment no problem.
- we implement only a subset.
+\begin_deeper
+\begin_layout Itemize
+Private key plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:plugin-Private-key"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+Public key plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:plugin-Public-key"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+Bus listener plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:plugin-Bus-listener"
+
+\end_inset
+
+)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Requirement 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:req-Integrity"
+
+\end_inset
+
+ demands that a misbehaving untrusted part is not able to violate the security
+ properties guaranteed by the TCB.
+ As a formal model checking of the proposed IKEv2 separation protocol is
+ still outstanding, this property is only assumed but not yet formally proven.
+ See also section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Limitations"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
@@ -5097,6 +5568,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename images/request-response-structure.svg
+	width 80text%
 
 \end_inset
 
@@ -5820,6 +6292,13 @@ reference "sec:Limitations"
 
 \begin_layout Section
 XML-Specification
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:XML-Specification"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5859,7 +6338,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename images/xsl-transformations.svg
-	width 100text%
+	width 85text%
 
 \end_inset
 
@@ -6709,7 +7188,7 @@ name "lis:Piggybacking"
 Nonce generation plugin
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Nonce-generation-plugin"
+name "sub:plugin-Nonce-generation"
 
 \end_inset
 
@@ -6750,7 +7229,7 @@ ike_nc_create
 Diffie-Hellman plugin
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Diffie-Hellman-plugin"
+name "sub:plugin-Diffie-Hellman"
 
 \end_inset
 
@@ -6795,10 +7274,129 @@ reference "fig:Child-SA-establishment"
 \end_layout
 
 \begin_layout Subsection
+Keymat plugin
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:plugin-Keymat"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The charon-tkm code uses the new keymat registration facility developed
+ during this project to register a special TKM keymat variant, which acts
+ as proxy for the remote keying material stored in the TKM.
+ The keymat is constructed together with an IKE SA and stays active for
+ the lifetime of the SA.
+ Upon construction, the TKM keymat plugin acquires an ISA context ID (
+\family typewriter
+TKM_CTX_ISA
+\family default
+) from the ID manager.
+ It then behaves like the standard IKEv2 keymat, except that it does not
+ store or receive any critical data.
+ Calls to 
+\family typewriter
+derive_ike_keys
+\family default
+ and 
+\family typewriter
+derive_child_keys
+\family default
+ are dispatched into the TCB by using context IDs.
+ The keys used to protect the IKE SA are returned to the keymat because
+ they are not classified as critical (see section TODO).
+\end_layout
+
+\begin_layout Standard
+The keymat plugin uses the piggybacking mechanism described in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Piggybacking"
+
+\end_inset
+
+ to forward information to other plugins or to extract required information
+ from other sources.
+ For example the 
+\family typewriter
+derive_child_keys
+\family default
+ function does nothing more than using the encryption key chunks to store
+ information needed in the kernel IPsec plugin explained in the next section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:pluginKernel-IPsec"
+
+\end_inset
+
+.
+ The actual child key derivation is postponed until the registered kernel
+ plugin's 
+\family typewriter
+add_sa
+\family default
+ function is called by the task which takes care of child creation, see
+ figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Child-SA-establishment"
+
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "fig:Child-SA-establishment"
+
+\end_inset
+
+ labels (
+\emph on
+SI
+\emph default
+) and (
+\emph on
+IS
+\emph default
+).
+\end_layout
+
+\begin_layout Subsection
+Kernel IPsec plugin
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:pluginKernel-IPsec"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After keying material for a new child SA has been derived in the TKM, the
+ child SA state must be established by using a kernel IPsec plugin.
+ In the case of the TKM where no child keying material leaves the TCB and
+ child SA policy handling is completely done by the TKM, the kernel plugin
+ can be kept very simple.
+ It only provides a custom 
+\family typewriter
+add_sa
+\family default
+ function used to instruct the TKM to derive child keys and install a new
+ ESA (ESP SA) state inside the TCB's encrypter component.
+ This is of course only possible if all preconditions for this operation
+ are met.
+\end_layout
+
+\begin_layout Subsection
 Private key plugin
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Private-key-plugin"
+name "sub:plugin-Private-key"
 
 \end_inset
 
@@ -6878,7 +7476,7 @@ credential_set_t
 Public key plugin
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Public-key-plugin"
+name "sub:plugin-Public-key"
 
 \end_inset
 
@@ -6904,129 +7502,10 @@ To make sure charon always uses the TKM public key plugin when processing
 \end_layout
 
 \begin_layout Subsection
-Keymat plugin
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Keymat-plugin"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The charon-tkm code uses the new keymat registration facility developed
- during this project to register a special TKM keymat variant, which acts
- as proxy for the remote keying material stored in the TKM.
- The keymat is constructed together with an IKE SA and stays active for
- the lifetime of the SA.
- Upon construction, the TKM keymat plugin acquires an ISA context ID (
-\family typewriter
-TKM_CTX_ISA
-\family default
-) from the ID manager.
- It then behaves like the standard IKEv2 keymat, except that it does not
- store or receive any critical data.
- Calls to 
-\family typewriter
-derive_ike_keys
-\family default
- and 
-\family typewriter
-derive_child_keys
-\family default
- are dispatched into the TCB by using context IDs.
- The keys used to protect the IKE SA are returned to the keymat because
- they are not classified as critical (see section TODO).
-\end_layout
-
-\begin_layout Standard
-The keymat plugin uses the piggybacking mechanism described in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Piggybacking"
-
-\end_inset
-
- to forward information to other plugins or to extract required information
- from other sources.
- For example the 
-\family typewriter
-derive_child_keys
-\family default
- function does nothing more than using the encryption key chunks to store
- information needed in the kernel IPsec plugin explained in the next section
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Kernel-IPsec-interface-plugin"
-
-\end_inset
-
-.
- The actual child key derivation is postponed until the registered kernel
- plugin's 
-\family typewriter
-add_sa
-\family default
- function is called by the task which takes care of child creation, see
- figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Child-SA-establishment"
-
-\end_inset
-
- 
-\begin_inset CommandInset ref
-LatexCommand vpageref
-reference "fig:Child-SA-establishment"
-
-\end_inset
-
- labels (
-\emph on
-SI
-\emph default
-) and (
-\emph on
-IS
-\emph default
-).
-\end_layout
-
-\begin_layout Subsection
-Kernel IPsec interface plugin
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Kernel-IPsec-interface-plugin"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-After keying material for a new child SA has been derived in the TKM, the
- child SA state must be established by using a kernel IPsec plugin.
- In the case of the TKM where no child keying material leaves the TCB and
- child SA policy handling is completely done by the TKM, the kernel plugin
- can be kept very simple.
- It only provides a custom 
-\family typewriter
-add_sa
-\family default
- function used to instruct the TKM to derive child keys and install a new
- ESA (ESP SA) state inside the TCB's encrypter component.
- This is of course only possible if all preconditions for this operation
- are met.
-\end_layout
-
-\begin_layout Subsection
 Bus listener plugin
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:charon-Bus-listener-plugin"
+name "sub:plugin-Bus-listener"
 
 \end_inset
 
@@ -7784,7 +8263,7 @@ Authentication
 As dictated by the requirement described in section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Authentication"
+reference "sub:req-Authentication"
 
 \end_inset
 
@@ -7816,8 +8295,7 @@ key "rfc3447"
 , section 8.2.
  The functionality is provided as Ada generic, allowing the instantiation
  with different hashing algorithms.
- Already instantiated instances are provided for SHA-1 and SHA-256 hash
- algorithms.
+ Pre-instantiated instances are provided for SHA-1 and SHA-256 hash algorithms.
  The listing 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -8461,7 +8939,7 @@ Cc_Add_Certificate
 m bus listener plugin described in section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:charon-Bus-listener-plugin"
+reference "sub:plugin-Bus-listener"
 
 \end_inset
 
@@ -8718,9 +9196,9 @@ name "sec:Additional-components"
 \end_layout
 
 \begin_layout Standard
-Certain functionality which was needed for the implementation of TKM has
- been realized in self-contained software projects or as extension to existing
- libraries.
+Certain functionality which was needed for the implementation of the TKM
+ has been realized in self-contained software projects or as extension to
+ existing libraries.
 \end_layout
 
 \begin_layout Subsection
@@ -8741,8 +9219,27 @@ Anet is a networking library for the Ada programming language.
 \end_layout
 
 \begin_layout Standard
-Anet has been released as an opensource project under the GMGPL license
- and is available at 
+Anet has been released as open-source software under the GMGPL
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+GNAT Modified General Public License
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GMGPL
+\end_layout
+
+\end_inset
+
+ license and is available at 
 \begin_inset Flex URL
 status open
 
@@ -8809,11 +9306,12 @@ http://www.kernel.org/
 \end_inset
 
  interface.
- It provides functionality to add and delete XFRM policies and states.
+ It provides the functionality required to add and delete XFRM policies
+ and states.
 \end_layout
 
 \begin_layout Standard
-The xfrm framework is used to implement the IPsec
+The XFRM framework is used to implement the IPsec
 \begin_inset Index idx
 status open
 
@@ -8867,11 +9365,11 @@ key "rfc4303"
 
 \begin_layout Standard
 The TKM uses the XFRM interface via the xfrm-ada library, to manage the
- SPD and SAD and provide the keys for ESP encryption to the kernel.
+ SPD and SAD and provides the keys for ESP encryption to the kernel.
 \end_layout
 
 \begin_layout Standard
-xfrm-ada has been released as an opensource project under the GMGPL license
+xfrm-ada has been released as open-source software under the GMGPL license
  and is available at 
 \begin_inset Flex URL
 status open
@@ -8906,12 +9404,12 @@ key "rfc5280"
 \end_inset
 
  library.
- It provides functionality to process ASN.1/DER-encoded TODO: REF X.680 certificat
-es and private keys.
+ It provides functionality to process ASN.1/DER-encoded TODO: REF X.680/X.690
+ certificates and private keys.
 \end_layout
 
 \begin_layout Standard
-x509-Ada has been released as an opensource project under the GMGPL license
+x509-Ada has been released as open-source software under the GMGPL license
  and is available at 
 \begin_inset Flex URL
 status open
