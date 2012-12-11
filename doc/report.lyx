@@ -5443,6 +5443,13 @@ filename "tex/types-varoctets.tex"
 
 \begin_layout Subsection
 Constants
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Constants"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5623,6 +5630,13 @@ All the following exchanges are used by IKE to communicate with the TKM
 \begin_inset CommandInset include
 LatexCommand input
 filename "tex/interface-IKE-nc_create.tex"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "subsub:Exchanges-nc-create"
 
 \end_inset
 
@@ -6656,7 +6670,7 @@ Documentation Types, constants and exchange description as well as state
 \end_layout
 
 \begin_layout Section
-RPC: tkm-rpc library
+RPC library: tkm-rpc
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:tkm-rpc-library"
@@ -6667,14 +6681,1285 @@ name "sub:tkm-rpc-library"
 \end_layout
 
 \begin_layout Standard
-What is tkm-rpc? How is it used by the components? How are the code files
- generated? example code on usage.
- Finite statemachines with pre/postcons.
- exception on violation
+Since the main objective of this project is to separate security-critical
+ functionality from untrusted software components and extract it into a
+ TCB the need for a communication mechanism between the disjointed parts
+ arises.
+ The communication layer is abstracted into a self-contained library called
+ tkm-rpc.
+ It allows the untrusted and trusted side to exchange well-formed messages,
+ so called request and responses, as defined by the interface specification.
 \end_layout
 
 \begin_layout Standard
-explain the stream dispatcher generic.
+At the core of an exchange are the request and response data types.
+ Clients send a request object to a server and the server responds by sending
+ back a corresponding response object.
+ Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Basic-operation"
+
+\end_inset
+
+ describes the general operation of the tkm-rpc library.
+\end_layout
+
+\begin_layout Standard
+To make use of the tkm-rpc library clients simply include the necessary
+ project or header files, which contain the type, constant definitions and
+ procedure or function specifications.
+ How the library is intended to be used by clients is described in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Client-side-usage"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Server-side components are expected to provide an implementation of interface-sp
+ecific procedures.
+ How the server processing is done is illustrated in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Server-side-processing"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+When appropriate the concrete implementation is illustrated using the 
+\family typewriter
+nc_create
+\family default
+ exchange, which is specified in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsub:Exchanges-nc-create"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Basic operation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Basic-operation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The tkm-rpc library provides an RPC
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+RPC
+\end_layout
+
+\end_inset
+
+ (remote procedure call) interface that use a data transmission channel
+ to pass client requests to a server and responses back to the client.
+ The basic layout of request and response data types are shown in figure
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Request-and-response"
+
+\end_inset
+
+.
+ The operation type of a request or response specifies what exchange it
+ is part of.
+ Requests are matched to their corresponding responses using the req_id
+ field.
+ However, this is currently not implemented.
+ It is a limitation of the current implementation, see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Limitations"
+
+\end_inset
+
+.
+ Support for multiple simultaneous exchanges and asynchronous request processing
+ can be implemented using the req_id matching.
+ Currently a call to the tkm-rpc library blocks the client until the server's
+ response is received.
+\end_layout
+
+\begin_layout Standard
+Most of the library code is automatically generated based on the XML specificati
+on, as described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:XML-Specification"
+
+\end_inset
+
+.
+ Only the transport-specific parts of sending and receiving requests and
+ responses using a specific communication method is implemented.
+ The exchange of data is performed using UNIX domain sockets.
+ The necessary networking functionality is provided by the Anet library,
+ which is described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Anet"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The round trip of an exchange is illustrated by figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Basic-IPC-operation"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/ipc-overview.svg
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Basic IPC operation
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Basic-IPC-operation"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A client calls a function or procedure that is specified by the TKM interface.
+ That call is translated into a request object with the operation set to
+ the corresponding exchange id.
+ Any parameters are marshaled into data fields of the request object.
+ The request is then transmitted to the server via a Unix domain socket
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Unix domain sockets are a standard IPC mechanism and are part of the POSIX
+ socket API
+\end_layout
+
+\end_inset
+
+ TODO: reference to POSIX.
+\end_layout
+
+\begin_layout Standard
+On the server side of the socket, the request object is unmarshaled.
+ The operation is dispatched according to the exchange id and the parameters
+ of the exchange are extracted from the request object.
+ The call is then forwarded to the server passing it the necessary arguments
+ sent by the client.
+ At this point the server performs all necessary actions to service the
+ requested operation.
+ After the server has finished handling the operation, it returns result
+ data.
+ A response data object is created with the same exchange and request ids
+ as the request object.
+ The response parameters are then marshaled into the corresponding response
+ data fields and the response object is sent back to the client via the
+ Unix socket.
+\end_layout
+
+\begin_layout Standard
+Back on the client side the response is unmarshaled and any return parameters
+ are extracted from the response object.
+ These values are then passed back to the client as out mode or return parameter
+s thus completing the exchange.
+\end_layout
+
+\begin_layout Standard
+A complete list of all IKE exchanges is given in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:IKE-Exchanges"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Request and Response types
+\end_layout
+
+\begin_layout Standard
+Each exchange has a specific request and response type.
+ These are generated from the XML specification and their basic structure
+ is depicted in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Request-and-response"
+
+\end_inset
+
+.
+ Every request has a header which contains the exchange and the request
+ identifier.
+ Responses contain the same header information plus an additional status
+ code.
+ The result code signals success or error conditions to the caller using
+ the constant values specified in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Constants"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Exchange specific data is stored in additional record fields after the header.
+ Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:nc_create-request-specific-data"
+
+\end_inset
+
+ shows the generated data type of the 
+\family typewriter
+nc_create
+\family default
+ exchange, consisting of the header and request-specific data.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "float,language=Ada"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+type Data_Type is record
+\end_layout
+
+\begin_layout Plain Layout
+
+   Nc_Id        : Types.Nc_Id_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Nonce_Length : Types.Nonce_Length_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+end record;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+for Data_Type use record
+\end_layout
+
+\begin_layout Plain Layout
+
+   Nc_Id        at 0 range 0 ..
+ (8 * 8) - 1;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Nonce_Length at 8 range 0 ..
+ (8 * 8) - 1;
+\end_layout
+
+\begin_layout Plain Layout
+
+end record;
+\end_layout
+
+\begin_layout Plain Layout
+
+for Data_Type'Size use Data_Size * 8;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+type Request_Type is record
+\end_layout
+
+\begin_layout Plain Layout
+
+   Header  : Request.Header_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Data    : Data_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Padding : Padding_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+end record;
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+nc_create request-specific data type
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:nc_create-request-specific-data"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As is apparent, the requests parameters as specified in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsub:Exchanges-nc-create"
+
+\end_inset
+
+ have a corresponding record field in the exchange-specific data type.
+ The exact memory layout of the record is specified using an Ada record
+ representation clause.
+ All requests like all response types are of the same size.
+ Requests that are smaller than the required length are padded with zeros.
+\end_layout
+
+\begin_layout Standard
+Responses are constructed following the same idiom.
+\end_layout
+
+\begin_layout Subsection
+Client-side usage
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Client-side-usage"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The purpose of an RPC library is to hide the complicated exchange and transport
+ details from the user.
+ It must be very easy to use and remote calls should look like local procedure
+ or function calls to the client.
+ The majority of the RPC client library is automatically generated from
+ the XML specification.
+ An exception is the transport layer.
+ The next section explains the motivation and the operation of the transport
+ layer abstraction.
+\end_layout
+
+\begin_layout Standard
+Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Request-handling"
+
+\end_inset
+
+ illustrates how clients use the RPC library and how the internal processing
+ works.
+\end_layout
+
+\begin_layout Subsubsection
+Transport mechanism abstraction
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Transport-mechanism-abstraction"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The transport layer constitutes the lowest level of the RPC library.
+ To easy the usage of different communication mechanisms all necessary functiona
+lity is encapsulated in the 
+\family typewriter
+Tkmrpc.Transport.Client
+\family default
+ package.
+ The current implementation employs stream-oriented Unix sockets using the
+ functionality provided by Anet, which is presented in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Anet"
+
+\end_inset
+
+.
+ To run the TKM daemon on a different physical machine, switching to a TCP
+ socket implementation and connecting to an IP address and port, is all
+ that is necessary from the client's point of view.
+\end_layout
+
+\begin_layout Standard
+The interface, which is automatically generated, is rather simple and only
+ three procedures must be implemented, see listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:Client-Tkmrpc-transport"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "float,language=Ada"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+with Tkmrpc.Request;
+\end_layout
+
+\begin_layout Plain Layout
+
+with Tkmrpc.Response;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package Tkmrpc.Transport.Client is
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   procedure Connect (Address : String);
+\end_layout
+
+\begin_layout Plain Layout
+
+   --  Connect to the RPC server given by socket address.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   procedure Send (Data : Request.Data_Type);
+\end_layout
+
+\begin_layout Plain Layout
+
+   --  Send request data to RPC server.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   procedure Receive (Data : out Response.Data_Type);
+\end_layout
+
+\begin_layout Plain Layout
+
+   --  Receive response data from RPC server.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+end Tkmrpc.Transport.Client;
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Client Tkmrpc transport abstraction
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:Client-Tkmrpc-transport"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Before a client can do remote procedure calls using tkm-rpc it must connect
+ to the remote server component specifying the filename of the UNIX socket,
+ where the server is listening for exchanges.
+ The 
+\family typewriter
+Send
+\family default
+ procedure is used to transmit request objects to the connected RPC server
+ while the 
+\family typewriter
+Receive
+\family default
+ procedure returns a response object received from the server.
+ Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Request-handling"
+
+\end_inset
+
+ explains how the two procedures are used to implement request and response
+ handling.
+\end_layout
+
+\begin_layout Subsubsection
+Request handling
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Request-handling"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Based on the XML exchange description Ada procedure definitions are generated.
+ Since the exchanges are specified on a per-interface basis (e.g.
+ ike) procedures belonging together are put in the same package, e.g.
+ 
+\family typewriter
+Tkmrpc.Clients.Ike
+\family default
+.
+ Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:Nc_Create-procedure-declaration"
+
+\end_inset
+
+ shows the generated procedure declaration for the 
+\family typewriter
+nc_create
+\family default
+ exchange.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "float,language=Ada"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+procedure Nc_Create
+\end_layout
+
+\begin_layout Plain Layout
+
+  (Result       : out Results.Result_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Nc_Id        : Types.Nc_Id_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Nonce_Length : Types.Nonce_Length_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Nonce        : out Types.Nonce_Type);
+\end_layout
+
+\begin_layout Plain Layout
+
+  pragma Export (C, Nc_Create, "ike_nc_create");
+\end_layout
+
+\begin_layout Plain Layout
+
+  pragma Export_Valued_Procedure
+\end_layout
+
+\begin_layout Plain Layout
+
+    (Nc_Create,
+\end_layout
+
+\begin_layout Plain Layout
+
+     Mechanism => (Nc_Id => Value, Nonce_Length => Value));
+\end_layout
+
+\begin_layout Plain Layout
+
+--  Create a nonce.
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Nc_Create procedure declaration (client-side)
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:Nc_Create-procedure-declaration"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The export pragmas make the procedures callable from the C programming language.
+ To enable the use of the library in C, a header file containing corresponding
+ C function declarations for each exchange is also generated.
+ Since the C language has no notion of packages and has one global namespace,
+ all procedures are prefixed with the name of the interface they belong
+ to.
+ Thus the exchange to create a nonce is called 
+\family typewriter
+Nc_Create
+\family default
+ in Ada and 
+\family typewriter
+ike_nc_create
+\family default
+ in C.
+ Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:ike_nc_create-function-declarati"
+
+\end_inset
+
+ shows the C function declaration equivalent of the Ada procedure presented
+ in listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:ike_nc_create-function-declarati"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "float,language=C"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+/**
+\end_layout
+
+\begin_layout Plain Layout
+
+ * Create a nonce.
+\end_layout
+
+\begin_layout Plain Layout
+
+ */
+\end_layout
+
+\begin_layout Plain Layout
+
+extern result_type ike_nc_create(const nc_id_type nc_id,
+\end_layout
+
+\begin_layout Plain Layout
+
+                const nonce_length_type nonce_length,
+\end_layout
+
+\begin_layout Plain Layout
+
+                nonce_type *nonce);
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+ike_nc_create function declaration
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:ike_nc_create-function-declarati"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When a client calls the Nc_Create procedure a request object is created,
+ filling in the passed in parameters.
+ Next the object is transmitted using the Send procedure described in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Transport-mechanism-abstraction"
+
+\end_inset
+
+.
+ Afterwards the Receive procedure is used to get a response from the server.
+ The result parameters are extracted from the response data type and returned
+ to the client.
+\end_layout
+
+\begin_layout Subsection
+Server-side processing
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Server-side-processing"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+RPC servers are passive components which respond to requests sent by clients.
+ The main focus of server-side processing is automatic mapping of requests
+ to concrete exchanges as specified by the interface.
+ A server implementation should not be burdened with the details of exchange
+ and request id handling but concentrate on the implementation of the functional
+ity prescribed by the exchange.
+\end_layout
+
+\begin_layout Standard
+Much like the client part of the RPC library, most of the code is automatically
+ generated.
+ Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Operation-dispatching"
+
+\end_inset
+
+ describes how incoming requests are dispatched to their corresponding exchange
+ handlers.
+ After that a description of error handling is given in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Error-handling"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Operation dispatching
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Operation-dispatching"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+All operations exposed to the client via the tkm-rpc library must be implemented
+ by a RPC server.
+ To ensure this, an Ada package containing procedure declarations is generated
+ for each interface described in the XML specification.
+ As can be seen by comparing listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:Nc_Create-procedure-declaration-server"
+
+\end_inset
+
+ to listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:Nc_Create-procedure-declaration"
+
+\end_inset
+
+, the client and server side procedure declarations are almost identical.
+ The procedure is not exported since all processing is done in Ada and the
+ procedure is not meant to be called from C code.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "float,language=Ada"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+procedure Nc_Create
+\end_layout
+
+\begin_layout Plain Layout
+
+  (Result       : out Results.Result_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Nc_Id        : Types.Nc_Id_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Nonce_Length : Types.Nonce_Length_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Nonce        : out Types.Nonce_Type);
+\end_layout
+
+\begin_layout Plain Layout
+
+--  Create a nonce.
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Nc_Create procedure declaration (server-side)
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:Nc_Create-procedure-declaration-server"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A server implementing the 
+\shape italic
+ike
+\shape default
+ interface must provide package body implementing the 
+\family typewriter
+Tkmrpc.Servers.Ike
+\family default
+ package.
+\end_layout
+
+\begin_layout Standard
+A dispatcher which takes a request data object as input and calls the correspond
+ing procedure according to the exchange identifier is generated also.
+ This takes the burden of mapping exchange ids to correct operation handler
+ from the server implementation.
+ This avoids possible errors such as typos, which can be hard to detect.
+ Additionally the generated code guarantees that all specified exchanges
+ are handled and unknown exchanges are handled by returning an Invalid_Operation
+ status code via response data object.
+ Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:Ike-request-dispatcher"
+
+\end_inset
+
+ shows the procedure declaration of the Ike dispatcher, which is located
+ in the (generated) 
+\family typewriter
+Tkmrpc.Dispatchers.Ike
+\family default
+ package.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "float,language=Ada"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+procedure Dispatch
+\end_layout
+
+\begin_layout Plain Layout
+
+  (Req : Request.Data_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Res : out Response.Data_Type);
+\end_layout
+
+\begin_layout Plain Layout
+
+--  Dispatch IKE request to concrete operation handler.
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Ike request dispatcher
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:Ike-request-dispatcher"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since data received from the client via the Unix socket is just a sequence
+ of octets a method to translate the binary data into requests types and
+ passing them to the presented dispatcher is needed.
+ The different parts are brought together by the 
+\family typewriter
+Tkmrpc.Process_Stream
+\family default
+ generic.
+ Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:Process-stream-generic"
+
+\end_inset
+
+ shows the declaration of the generic procedure.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "float,language=Ada"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+generic
+\end_layout
+
+\begin_layout Plain Layout
+
+   with procedure Dispatch
+\end_layout
+
+\begin_layout Plain Layout
+
+     (Req :     Request.Data_Type;
+\end_layout
+
+\begin_layout Plain Layout
+
+      Res : out Response.Data_Type);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   with procedure Exception_Handler
+\end_layout
+
+\begin_layout Plain Layout
+
+     (Ex : Ada.Exceptions.Exception_Occurrence) is null;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+procedure Tkmrpc.Process_Stream
+\end_layout
+
+\begin_layout Plain Layout
+
+  (Recv_Data :     Ada.Streams.Stream_Element_Array;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Send_Data : out Ada.Streams.Stream_Element_Array;
+\end_layout
+
+\begin_layout Plain Layout
+
+   Send_Last : out Ada.Streams.Stream_Element_Offset);
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Process stream generic
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:Process-stream-generic"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To instantiate the generic a Dispatch procedure matching the given signature
+ must be provided.
+ Optionally an exception handler can also be specified.
+ The generic Process_Stream procedure automatically converts stream data
+ to Tkmrpc request/response objects and passes them on to the given dispatch
+ procedure.
+ The exception handler is called when the specified dispatching procedure
+ raises an exception.
+ How exceptions are handled is subject of the following section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Error-handling"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Error handling
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Error-handling"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The intended way for indicating errors during processing of client requests
+ is by raising exceptions.
+ Such an exception propagates all the way up to the 
+\family typewriter
+Process_Stream
+\family default
+ generic's exception block.
+ There the result code of the response is set to failure to inidicate an
+ error to the client.
+\end_layout
+
+\begin_layout Standard
+This mechanism works well in combination with the automatically generated
+ context state machines because violation of pre- and postconditions raise
+ an 
+\begin_inset Quotes eld
+\end_inset
+
+System.Assertions.Assert_Failure
+\begin_inset Quotes erd
+\end_inset
+
+ exception, as described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:nc_create-ada"
+
+\end_inset
+
+.
+ These are then properly processed by the 
+\family typewriter
+Process_Stream
+\family default
+ generic to relieve the server implementation of the burden of dealing with
+ all possible error cases.
+\end_layout
+
+\begin_layout Standard
+The current implementation returns 
+\begin_inset Quotes eld
+\end_inset
+
+Invalid_Operation
+\begin_inset Quotes erd
+\end_inset
+
+ if an error occurs and does not translate exceptions to their corresponding
+ error codes, see also section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Limitations"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
@@ -7654,6 +8939,13 @@ Charon_Terminate
 
 \begin_layout Section
 TKM
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:TKM"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
