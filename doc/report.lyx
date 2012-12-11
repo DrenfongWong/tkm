@@ -8991,6 +8991,30 @@ Tkmrpc.Servers.Ike
 \end_layout
 
 \begin_layout Subsection
+Client communication
+\end_layout
+
+\begin_layout Standard
+Exchanges between charon-tkm and the TKM daemon are transfered using a Unix
+ domain socket.
+ The TKM implementation instantiates the 
+\family typewriter
+Process_Stream
+\family default
+ generic described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:Process-stream-generic"
+
+\end_inset
+
+ with the automatically generated IKE dispatcher and a logging procedure
+ as exception handler.
+ The procedure is used in conjunction with an Anet stream receiver to perform
+ the request and response processing.
+\end_layout
+
+\begin_layout Subsection
 Nonce generation
 \end_layout
 
