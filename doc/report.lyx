@@ -2688,8 +2688,8 @@ name "fig:IKE-SA-establishment"
 \end_layout
 
 \begin_layout Standard
-IKE exchanges are implemented as task entities in charon and life in the
- 
+IKE exchanges are implemented as task entities in charon and are situated
+ in the 
 \family typewriter
 libcharon/sa/ikev2/tasks
 \family default
@@ -2699,7 +2699,7 @@ libcharon/sa/ikev2/tasks
 ike_init.c
 \family default
  file in this directory.
- The tasks are implemented as FSM
+ Each task represents a FSM
 \begin_inset Foot
 status open
 
@@ -2719,15 +2719,23 @@ FSM
 
 \end_inset
 
- which change state depending on internal or external events like received
+ which changes state depending on internal or external events like received
  messages.
  The 
 \family typewriter
 NEED_MORE
 \family default
- transition indicates that the state machine is expecting more data to proceed.
- This state separates the sending path from the receiving path inside the
- 
+ state displayed in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-SA-establishment"
+
+\end_inset
+
+ indicates that the state machine responsible to establish an IKE SA is
+ expecting more data to proceed.
+ This state is used to separate the sending path from the receiving path
+ inside the 
 \family typewriter
 build_i/process_i
 \family default
@@ -2735,16 +2743,12 @@ build_i/process_i
 \family typewriter
 process_r/build_r
 \family default
- blocks of figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:IKE-SA-establishment"
+ blocks.
+\end_layout
 
-\end_inset
-
-.
- The tasks access required functionality by using requesting plugins from
- different factories.
+\begin_layout Standard
+The tasks access required functionality by requesting plugins from different
+ factories.
  Examples of such plugins are RNGs
 \begin_inset Foot
 status open
@@ -2755,7 +2759,7 @@ Random number generator
 
 \end_inset
 
- or plugins which perform the DH exchange.
+ or plugins which perform a DH exchange.
 \end_layout
 
 \begin_layout Standard
@@ -2773,12 +2777,12 @@ create_dh
 \family typewriter
 keymat
 \family default
- object which internally requests a new DH plugin instance from the crypto
- factory and returns this instance to the calling task (
+ object (
 \emph on
 CD
 \emph default
-).
+) which internally requests a new DH plugin instance from the crypto factory
+ and returns this instance to the calling task.
  A 
 \family typewriter
 keymat
@@ -2875,26 +2879,32 @@ name "fig:IKE-SA-authentication"
 \end_layout
 
 \begin_layout Standard
-Figure 
+Figures 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:IKE-SA-authentication"
 
 \end_inset
 
- shows the code involved during the authentication of an IKE SA.
- This exchange is more complex than the IKE_SA_INIT exchange.
- The IKE SA authentication shows seven subgraphs, including the one depicted
- in the separate figure 
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:IKE-public-key-auth"
+
+\end_inset
+
+ and 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:IKE-Certificate-trustchain"
 
 \end_inset
 
-, which illustrates the trust chain verification code flow.
- The subgraphs cross-reference themselves which is again indicated by round
- labels.
+ show the code involved during the authentication of an IKE SA.
+ As can be deduced from the number of graphs needed to illustrate this process,
+ this exchange is more complex than the IKE_SA_INIT exchange explained in
+ the previous section.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -8318,7 +8328,7 @@ name "sub:ID-manager"
 
 \begin_layout Standard
 The TKM ID manager handles the management of the different context ID kinds.
- It's interface is very simple.
+ Its interface is very simple.
  The 
 \family typewriter
 acquire_id
@@ -8359,7 +8369,7 @@ The TKM code uses two main techniques to pass on information from one plugin
  to another for cases where the strongSwan interface is not prepared to
  handle the use case.
  These two techniques allowed to implement the required TKM functionality
- without being to invasive to the upstream strongSwan codebase.
+ without being too invasive to the upstream strongSwan codebase.
  This is especially true for use cases which are only relevant for the TKM
  project with no benefit for the project as a whole.
 \end_layout
@@ -8928,14 +8938,14 @@ name "sub:plugin-Bus-listener"
 To inform charon about the authorization result from the TKM, a mechanism
  called authorization hooks is used.
  The TKM bus listener plugin registers itself as listener for IKE messages
- and is consulted in the final step of the authorization round whether the
- peer has been correctly authorized.
+ and is consulted in the final step of the authorization round to check
+ whether the peer has been correctly authorized.
 \end_layout
 
 \begin_layout Standard
 The message hook is needed to extract the authorization payload from the
- incoming IKE_AUTH message from the peer and to store it in the keymat of
- the corresponding IKE SA this exchange is currently performed.
+ peer's incoming IKE_AUTH message and to store it in the keymat of the correspon
+ding IKE SA, in whose context this exchange is currently performed.
  This is done by calling the custom TKM keymat function 
 \family typewriter
 set_auth_payload
