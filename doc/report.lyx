@@ -10992,6 +10992,365 @@ reference "chap:Design"
 \end_inset
 
 .
+ The main reason for these limitations is the lack of time to fully implement
+ the envisioned functionality and are not due to inadequate or deficient
+ design.
+\end_layout
+
+\begin_layout Subsection
+Cryptographic algorithms
+\end_layout
+
+\begin_layout Standard
+Currently only a selected set of algorithms are implemented.
+ Table lists the implemented cryptographic transforms:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="3">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Usage
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Algorithm name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+IANA ID
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Authentication method
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RSA-PKCS1-SHA1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Certificate chain verification
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RSA-PKCS-SHA256
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Encryption Algorithm
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+AES-256-CBC
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+12
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Pseudo-random Function
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+HMAC-SHA512
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Integrity Algorithm
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+HMAC-SHA512
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+14
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Diffie-Hellman
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3072-bit MODP Group
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+15
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Diffie-Hellman
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4096-bit MODP Group
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+16
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Implemented cryptographic algorithms
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There is no inherent limitation of usable cryptographic transforms, it is
+ simply a question of implementing the desired methods.
+ Algorithm agility is ensured by the design through the use of numeric algorithm
+ identifiers and avoidance of hardcoded cryptographic mechanisms.
+\end_layout
+
+\begin_layout Subsection
+Identity handling
+\end_layout
+
+\begin_layout Standard
+The local and peer identities are currently limited to specific, hardcoded
+ identities.
+ The peer subject name must be 
+\begin_inset Quotes eld
+\end_inset
+
+bob@strongswan.org
+\begin_inset Quotes erd
+\end_inset
+
+ and the local subject name must be 
+\begin_inset Quotes eld
+\end_inset
+
+alice@strongswan.org
+\begin_inset Quotes erd
+\end_inset
+
+.
+ This is caused by the static configurability of the TKM daemon.
+ In order to allow the use of arbitrary identities the configuration mechanism
+ of TKM and charon-tkm needs to be fully implemented.
+\end_layout
+
+\begin_layout Subsection
+Certificates and Keys
+\end_layout
+
+\begin_layout Standard
+Currently only a single CA certificate is supported for certificate chain
+ validation.
+ Similarly only one private key is supported for authenticating the local
+ identity to the peer.
+ Similar to the constraints with regards to identity handling, the cause
+ far this is also the incomplete implementation of the configuration interface.
+\end_layout
+
+\begin_layout Subsection
+Certificate chain context reuse
+\end_layout
+
+\begin_layout Standard
+A certificate chain that has been verified, is potentially usable until
+ the end of its validity period.
+ Currently this fact is disregarded and verified certificate chain contexts
+ are not reused and must be constructed anew when authenticating a peer.
+\end_layout
+
+\begin_layout Subsection
+Source of randomness
+\end_layout
+
+\begin_layout Standard
+The nonce generation in the TKM is implemented by reading a sequence of
+ bytes from Linux's random device node 
+\family typewriter
+/dev/urandom
+\family default
+.
+ The source of the random data is currently not configurable.
+ This may not be regarded as a limitation per-se but because the issue of
+ random number generation is paramount to any system constructing cryptographic
+ keys the authors feel compelled to explicitly mention it.
 \end_layout
 
 \begin_layout Chapter
