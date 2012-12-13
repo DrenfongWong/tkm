@@ -6943,7 +6943,14 @@ Unix domain sockets are a standard IPC mechanism and are part of the POSIX
 
 \end_inset
 
- TODO: reference to POSIX.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "IEEE:POSIX"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
