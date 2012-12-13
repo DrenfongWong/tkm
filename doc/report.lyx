@@ -11372,19 +11372,85 @@ Conclusion
 \end_layout
 
 \begin_layout Standard
-This chapter discusses the results by comparing the actual implementation
- to the design requirements and security goals formulated in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:Requirements"
-
-\end_inset
-
-.
+This chapter provides a summary of the contributions and an outlook on possible
+ future work related to this work.
 \end_layout
 
 \begin_layout Section
-Achievements
+Contributions
+\end_layout
+
+\begin_layout Standard
+This section discusses the main results of this work which are the analysis
+ and splitting of the IKE protocol and demonstrating the viability of the
+ concept through the prototypical implementation of the envisioned system.
+\end_layout
+
+\begin_layout Subsection
+IKE protocol split
+\end_layout
+
+\begin_layout Standard
+After formulating desired security properties and identifying the critical
+ components of the IKE protocol a concept to split the key management system
+ into an untrusted and trusted part has been proposed.
+ Care was taken to only extract the functionality that is absolutely necessary
+ from the untrusted IKE processing.
+ Thus, the presented interface between IKE and TKM facilitates the implementatio
+n of a small and robust trusted component.
+ This interface has been specified in an XML document which is used as a
+ basis for the implementation.
+\end_layout
+
+\begin_layout Standard
+The splitting of the protocol guarantees that even if the untrusted side
+ is completely subverted by an attacker the TCB upholds the proposed security
+ goals.
+\end_layout
+
+\begin_layout Subsection
+Prototype implementation
+\end_layout
+
+\begin_layout Standard
+All parts of the system have been implemented.
+ This allowed the demonstration of the functional capability of the proposed
+ design.
+\end_layout
+
+\begin_layout Standard
+The untrusted parts of the IKE daemon are implemented on top of the existing
+ strongSwan IKE implementation.
+ The trusted components have been implemented from scratch using the Ada
+ programming language.
+ Leveraging the XML specification of the interface and using it to automatically
+ generate code for the IKE and TKM errors in the transformation process
+ from the specification to the code are avoided.
+ This mechanism enables changes to the interface at a low cost with a significan
+tly smaller potential for errors compared to a manual translation of the
+ specification into code.
+ Since the implementation spans multiple programming languages (Ada and
+ C) this takes even more burden off the implementor.
+\end_layout
+
+\begin_layout Standard
+Generating Ada 2012 contracts from the specification of the code used in
+ the TCB, the conformance of these parts of the TKM implementation are checked
+ against the specification at runtime.
+ Additionally these checks can also be formally verified by the GNATprove
+ tool (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:XML-Specification"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+The current state of the implementation shows that the proposed design actually
+ works.
 \end_layout
 
 \begin_layout Section
