@@ -4238,6 +4238,13 @@ reference "sec:Limitations"
 
 \begin_layout Section
 Assumptions
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Assumptions"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5861,6 +5868,13 @@ filename "tex/interface-IKE-ae_reset.tex"
 \begin_inset CommandInset include
 LatexCommand input
 filename "tex/interface-IKE-isa_create.tex"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "subsub:Exchanges-isa-sign"
 
 \end_inset
 
@@ -11358,7 +11372,15 @@ Conclusion
 \end_layout
 
 \begin_layout Standard
-We have shown that...
+This chapter discusses the results by comparing the actual implementation
+ to the design requirements and security goals formulated in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Requirements"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
@@ -11370,8 +11392,466 @@ Future work
 \end_layout
 
 \begin_layout Standard
-Integration into platform such as Linux containers, SELinux, Qubes OS or
- an SK
+This section outlines planned and possible future steps to improve upon
+ the foundation of the current TKM implementation.
+ In the first part of this section concrete work items are discussed which
+ are planned to be implemented soon.
+ These steps directly address the limitations presented in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Limitations"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The latter part discusses broader issues which aim to address the correct
+ enforcement of assumptions formulated in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Assumptions"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Configuration subsystem
+\end_layout
+
+\begin_layout Standard
+Most deficiencies enumerated in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Limitations"
+
+\end_inset
+
+ can be rectified by making the current implementation more dynamically
+ configurable.
+ This would allow the usage of TKM in many more scenarios which would considerab
+ly broaden the applicability of the presented solution.
+ It is expected that this will be implemented in the near future.
+\end_layout
+
+\begin_layout Subsection
+Automated tests
+\end_layout
+
+\begin_layout Standard
+Even though the whole TKM system has been developed following the test-drive
+ development
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+TDD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+TDD is a software development process which employs on short development
+ cycles with a focus on writing good unit tests.
+\end_layout
+
+\end_inset
+
+ methodology no automated integration test suit has been built.
+ This was partly because the system is built-up by many different components
+ and partly because of some deficiencies in the current testing framework
+ of strongSwan, which impeded the addition of automated test cases.
+\end_layout
+
+\begin_layout Standard
+In the meantime the infrastructure for the automated test of strongSwan
+ has been improved.
+ Once these changes are finalized TKM-specific test cases will be added
+ to allow the automated and reproducible testing of the whole TKM system.
+ This ensures that changes to other parts of the system that break the TKM
+ functionality are detectable and clearly indicated by failing tests.
+\end_layout
+
+\begin_layout Subsection
+Cryptanalytic review
+\end_layout
+
+\begin_layout Standard
+A formal and rigorous cryptographic analysis of the 
+\begin_inset Quotes eld
+\end_inset
+
+Splitting
+\begin_inset Quotes erd
+\end_inset
+
+ and the communication between IKE and TKM is highly desirable.
+ It is assumed that an adversary cannot somehow obtain or deduce key material
+ or other sensitive information (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Security-requirements"
+
+\end_inset
+
+) either using the data freely available to IKE or performing exchanges
+ as specified by the interface to extract additional information from the
+ TKM.
+ Furthermore Man-in-the-Middle attacks must also be prevented.
+\end_layout
+
+\begin_layout Standard
+In this context a critical operation is the 
+\family typewriter
+isa_sign
+\family default
+ exchange specified in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsub:Exchanges-isa-sign"
+
+\end_inset
+
+, since it is used to sign data (authentication octets) with a private key
+ to assert the local identity to the peer.
+ Parts of the input data for the signature are private to the TKM while
+ other elements are fixed but known to the untrusted side.
+ Yet another portion of the input can be chosen arbitrarily by an adversary
+ assuming the role of IKE.
+\end_layout
+
+\begin_layout Standard
+By repeatedly performing the aforementioned 
+\family typewriter
+isa_sign
+\family default
+ exchange a malicious entity can abuse the TKM as a random oracle and mount
+ an 
+\shape italic
+adaptive chosen-plaintext attack
+\shape default
+.
+ Employing a signature algorithm which is resistant against such attacks
+ should ensure the desired security properties but since a successful attack
+ would nullify the security properties of the TKM system this issue must
+ be analyzed with great care.
+\end_layout
+
+\begin_layout Subsection
+Platform integration
+\end_layout
+
+\begin_layout Standard
+The basic premise for the extraction of security critical functionality
+ into a TCB is, as stated in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:TCB-security-properties"
+
+\end_inset
+
+, that the untrusted charon-tkm daemon can only interact with the trusted
+ TKM using the exchanges specified in the interface description (see section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:IKE-Exchanges"
+
+\end_inset
+
+).
+ For high assurance system the process isolation mechanism of a standard
+ Linux system is not adequate and does not provide the necessary level of
+ separation, as was already mentioned in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Assumptions"
+
+\end_inset
+
+.
+ Additionally on an ordinary operating system the amount of code that has
+ to be counted to the trusted computing base is in the range of hundred
+ thousand possibly millions of lines of code.
+ This stands in stark contrast to the demand that the TCB should be 
+\shape italic
+minimal
+\shape default
+.
+\end_layout
+
+\begin_layout Standard
+Integrating the implemented system into an environment that offers superior
+ isolation mechanisms and a smaller TCB size is thus a requirement to actually
+ attain a higher security level.
+ Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Possible-target-IKE/TKM"
+
+\end_inset
+
+ lists potential technologies or mechanisms which could be used to complement
+ the separated IKE system.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Complexity
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Reference
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physical separation
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
++
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+none
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Linux Containers
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
++
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://lxc.sourceforge.net/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SELinux
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+++
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://selinuxproject.org/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Separation Kernel
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
++++
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Rushby:1981:DVS:1067627.806586"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Possible target IKE/TKM platforms
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Possible-target-IKE/TKM"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Putting charon-tkm and the TKM daemon on physically distinct hosts is appealing
+ because it is apparent, that charon-tkm and TKM can only exchange information
+ via the intended communication channels.
+ Additionally, such a system is expected to be fairly straight forward to
+ implement thanks to the transport layer abstraction in the tkm-rpc library
+ described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Transport-mechanism-abstraction"
+
+\end_inset
+
+.
+ The need for additional hardware is a major drawback.
+\end_layout
+
+\begin_layout Standard
+The same level of separation could be achieved by porting the charon-tkm
+ and TKM daemon tandem to a separation kernel (SK).
+ Unfortunately there are no freely available SK as of this writing.
+ Some commercial products exist but they are only available to paying customers.
+\end_layout
+
+\begin_layout Standard
+Linux containers and SELinux are another possible solution to secure the
+ trusted from the untrusted part.
+ The degree of isolation they offer might be enough for certain usage scenarios.
+ Using these mechanisms would however not address the issue of having a
+ large TCB.
 \end_layout
 
 \begin_layout Standard
