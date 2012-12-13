@@ -555,7 +555,7 @@ IKEv2
 \begin_layout Standard
 To negotiate cryptographic keys, SA parameters and to perform mutual authenticat
 ion, message pairs are exchanged between the participating peers.
- Section
+ Section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:IKEv2-protocol-analysis"
@@ -565,7 +565,7 @@ reference "sub:IKEv2-protocol-analysis"
  explains the message exchanges of the IKEv2 protocol in detail.
  The service implementing the IKE protocol is normally provided by a user
  space application.
- The following section
+ The following section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:strongSwan"
@@ -680,7 +680,7 @@ TKM
 
 \end_inset
 
-,
+, 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Trusted-Key-Manager"
@@ -881,7 +881,7 @@ TKM
  is a minimal TCB developed during this project which implements the identified
  security-critical functions of the IKEv2 protocol using the Ada programming
  language.
- The TKM is explained in detail in section
+ The TKM is explained in detail in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:TKM"
@@ -904,7 +904,7 @@ tkm-rpc
 
  library to communicate with the modified strongSwan charon daemon in the
  untrusted part.
- This library is also written in Ada and explained in section
+ This library is also written in Ada and explained in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:tkm-rpc-library"
@@ -1372,7 +1372,7 @@ This chapter describes the current operation and the inner workings of the
  strongSwan charon IKEv2 daemon.
  A deep understanding of these mechanisms is a prerequisite for the extraction
  of sensitive functionality out of the daemon into a minimal trusted part
- to achieve the requirements formalized in section
+ to achieve the requirements formalized in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:Requirements"
@@ -1383,7 +1383,7 @@ reference "sec:Requirements"
 \end_layout
 
 \begin_layout Standard
-The following section
+The following section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:IKEv2-protocol-analysis"
@@ -1394,7 +1394,7 @@ reference "sub:IKEv2-protocol-analysis"
  in general to give the reader a basic understanding of the protocol.
  The main aim of the section is to identify critical payloads contained
  in the message exchanges.
- Section
+ Section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Code-analysis"
@@ -1432,7 +1432,7 @@ key "rfc5996"
 
 \begin_layout Standard
 In the following descriptions, the message payloads are indicated by names
- as listed in table
+ as listed in table 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "tab:IKEv2-payloads"
@@ -2228,7 +2228,7 @@ As stated in the previous section, the DH protocol must be implemented inside
  As a result, the SK_e and SK_a keys must be provided to the untrusted part.
  These keys are not considered critical because an attacker taking over
  the untrusted part is already able to extract all information protected
- by these keys (see the threat model section
+ by these keys (see the threat model section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Threat-model"
@@ -2258,7 +2258,7 @@ AUTH
  The value inside this payload must be created by the TKM since it is signed
  by a private key only known to the TCB.
  The signature is handed to the untrusted part because the TKM assures that
- the PRF used to generate it (see
+ the PRF used to generate it (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Signature-generation"
@@ -2303,7 +2303,7 @@ CERTREQ
 CERT
 \emph default
  payloads are included, the first certificate provided must contain the
- public key used to verify the AUTH field
+ public key used to verify the AUTH field 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "rfc5996"
@@ -3024,7 +3024,7 @@ CV
  The responder processes the authentication octets of the initiator by calling
  the verifier's
 \family typewriter
-process
+ process
 \family default
  function (
 \emph on
@@ -3057,7 +3057,7 @@ reference "fig:IKE-Certificate-trustchain"
  The credential manager verifies the signature chain of all involved certificate
 s starting from the peer's public key until it reaches a trusted CA certificate.
  The details of how such signature chains are verified is explained in the
- implementation section
+ implementation section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Certificate-chain-validation"
@@ -3250,15 +3250,19 @@ name "fig:Child-SA-establishment"
 \begin_layout Standard
 First the child SA data structure associated with the task is set into the
  CHILD_INSTALLING state.
- The derive_child_keys function of the keymat is called to derive keying
- material for the child SA (
+ The 
+\family typewriter
+derive_child_keys
+\family default
+ function of the keymat is called to derive keying material for the child
+ SA (
 \emph on
 DC
 \emph default
 ).
  The kernel plugin's
 \family typewriter
-add_policy
+ add_policy
 \family default
  (
 \emph on
@@ -3266,7 +3270,7 @@ IP
 \emph default
 ) and
 \family typewriter
-add_sa
+ add_sa
 \family default
  (
 \emph on
@@ -3274,7 +3278,7 @@ IS
 \emph default
 ) functions are used to install the new policy and state into the kernel's
  SPD and SAD databases.
- If no errors occured, the state of the child SA is set to CHILD_INSTALLED
+ If no errors occurred, the state of the child SA is set to CHILD_INSTALLED
  and it it attached to the associated IKE SA object.
 \end_layout
 
@@ -3284,7 +3288,7 @@ The responder then builds the payloads of the response message and sends
  The initiator processes the message and after extracting the payloads,
  it calls the
 \family typewriter
-select_and_install
+ select_and_install
 \family default
  function to derive child keying material and installs the new policy and
  state in the kernel.
@@ -3432,13 +3436,9 @@ generate
  function of the message which in turn checks if the message is required
  to be encrypted.
  If encryption is enabled, an encrypted payload is created by accessing
- the key material of the IKE SA's 
-\family typewriter
-keymat
-\family default
- object.
+ the key material of the IKE SA's keymat object.
  The actual encryption is done by a crypter plugin which in turn uses an
- RNG plugin outlined in the previous section
+ RNG plugin outlined in the previous section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:flow-Source-of-randomness"
@@ -3456,7 +3456,7 @@ Initialization vector
 \end_inset
 
 .
- The yellow
+ The yellow 
 \begin_inset Quotes eld
 \end_inset
 
@@ -3464,7 +3464,7 @@ aead
 \begin_inset Quotes erd
 \end_inset
 
- blocks in figure
+ blocks in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:IKE-SA-payload-enc"
@@ -3473,7 +3473,7 @@ reference "fig:IKE-SA-payload-enc"
 
  depict cryptographic algorithms using the Authenticated Encryption with
  Associated Data (AEAD) mechanism to guarantee confidentiality and integrity
- of the IKE message payloads (see RFC 5116
+ of the IKE message payloads (see RFC 5116 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "rfc5116"
@@ -3882,6 +3882,7 @@ The security requirements outlined in this section specify the properties
  the TCB must enforce even in the event of a complete compromise of the
  untrusted part of the system.
  These properties are a result of the threat model described in section
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Threat-model"
@@ -3889,6 +3890,7 @@ reference "sub:Threat-model"
 \end_inset
 
  and the more abstract description of TCB security properties in section
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:TCB-security-properties"
@@ -3921,7 +3923,7 @@ The untrusted part of the IKEv2 component must not have access to generated
 
 \begin_layout Standard
 Excluded from the critical material are keys used to protect the IKE SA.
- As defined by the threat model in section
+ As defined by the threat model in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Threat-model"
@@ -3963,7 +3965,7 @@ name "sub:req-Cryptographic-operations"
 All relevant cryptographic operations must be performed by the trusted computing
  base (TCB) to assure the correctness of the resulting values.
  Since cryptographic operations require keying material, this is also a
- consequence of the requirement specified in the previous section
+ consequence of the requirement specified in the previous section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:req-Separation-of-key"
@@ -4368,7 +4370,7 @@ TKM
 
 \end_inset
 
- using the exchanges specified in the chapter
+ using the exchanges specified in the chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:IKE-Exchanges"
@@ -6973,6 +6975,7 @@ reference "fig:Request-and-response"
  Requests are matched to their corresponding responses using the req_id
  field.
  However, this is currently not implemented (see also the limitation section
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:Limitations"
@@ -8151,6 +8154,7 @@ reference "sec:Limitations"
 
 \begin_layout Standard
 How potential exceptions are handled on the client side is outlined in section
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:charon-Exception-handler-(EH)"
