@@ -800,8 +800,8 @@ Ada 2012
 
 \end_inset
 
-.
- Ada 2012 adds the possibility to use contract-based programmaing methods
+ which is very close to be released as an ISO standard.
+ Ada 2012 adds the possibility to use contract-based programming methods
  (
 \begin_inset Quotes eld
 \end_inset
@@ -818,7 +818,6 @@ key "Meyer:1992:ADC:618974.619797"
 \end_inset
 
 ).
- TODO: what's the exact status of Ada 2012?
 \end_layout
 
 \begin_layout Standard
@@ -832,8 +831,7 @@ Ada compilers, before used in practice, have to pass a standardized test
 \end_layout
 
 \begin_layout Standard
-The language is named after Lady Ada Lovelace (1815-1852), the daughter
- of Lord Byron
+The language is named after Lady Ada Lovelace
 \begin_inset Foot
 status open
 
@@ -843,7 +841,8 @@ Ada Lovelace - http://en.wikipedia.org/wiki/Ada_Lovelace
 
 \end_inset
 
- who is considered to be the first computer programmer.
+, the daughter of Lord Byron who is considered to be the first computer
+ programmer.
 \end_layout
 
 \begin_layout Subsection
@@ -1345,12 +1344,69 @@ reference "enu:tcb-props-4"
  connection.
 \end_layout
 
-\begin_layout Standard
-Of course these properties can only be guaranteed if the separation of the
- components itself withstands an attack, i.e.
+\begin_layout Section
+Assumptions
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Assumptions"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+The TCB security properties stated in the previous section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:TCB-security-properties"
+
+\end_inset
+
+ can only be guaranteed if the separation of the components itself withstands
+ an attack, i.e.
  an attacker is unable to gain direct access to the TCB in any way.
  In this project it is assumed that the separation mechanism in use is designed
  as such that this requirement holds.
+ Possible solutions to this problem are elaborated in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Platform-integration"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+IKE and TKM can only exchange messages via the well defined interface and
+ are otherwise completely isolated from each other.
+ In a real system this is very difficult to achieve since there are many
+ possibilities for side channels, which have been demonstrated to work,
+ see for example 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Aciicmez:2007:PSB:1229285.1266999,cryptoeprint:2010:594,Zhang:2012:CSC:2382196.2382230"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+Denial-of-service attacks (DoS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+DoS
+\end_layout
+
+\end_inset
+
+) are not considered security critical because an attacker taking over the
+ untrusted part and making all communication with the TCB impossible is
+ still unable to access the sensitive material.
 \end_layout
 
 \begin_layout Chapter
@@ -2928,7 +2984,7 @@ reference "fig:IKE-Certificate-trustchain"
 \end_layout
 
 \begin_layout Standard
-The initiator begins the exchange by building it's own AUTH payload used
+The initiator begins the exchange by building its own AUTH payload used
  to prove its identity to the responder.
  This is done by creating a so called 'authenticator' plugin (see the
 \emph on
@@ -3037,7 +3093,7 @@ A8
 \emph default
 ) and retrieves the associated public key needed to verify the signature
  from the credential manager.
- To use the public key, it's chain of trust must be verified first.
+ To use the public key, its chain of trust must be verified first.
  
 \end_layout
 
@@ -3107,7 +3163,7 @@ name "fig:IKE-Certificate-trustchain"
 
 \begin_layout Standard
 To create the response message, the responder performs the same steps as
- the initiator to create it's AUTH payload (
+ the initiator to create its AUTH payload (
 \emph on
 CB
 \emph default
@@ -3189,7 +3245,7 @@ Perfect forward secrecy
 
  enabled, the initiator starts a new DH exchange and builds all required
  payloads.
- After sending the message, the task changes it's state to NEED_MORE and
+ After sending the message, the task changes its state to NEED_MORE and
  waits for an answer.
 \end_layout
 
@@ -3731,11 +3787,22 @@ By implementing custom plugins which act as proxy between the trusted and
  
 \end_layout
 
+\begin_layout Subsection
+Contexts and identifiers
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Contexts-and-identifiers"
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 By using a well-defined interface, the internal functionality of the TCB’s
  key manager is completely hidden from the charon plugins.
  The plugins reference the data (and their associated state) needed for
- processing via context identifiers.
+ processing via context identifiers (IDs).
  They have no direct access to the objects referenced by the identifiers
  but can instruct the key manager to perform certain, allowed operations
  with the specified context(s).
@@ -3748,12 +3815,12 @@ By using a well-defined interface, the internal functionality of the TCB’s
 \end_layout
 
 \begin_layout Standard
-TODO: make context/ID handling a sep.
- section? explain upper limit of ID
-\end_layout
-
-\begin_layout Standard
-TODO: further elaborate the design
+To simplify the implementation of the TCB, the management of context IDs
+ is done in the untrusted part since it is not security-critical.
+ The trusted part only supports a limited number of contexts.
+ These limits can be inquired from the TCB by the untrusted components by
+ using a dedicated exchange.
+ Using context IDs outside of the supported range are refused by the TCB.
 \end_layout
 
 \begin_layout Section
@@ -3770,119 +3837,9 @@ name "sec:Requirements"
 \begin_layout Standard
 This section outlines the identified requirements of the separated system
  in detail.
- The following section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Functional-requirements"
-
-\end_inset
-
- covers functional requirements, while section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Security-requirements"
-
-\end_inset
-
- specifies security requirements.
- Section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Additional-requirements"
-
-\end_inset
-
- describes additional requirements.
-\end_layout
-
-\begin_layout Standard
-TODO: remove functional, security requirements sub-sections? The definition
- of 
-\begin_inset Quotes eld
-\end_inset
-
-functional requirement
-\begin_inset Quotes erd
-\end_inset
-
- does not match our usage, see wikipedia.
-\end_layout
-
-\begin_layout Subsection
-Functional requirements
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Functional-requirements"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This section specifies the functional requirements of the separated IKEv2
- system.
-\end_layout
-
-\begin_layout Subsubsection
-Separation
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:req-Separation"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The IKEv2 component must be separated into a trusted and untrusted part,
- to minimize the size and complexity of the TCB.
- The trusted part must enforce all security requirements specified in section
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Security-requirements"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Subsubsection
-Communication
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:req-Communication"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The communication protocol between the trusted and untrusted parts must
- be simple, robust and well-defined to allow a verifiable implementation.
- 
-\end_layout
-
-\begin_layout Subsection
-Security requirements
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Security-requirements"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The security requirements outlined in this section specify the properties
- the TCB must enforce even in the event of a complete compromise of the
- untrusted part of the system.
- These properties are a result of the threat model described in section
- 
+ These requirements specify the properties the TCB must enforce even in
+ the event of a complete compromise of the untrusted part of the system.
+ The properties are derived from the threat model described in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Threat-model"
@@ -3900,7 +3857,57 @@ reference "sec:TCB-security-properties"
 .
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
+TCB robustness
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:req-TCB-robustness"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The systems comprising the TCB must be implemented using development methodologi
+es and programming languages supporting robust and reliable software.
+ The TCB must be as simple as possible and at the same time small in size.
+\end_layout
+
+\begin_layout Subsection
+Separation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:req-Separation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The IKEv2 component must be separated into a trusted and untrusted part,
+ to minimize the size and complexity of the TCB.
+\end_layout
+
+\begin_layout Subsection
+Communication
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:req-Communication"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The communication protocol between the trusted and untrusted parts must
+ be simple, robust and well-defined to allow a verifiable implementation.
+ 
+\end_layout
+
+\begin_layout Subsection
 Separation of key material
 \begin_inset CommandInset label
 LatexCommand label
@@ -3950,7 +3957,7 @@ phically secure to prevent the deduction of the underlying shared secret
  from the keying material.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Cryptographic operations
 \begin_inset CommandInset label
 LatexCommand label
@@ -3981,7 +3988,7 @@ Values and intermediate values used for cryptographic operations must follow
  used more than once.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Authentication
 \begin_inset CommandInset label
 LatexCommand label
@@ -3997,14 +4004,11 @@ The IKEv2 component must only allow IPSec SAs to be established for peers
  that have successfully been authenticated.
  The authentication must be performed by the TCB to assure the correctness
  of the process.
-\end_layout
-
-\begin_layout Standard
-The authentication state in the TCB must always be unambiguously associated
+ The authentication state in the TCB must always be unambiguously associated
  with the corresponding SA.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Integrity
 \begin_inset CommandInset label
 LatexCommand label
@@ -4023,10 +4027,10 @@ The security of the IKEv2 component must solely depend on the correct operation
 \end_layout
 
 \begin_layout Subsection
-Additional requirements
+Availability
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Additional-requirements"
+name "sub:req-Availability"
 
 \end_inset
 
@@ -4041,282 +4045,8 @@ The resulting system must be freely available to guarantee broader review
  Also, integration tests must be provided for the TKM use-case.
 \end_layout
 
-\begin_layout Standard
-TODO: specify TCB specific requirements? Coding practices, pair programming,
- Ada etc.
-\end_layout
-
-\begin_layout Section
-Fulfillment of requirements
-\end_layout
-
-\begin_layout Standard
-TODO: move this section after the implementation section?
-\end_layout
-
-\begin_layout Standard
-This section describes how the proposed design meets the requirements defined
- in the previous section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:Requirements"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Itemize
-TKM, how is it written? Coding style, language etc.
- What makes it improve the trust?
-\end_layout
-
-\begin_layout Itemize
-The separation and communication requirements 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:req-Separation"
-
-\end_inset
-
-, 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:req-Communication"
-
-\end_inset
-
- demand that the untrusted and trusted parts of the system are separated
- and communication is only possible over a well-defined, minimal interface.
- These requirements are guaranteed by automatically creating the interface
- code from an XML-specification as described in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:XML-Specification"
-
-\end_inset
-
- and by using a simple library providing RPC services by exporting the generated
- interface over UNIX domain sockets (see section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:tkm-rpc-library"
-
-\end_inset
-
-).
-\end_layout
-
-\begin_layout Itemize
-Requirements 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:req-Separation-of-key"
-
-\end_inset
-
- and 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:req-Cryptographic-operations"
-
-\end_inset
-
- require that the untrusted part must not have access to critical keying
- material and that the cryptographic operations using this material must
- be implemented in the TCB to guarantee proper operation.
- These requirements are fulfilled in the design by implementing plugins
- which act as proxy objects between the untrusted charon-tkm daemon and
- the TKM.
- These plugins operate with references to the real, sensitive data and are
- kept very simple.
- No sensitive data leaves the TCB.
- This directly demands that critical cryptographic operations used to either
- create sensitive material or operating on sensitive material must be implemente
-d in the TCB as well.
- The following TKM-specific strongSwan plugins are responsible to achieve
- the desired degree of separation:
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-Nonce generation plugin (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:plugin-Nonce-generation"
-
-\end_inset
-
-)
-\end_layout
-
-\begin_layout Itemize
-DH plugin (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:plugin-Diffie-Hellman"
-
-\end_inset
-
-)
-\end_layout
-
-\begin_layout Itemize
-Keymat plugin (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:plugin-Keymat"
-
-\end_inset
-
-)
-\end_layout
-
-\begin_layout Itemize
-Kernel IPsec plugin (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:pluginKernel-IPsec"
-
-\end_inset
-
-)
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-Requirement 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:req-Authentication"
-
-\end_inset
-
- requires that the TCB must enforce proper authentication.
- The system supports strong authentication methods based on public-key cryptogra
-phy only.
- The secret private key required to create valid signatures and the trusted
- CA certificate used to verify the peer's authentication data must reside
- in the TCB.
- To make this separation possible, the following TKM-specific strongSwan
- plugins are proposed:
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-Private key plugin (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:plugin-Private-key"
-
-\end_inset
-
-)
-\end_layout
-
-\begin_layout Itemize
-Public key plugin (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:plugin-Public-key"
-
-\end_inset
-
-)
-\end_layout
-
-\begin_layout Itemize
-Bus listener plugin (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:plugin-Bus-listener"
-
-\end_inset
-
-)
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-Requirement 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:req-Integrity"
-
-\end_inset
-
- demands that a misbehaving untrusted part is not able to violate the security
- properties guaranteed by the TCB.
- As a formal model checking of the proposed IKEv2 separation protocol is
- still outstanding, this property is only assumed but not yet formally proven.
- See also section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:Limitations"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Section
-Assumptions
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Assumptions"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-IKE and TKM can only exchange messages via the well defined interface and
- are otherwise completely isolated from each other.
- In a real system this is very difficult to achieve since there are many
- possibilities for side channels, which have been demonstrated to work,
- see for example 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "cryptoeprint:2010:594"
-
-\end_inset
-
-,
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Zhang:2012:CSC:2382196.2382230"
-
-\end_inset
-
- or 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Aciicmez:2007:PSB:1229285.1266999"
-
-\end_inset
-
-.
- TODO: explain why this is out of scope and how this could be solved (e.g.
- SK, special algos for crypto).
-\end_layout
-
-\begin_layout Standard
-TODO: also relates to the assumption of the separation mechanism in use,
- merge these sections?
-\end_layout
-
-\begin_layout Standard
-TODO: all DoS attacks are not considered criticial
-\end_layout
-
 \begin_layout Chapter
 TKM interface
-\end_layout
-
-\begin_layout Standard
-TODO: Diffie Hellman vs.
- Diffie-Hellman, unix vs UNIX
 \end_layout
 
 \begin_layout Standard
@@ -4336,11 +4066,6 @@ reference "sec:Exchanges"
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Standard
-TODO: Are state machines really part of the interface or are they part of
- how the TKM server-side of the interface is implemented?
 \end_layout
 
 \begin_layout Section
@@ -5467,8 +5192,8 @@ reference "sub:Child-SA-creation"
 \end_inset
 
  must be performed.
- After the new child SA has been established the new SA must be selected,
- making it the for ESP encryption: (TODO something is missing here)
+ After the new child SA has been established it must be selected to make
+ it the active SA for ESP encryption:
 \end_layout
 
 \begin_layout Standard
@@ -6574,10 +6299,9 @@ name "fig:XSL-Transformation"
 \end_layout
 
 \begin_layout Standard
-By automatically generating code and documentation from one single (TODO:
- is it one single?) XML document assures that the generated documents are
- always in sync and there is no mismatch between the implementation and
- the specification.
+By automatically generating code and documentation from a single XML source
+ assures that the generated documents are always in sync and there is no
+ mismatch between the implementation and the specification.
  The cost of interface change and extension is lowered considerably since
  the generation process is automated and no manual steps are necessary.
  Figure 
@@ -6612,7 +6336,7 @@ nc_create
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "float,language=XML"
+lstparams "float=h,language=XML"
 inline false
 status open
 
@@ -6692,7 +6416,7 @@ reference "lis:nc_create-ada"
 \end_inset
 
 .
- The preconditions state that the nonce context with the given id must be
+ The preconditions state that the nonce context with the given ID must be
  in the 
 \begin_inset Quotes eld
 \end_inset
@@ -6755,7 +6479,7 @@ key "gnatprove"
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "float,language=Ada"
+lstparams "float=h,language=Ada"
 inline false
 status open
 
@@ -6836,26 +6560,45 @@ The following list enumerates the main XSLT output that is generated from
  the specification:
 \end_layout
 
-\begin_layout Description
-Types Ada and C type definitions
+\begin_layout Itemize
+
+\emph on
+Types
+\emph default
+: Ada and C type definitions
 \end_layout
 
-\begin_layout Description
-Constants Ada and C constant definitions
+\begin_layout Itemize
+
+\emph on
+Constants
+\emph default
+: Ada and C constant definitions
 \end_layout
 
-\begin_layout Description
-RPC Ada RPC library with exported C functions, includes request/response
- marshaling and server-side exchange id to service procedure dispatching
+\begin_layout Itemize
+
+\emph on
+RPC
+\emph default
+: Ada RPC library with exported C functions, includes request/response marshalin
+g and server-side exchange ID to service procedure dispatching
 \end_layout
 
-\begin_layout Description
-Contexts Ada context state machines including Ada 2012 contracts
+\begin_layout Itemize
+
+\emph on
+Contexts
+\emph default
+: Ada context state machines including Ada 2012 contracts
 \end_layout
 
-\begin_layout Description
-Documentation Types, constants and exchange description as well as state
- machine diagrams
+\begin_layout Itemize
+
+\emph on
+Documentation
+\emph default
+: Types, constants and exchange description as well as state machine diagrams
 \end_layout
 
 \begin_layout Section
@@ -7000,9 +6743,8 @@ reference "sec:XML-Specification"
 
 .
  Only the transport-specific parts of sending and receiving requests and
- responses using a specific communication method is implemented (TODO: manually
- written?).
- The exchange of data is performed using UNIX domain sockets.
+ responses using a specific communication method is implemented manually.
+ The exchange of data is performed using Unix domain sockets.
  The necessary networking functionality is provided by the Anet library,
  which is described in section 
 \begin_inset CommandInset ref
@@ -7087,14 +6829,14 @@ Unix domain sockets are a standard IPC mechanism and are part of the POSIX
 
 \begin_layout Standard
 On the server side of the socket, the request object is unmarshaled.
- The operation is dispatched according to the exchange id and the parameters
+ The operation is dispatched according to the exchange ID and the parameters
  of the exchange are extracted from the request object.
  The call is then forwarded to the server passing it the necessary arguments
  sent by the client.
  At this point the server performs all necessary actions to service the
  requested operation.
  After the server has finished handling the request, it returns result data.
- A response data object is created with the same exchange and request ids
+ A response data object is created with the same exchange and request IDs
  as the request object.
  The response parameters are then marshaled into the corresponding response
  data fields and the response object is sent back to the client via the
@@ -7475,7 +7217,7 @@ name "lis:Client-Tkmrpc-transport"
 
 \begin_layout Standard
 Before a client can do remote procedure calls using tkm-rpc it must connect
- to the remote server component specifying the filename of the UNIX socket,
+ to the remote server component specifying the filename of the Unix socket,
  where the server is listening for exchanges.
  The 
 \family typewriter
@@ -7744,7 +7486,7 @@ RPC servers are passive components which respond to requests sent by clients.
  The main focus of server-side processing is automatic mapping of requests
  to concrete exchanges as specified by the interface.
  A server implementation should not be burdened with the details of exchange
- and request id handling but concentrate on the implementation of the functional
+ and request ID handling but concentrate on the implementation of the functional
 ity prescribed by the exchange.
 \end_layout
 
@@ -7873,7 +7615,7 @@ ike
 \shape default
  interface must provide a package body implementing the
 \family typewriter
-Tkmrpc.Servers.Ike
+ Tkmrpc.Servers.Ike
 \family default
  package.
 \end_layout
@@ -7881,7 +7623,7 @@ Tkmrpc.Servers.Ike
 \begin_layout Standard
 A dispatcher which takes a request data object as input and calls the correspond
 ing procedure according to the exchange identifier is generated also.
- This takes the burden of mapping an exchange id to the correct operation
+ This takes the burden of mapping an exchange ID to the correct operation
  handler from the server implementation.
  It also avoids possible errors such as typos, which can be hard to detect.
  Additionally the generated code guarantees that all specified exchanges
@@ -7896,11 +7638,11 @@ reference "lis:Ike-request-dispatcher"
 
  shows the procedure declaration of the
 \emph on
-ike
+ ike
 \emph default
  dispatcher, which is located in the (generated)
 \family typewriter
-Tkmrpc.Dispatchers.Ike
+ Tkmrpc.Dispatchers.Ike
 \family default
  package.
 \end_layout
@@ -8070,7 +7812,7 @@ To instantiate the generic, a Dispatch procedure matching the given signature
  Optionally an exception handler can also be specified.
  The generic
 \family typewriter
-Process_Stream
+ Process_Stream
 \family default
  procedure automatically converts stream data to Tkmrpc request/response
  objects and passes them on to the given dispatch procedure.
@@ -8234,7 +7976,7 @@ reference "sub:charon-Ada-integration"
 \end_inset
 
 .
- Apart from the tkm-rpc library explained in section
+ Apart from the tkm-rpc library explained in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:tkm-rpc-library"
@@ -8358,7 +8100,7 @@ Before entering the main loop, the charon-tkm daemon calls the
 \family typewriter
 tkm_init
 \family default
- function which initializes the tkm-rpc library explained in section
+ function which initializes the tkm-rpc library explained in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:tkm-rpc-library"
@@ -8400,8 +8142,14 @@ reference "sub:charon-EES-Service"
 \end_layout
 
 \begin_layout Standard
-Since the TKM supports a static number of contexts (see TODO), the upper
- limit of context IDs is requested from the TKM.
+Since the TKM supports a static number of contexts (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Contexts-and-identifiers"
+
+\end_inset
+
+), the upper limit of context IDs is requested from the TKM.
  This limit configuration is then passed on to the TKM ID manager which
  is initialized in the final step along with the TKM chunk map.
  The daemon enters the main loop and waits for external events.
@@ -8439,7 +8187,7 @@ release_id
  function releases an already reserved ID.
  If no ID can be acquired, the
 \family typewriter
-acquire_id
+ acquire_id
 \family default
  function indicates this error by returning zero.
  The first valid ID of a given context always starts at number one.
@@ -8468,7 +8216,7 @@ The TKM code uses two main techniques to pass on information from one plugin
 
 \begin_layout Standard
 One of these mechanisms use the chunk map explained in this section, the
- other is explained in the following section
+ other is explained in the following section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Piggybacking"
@@ -8627,11 +8375,11 @@ name "lis:isa_info_t-struct"
 \begin_layout Standard
 In this case the skd data chunk returned by the
 \family typewriter
-get_skd
+ get_skd
 \family default
  function is used to transport the
 \family typewriter
-isa_into_t
+ isa_into_t
 \family default
  informational structure.
  This is possible since the sk_d chunk is treated as an opaque value and
@@ -8777,7 +8525,7 @@ ike_dh_generate_key
 \family typewriter
 set_other_public_value
 \family default
- function is called, as illustrated by figures
+ function is called, as illustrated by figures 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:IKE-SA-establishment"
@@ -8791,14 +8539,14 @@ reference "fig:Child-SA-establishment"
 
 \end_inset
 
- on page
+ on page 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "fig:IKE-SA-establishment"
 
 \end_inset
 
- and
+ and 
 \begin_inset CommandInset ref
 LatexCommand pageref
 reference "fig:Child-SA-establishment"
@@ -8852,7 +8600,7 @@ derive_child_keys
 derive_ike_keys
 \family default
  remote procedure call returns because they are not classified as critical
- (see section
+ (see section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:req-Separation-of-key"
@@ -8941,7 +8689,7 @@ add_sa
  function used to instruct the TKM to derive child keys and install a new
  ESA (ESP SA) state inside the TCB's encrypter component.
  This is of course only possible if all preconditions for this operation
- are met (TODO: are these visible anywhere?).
+ are met.
 \end_layout
 
 \begin_layout Subsection
@@ -9119,7 +8867,7 @@ build_cert_chain
 ike_cc_add_certificate
 \family default
  RPC.
- The TKM verifies the trust chain as explained in section
+ The TKM verifies the trust chain as explained in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Certificate-chain-validation"
@@ -9169,6 +8917,7 @@ name "sub:charon-EES-Service"
 
 \begin_layout Standard
 The ESP SA event service exports the EES interface specified in section
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:ESP-SA-Event"
@@ -9194,6 +8943,7 @@ The EES component accepts ESA acquire and expire events from clients and
  acquire or expire event the same way it is used if events are received
  from the Linux kernel directly.
  The ESP SA service is used by the xfrm-proxy component outlined in section
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:xfrm-proxy"
@@ -9223,7 +8973,7 @@ The charon TKM code provides a special exception handler which provides
  daemon's logfile.
  This mechanism is implemented using the
 \emph on
-Exceptions_Actions
+ Exceptions_Actions
 \emph default
  framework of the GNAT Ada runtime.
  An Ada procedure with the correct signature can be registered as handler
@@ -9306,7 +9056,7 @@ The dispatching of incoming calls is done by providing a custom IKE server
 \family typewriter
 Tkmrpc.Servers.Ike
 \family default
-) as explained in section
+) as explained in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Operation-dispatching"
@@ -9371,7 +9121,7 @@ Currently,
 
 \begin_layout Standard
 The TKM guarantees that nonces are consumed once and can not be reused,
- as specified by requirement
+ as specified by requirement 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:req-Cryptographic-operations"
@@ -9380,7 +9130,7 @@ reference "sub:req-Cryptographic-operations"
 
 .
  This is assured by using auto-generated nonce FSM as explained in the state-mac
-hines section
+hines section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:State-machines"
@@ -9410,7 +9160,7 @@ Keying material used to protect a child SA is derived from the shared secret
 
 \begin_layout Standard
 Currently the TKM provides a Diffie-Hellman implementation for the 3072-bit
- and 4096-bit MODP Diffie-Hellman groups specified in RFC 3526
+ and 4096-bit MODP Diffie-Hellman groups specified in RFC 3526 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "rfc3526"
@@ -9462,7 +9212,7 @@ http://mtn-host.prjek.net/projects/libgmpada/
 \end_layout
 
 \begin_layout Standard
-An active DH exchange is stored in the DH FSM introduced in section
+An active DH exchange is stored in the DH FSM introduced in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:State-machines"
@@ -9475,7 +9225,7 @@ reference "sec:State-machines"
  If the protocol specified by the DH FSM is violated, an assertion exception
  is raised and the requester is informed about the violation.
  DH contexts can only be consumed if they are in 'generated' state as shown
- by the corresponding state machine diagram in section
+ by the corresponding state machine diagram in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:State-machines"
@@ -9518,7 +9268,7 @@ ISA
 \end_inset
 
 ) key derivation functionality in the TKM implements the mechanism described
- in RFC 5996
+ in RFC 5996 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "rfc5996"
@@ -9549,7 +9299,7 @@ SKEYSEED
 
 \end_inset
 
- value as shown by formula
+ value as shown by formula 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:skeyseed"
@@ -9830,7 +9580,6 @@ PFS
 \end_inset
 
  is desired, so no new DH context must be created beforehand.
- TODO: cleanup, elaborate more
 \end_layout
 
 \begin_layout Subsection
@@ -9988,7 +9737,7 @@ key "rfc3447"
  The functionality is provided as an Ada generic, allowing the instantiation
  with different hashing algorithms.
  Pre-instantiated instances are provided for SHA-1 and SHA-256 algorithms.
- Listing
+ Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "lis:tkm-signature-generation"
@@ -10192,7 +9941,7 @@ Generate
 
 \begin_layout Standard
 The same code is used to create a signature over the local authentication
- octets during the IKE_AUTH exchange, as described in section
+ octets during the IKE_AUTH exchange, as described in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:flow-IKE_AUTH"
@@ -10493,7 +10242,7 @@ To initiate the trust chain validation process in the TKM, a new CC context
 \family typewriter
 Cc_Set_User_Certificate
 \family default
- remote procedure call as illustrated by figure
+ remote procedure call as illustrated by figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:TKM-trustchain-set-user"
@@ -10644,7 +10393,7 @@ A
 \begin_layout Standard
 The
 \family typewriter
-Cc_Add_Certificate
+ Cc_Add_Certificate
 \family default
  procedure must be called multiple times for all intermediate CAs in the
  trust chain and also for the final root CA.
@@ -10929,7 +10678,7 @@ name "sub:Anet"
 \begin_layout Standard
 Anet is a networking library for the Ada programming language.
  It is used by the trusted key manager and xfrm-proxy to open or connect
- to unix sockets and communicate with charon-tkm.
+ to Unix sockets and communicate with charon-tkm.
 \end_layout
 
 \begin_layout Standard
@@ -11520,6 +11269,243 @@ The nonce generation in the TKM is implemented by reading a sequence of
  keys the authors feel compelled to explicitly mention it.
 \end_layout
 
+\begin_layout Section
+Fulfillment of requirements
+\end_layout
+
+\begin_layout Standard
+This section describes how the implementation meets the design requirements
+ defined in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Requirements"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+The requirement 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:req-TCB-robustness"
+
+\end_inset
+
+ demands that code running in the TCB must be as minimal and robust as possible.
+ This has been addressed by applying the following measures:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Use of the Ada programming language and avoidance of problematic language
+ constructs (like type extensions, dynamic memory allocation etc.).
+\end_layout
+
+\begin_layout Itemize
+Use of agile development methods, i.e.
+ test-driven development (TDD), pair programming and code reviews.
+\end_layout
+
+\begin_layout Itemize
+Automatic generation of interface code from XML specification, avoiding
+ implementation errors by verifying the generated code.
+\end_layout
+
+\begin_layout Itemize
+Use of Ada 2012 contracts to confine generated context state machine code.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+The separation and communication requirements 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:req-Separation"
+
+\end_inset
+
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:req-Communication"
+
+\end_inset
+
+ demand that the untrusted and trusted parts of the system are separated
+ and communication is only possible over a well-defined, minimal interface.
+ These requirements are guaranteed by automatically creating the interface
+ code from an XML-specification as described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:XML-Specification"
+
+\end_inset
+
+ and by using a simple library providing RPC services by exporting the generated
+ interface over Unix domain sockets (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:tkm-rpc-library"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Itemize
+Requirements 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:req-Separation-of-key"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:req-Cryptographic-operations"
+
+\end_inset
+
+ require that the untrusted part must not have access to critical keying
+ material and that the cryptographic operations using this material must
+ be implemented in the TCB to guarantee proper operation.
+ These requirements are fulfilled in the design by implementing plugins
+ which act as proxy objects between the untrusted charon-tkm daemon and
+ the TKM.
+ These plugins operate with references to the real, sensitive data and are
+ kept very simple.
+ No sensitive data leaves the TCB.
+ This directly demands that critical cryptographic operations used to either
+ create sensitive material or operating on sensitive material must be implemente
+d in the TCB as well.
+ The following TKM-specific strongSwan plugins are responsible to achieve
+ the desired degree of separation:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Nonce generation plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:plugin-Nonce-generation"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+DH plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:plugin-Diffie-Hellman"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+Keymat plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:plugin-Keymat"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+Kernel IPsec plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:pluginKernel-IPsec"
+
+\end_inset
+
+)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Requirement 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:req-Authentication"
+
+\end_inset
+
+ requires that the TCB must enforce proper authentication.
+ The system supports strong authentication methods based on public-key cryptogra
+phy only.
+ The secret private key required to create valid signatures and the trusted
+ CA certificate used to verify the peer's authentication data must reside
+ in the TCB.
+ To make this separation possible, the following TKM-specific strongSwan
+ plugins are proposed:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Private key plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:plugin-Private-key"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+Public key plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:plugin-Public-key"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+Bus listener plugin (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:plugin-Bus-listener"
+
+\end_inset
+
+)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Requirement 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:req-Integrity"
+
+\end_inset
+
+ demands that a misbehaving untrusted part is not able to violate the security
+ properties guaranteed by the TCB.
+ As a formal model checking of the proposed IKEv2 separation protocol is
+ still outstanding, this property is only assumed but not yet formally proven.
+ See also section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Limitations"
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Chapter
 Conclusion
 \end_layout
@@ -11716,7 +11702,7 @@ Splitting
  or other sensitive information (see section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Security-requirements"
+reference "sub:Threat-model"
 
 \end_inset
 
@@ -11765,6 +11751,13 @@ adaptive chosen-plaintext attack
 
 \begin_layout Subsection
 Platform integration
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Platform-integration"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
