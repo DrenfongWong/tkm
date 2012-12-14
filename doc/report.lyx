@@ -176,7 +176,7 @@ The IPsec protocol relies on the correct operation of the IKE key exchange
 \begin_layout Abstract
 The security and robustness of the IKE implementation strongSwan has been
  augmented, by identifying and separating security critical from non-critical
- components and separating them into a minimal TCB.
+ components and extracting them into a minimal TCB.
  The TCB has been implemented using the Ada programming language.
 \end_layout
 
@@ -241,8 +241,8 @@ Introduction
 
 \begin_layout Standard
 In a system with high requirements on security, functions relevant to guarantee
- these requirements must be isolated from the rest of the system in a Trusted
- Computing Base (TCB)
+ these requirements must be isolated from the rest of the system and consolidate
+d in a Trusted Computing Base (TCB)
 \begin_inset Index idx
 status open
 
@@ -274,18 +274,18 @@ A small amount of software and hardware that security depends on and that
 
 \begin_layout Standard
 It is an easier task to design a system from scratch with separation properties
- in mind than separating an existing project or protocol later.
- But this is not always possible, or even more important, not intended.
+ in mind than dividing an existing project or protocol later.
+ This is not always possible, and more importantly, sometimes not intended.
  Functionality in an existing system identified as uncritical should be
- left as is if possible.
+ left as is as much as possible.
 \end_layout
 
 \begin_layout Standard
 In order to isolate functionality in a TCB, critical sections of existing
  systems must be identified and they must be separated into a critical (trusted)
  and non-critical (untrusted) part.
- Communication mechanisms between the sections must be established, which
- must be robust and well defined.
+ Communication mechanisms between the sections needs to be established,
+ which must be robust and well defined.
  If an attacker is able to compromise the untrusted-part of the system,
  the security and integrity functions guaranteed by the TCB must still hold.
 \end_layout
@@ -355,11 +355,11 @@ name "fig:Trusted-Computing-Base"
 \end_layout
 
 \begin_layout Section
-Synopsis
+Overview
 \end_layout
 
 \begin_layout Standard
-This section provides an introduction into the terminology and systems used
+This section gives an introduction into the terminology and systems used
  in this project and explains the basic key concepts.
  Section 
 \begin_inset CommandInset ref
@@ -503,7 +503,7 @@ key "rfc4301"
 \end_layout
 
 \begin_layout Standard
-Parameters and keys needed to establish a security association are normally
+Parameters and keys needed to establish a security association are usually
  provided to the IPsec protocol suite by means of the Internet Key Exchange
  (IKE
 \begin_inset Index idx
@@ -563,7 +563,7 @@ reference "sub:IKEv2-protocol-analysis"
 \end_inset
 
  explains the message exchanges of the IKEv2 protocol in detail.
- The service implementing the IKE protocol is normally provided by a user
+ The service implementing the IKE protocol is normally provided by an user
  space application.
  The following section 
 \begin_inset CommandInset ref
@@ -668,9 +668,9 @@ http://wiki.strongswan.org/projects/strongswan/wiki/ObjectOrientedC
 By using a flexible plugin architecture, the strongSwan project can be easily
  extended with new features.
  The task of adding new features can be reduced to writing a new plugin.
- This architecture proved very helpful in this project, as very few changes
- were required in the upstream core strongSwan code to implement the Trusted
- Key Manager (TKM
+ This architecture has proven to be very helpful in the course of this project,
+ as very few changes were required in the upstream core strongSwan code
+ to implement the Trusted Key Manager (TKM
 \begin_inset Index idx
 status open
 
@@ -800,7 +800,7 @@ Ada 2012
 
 \end_inset
 
- which is very close to be released as an ISO standard.
+ which is very close to its release as an ISO standard.
  Ada 2012 adds the possibility to use contract-based programming methods
  (
 \begin_inset Quotes eld
@@ -824,8 +824,8 @@ key "Meyer:1992:ADC:618974.619797"
 Ada compilers, before used in practice, have to pass a standardized test
  suite which guarantees the compliance of the compiler with the Ada standard.
  Since Ada provides many features which aid in the development of safety
- and security critical applications, it is nowadays mostly used in such
- areas where these aspects are important.
+ and security critical applications, it is nowadays mostly used in areas
+ where such aspects are important.
  The primary industries making use of Ada are namely avionics, railway systems,
  banking, military and space technology.
 \end_layout
@@ -841,8 +841,13 @@ Ada Lovelace - http://en.wikipedia.org/wiki/Ada_Lovelace
 
 \end_inset
 
-, the daughter of Lord Byron who is considered to be the first computer
+, the daughter of Lord Byron, who is considered to be the first computer
  programmer.
+\end_layout
+
+\begin_layout Standard
+GNAT, a free-software compiler for the Ada programming language, is available
+ as part of the GNU Compiler Collection.
 \end_layout
 
 \begin_layout Subsection
@@ -925,7 +930,7 @@ name "sub:Related-work"
 \end_layout
 
 \begin_layout Standard
-The concept of separating larger systems into smaller, trusted parts dates
+The concept of decomposing larger systems into smaller, trusted parts dates
  back to John Rushby in 1981 
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -1050,10 +1055,10 @@ Hypervisor
 \end_inset
 
  like Xen are intentionally excluded from the list because Xen requires
- a complete Linux kernel (dom0) with direct access to hardware to work.
+ a complete Linux kernel (dom0) with direct access to hardware to operate.
  The fact that the dom0 kernel must be accounted as part of the trusted
  system makes it unsuitable for in-depth review and therefore unusable as
- a TCB.
+ part of a TCB.
 \end_layout
 
 \begin_layout Standard
@@ -1117,6 +1122,17 @@ One reason seems to be the tremendous effort needed to adapt existing software
 \end_layout
 
 \begin_layout Standard
+A different reason for the disregard of Rushby's ideas by most software
+ vendors is the focus on extending the functionality of existing products
+ by adding new features.
+ This phenomenon is known as 
+\emph on
+feature creep
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
 Research has been done in the formal analysis of the IKEv1
 \begin_inset Index idx
 status open
@@ -1148,8 +1164,8 @@ key "Cremers:2011:KEI:2041225.2041249,DBLP:conf/sp/Meadows99"
  The separation of the sensitive part from the bulk of the IKE protocol
  seems to be a valuable effort to minimize the working surface of attacks.
  Nevertheless, the IKEv2 separation protocol described in this paper must
- still undergo the same formal verification as the original protocols to
- formally show the delivered security improvements compared to its monolithic
+ still undergo the same rigorous verification as the original protocols
+ to formally show the delivered security improvements compared to its monolithic
  ancestor.
 \end_layout
 
@@ -1187,8 +1203,8 @@ reference "fig:Trusted-Computing-Base"
 
 \begin_layout Standard
 It is assumed that the strongSwan charon IKEv2 daemon, which is considered
- an untrusted software component in the designed architecture, is under
- complete control of the attacker
+ an untrusted software component in the envisioned architecture, is under
+ total control of the attacker
 \begin_inset Index idx
 status open
 
@@ -1214,13 +1230,13 @@ charon
 .
  As a result of this assumption, charon is not allowed to have access to
  any sensitive data.
- Also, intermediate values which are needed to create critical values must
- be protected from access by untrusted components.
+ Also, intermediate computation results which are needed to create sensitive
+ values must be protected from access by untrusted components.
  The following list summarizes the capabilities of an attacker:
 \end_layout
 
 \begin_layout Enumerate
-The attacker is able to analyze network traffic leaving the system.
+The attacker is able to analyze all network traffic of the system.
  
 \end_layout
 
@@ -1236,7 +1252,8 @@ The attacker is able to compromise the untrusted IKE daemon and read all
 \end_layout
 
 \begin_layout Enumerate
-The attacker can execute arbitrary code in the untrusted component.
+The attacker can execute arbitrary code in the untrusted component with
+ the privileges of the IKE daemon.
 \end_layout
 
 \begin_layout Enumerate
@@ -1286,8 +1303,8 @@ name "sec:TCB-security-properties"
 \end_layout
 
 \begin_layout Standard
-Even if an attacker manages to take over complete control of the untrusted
- part of the system as described by the threat model in the previous section
+Even if an attacker manages to take complete control of the untrusted part
+ of the system as described by the threat model in the previous section
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Threat-model"
@@ -1302,8 +1319,8 @@ The attacker has no access to the IPsec SA keying material.
 \end_layout
 
 \begin_layout Enumerate
-The attacker has no mean to draw conclusions about the IPsec SA keying material
- from sensitive intermediate values.
+The attacker has no means to draw conclusions about the IPsec SA keying
+ material from sensitive intermediate values.
 \end_layout
 
 \begin_layout Enumerate
@@ -1365,7 +1382,7 @@ reference "sec:TCB-security-properties"
 
  can only be guaranteed if the separation of the components itself withstands
  an attack, i.e.
- an attacker is unable to gain direct access to the TCB in any way.
+ an attacker is unable to subvert the TCB in any way.
  In this project it is assumed that the separation mechanism in use is designed
  as such that this requirement holds.
  Possible solutions to this problem are elaborated in section 
@@ -1379,8 +1396,9 @@ reference "sub:Platform-integration"
 \end_layout
 
 \begin_layout Itemize
-IKE and TKM can only exchange messages via the well defined interface and
- are otherwise completely isolated from each other.
+The untrusted IKE daemon and the trusted component can only exchange messages
+ via the well defined interface and are otherwise completely isolated from
+ each other.
  In a real system this is very difficult to achieve since there are many
  possibilities for side channels, which have been demonstrated to work,
  see for example 
@@ -1406,7 +1424,7 @@ DoS
 
 ) are not considered security critical because an attacker taking over the
  untrusted part and making all communication with the TCB impossible is
- still unable to access the sensitive material.
+ still unable to access sensitive material.
 \end_layout
 
 \begin_layout Chapter
@@ -1427,7 +1445,7 @@ Analysis
 This chapter describes the current operation and the inner workings of the
  strongSwan charon IKEv2 daemon.
  A deep understanding of these mechanisms is a prerequisite for the extraction
- of sensitive functionality out of the daemon into a minimal trusted part
+ of sensitive functionality from the daemon into a minimal trusted part
  to achieve the requirements formalized in section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1907,7 +1925,7 @@ name "tab:IKEv2-payloads"
 \end_layout
 
 \begin_layout Standard
-Every IKE message contains a Message 
+Every IKE message contains a message 
 \emph on
 ID
 \emph default
@@ -1916,7 +1934,7 @@ ID
 HDR
 \emph default
 ).
- This Message 
+ This message 
 \emph on
 ID
 \emph default
@@ -1930,7 +1948,7 @@ key "rfc5996"
 
 .
  The fixed header does not contain security-relevant information and is
- therefore omitted from the discussion in the following sections.
+ therefore omitted from the discussion.
  
 \end_layout
 
@@ -1953,8 +1971,31 @@ sensitive values
 \emph on
 AUTH
 \emph default
-) are calculated from critical values inside the TKM but then handed to
+) are calculated from critical values inside the TCB but then handed to
  the untrusted part for further processing and transmission.
+\end_layout
+
+\begin_layout Subsection
+Notation
+\end_layout
+
+\begin_layout Standard
+The exchanges are presented as a communication between peers 
+\emph on
+A
+\emph default
+ and 
+\emph on
+B
+\emph default
+.
+ The arrows represent the direction from the source to the destination of
+ the message.
+ The transmitted values are listed on the right-hand side.
+ Optional parts of the exchange are enclosed in square brackets.
+ The notation SK { ...
+ } indicates that the payloads listed inside the curly brackets are encrypted
+ and integrity protected.
 \end_layout
 
 \begin_layout Subsection
@@ -2070,11 +2111,11 @@ shared secret
 KE
 \emph default
  payload on behalf of the untrusted part.
- The peers exchange the
+ The peers exchange the 
 \emph on
 KE
 \emph default
- payload in the initial IKE_SA_INIT messages as shown above.
+ payloads in the initial IKE_SA_INIT messages as shown above.
 \end_layout
 
 \begin_layout Standard
@@ -2092,14 +2133,13 @@ Nonce
 \emph on
 Ni
 \emph default
-and
+ and
 \emph on
  Nr
 \emph default
  are used as input to cryptographic functions and provide freshness to the
- key derivation technique used to obtain keys for the child SA, and to ensure
- creation of strong pseudorandom bits from the Diffie-Hellman key.
- Therefore, the nonce 
+ key derivation technique used to obtain keys for the child SA.
+ Therefore the nonce 
 \emph on
 Ni
 \emph default
@@ -2109,7 +2149,7 @@ Ni
  These constraints must be enforced by the TKM.
  Values created by the responder can not be controlled by the TKM so these
  values are taken as is.
- This is true for all IKE message exchanges of course.
+ This is obviously true for all IKE message exchanges.
 \end_layout
 
 \begin_layout Standard
@@ -2220,10 +2260,9 @@ SKEYSEED
  The keys used for the encryption and integrity protection are derived from
  SKEYSEED and are known as SK_e (encryption) and SK_a (authentication, a.k.a.
  integrity protection).
- A separate SK_e and SK_a is computed for each direction.
- The notation SK { ...
- } indicates that these payloads are encrypted and integrity protected using
- that direction's SK_e and SK_a (
+ Separate SK_e and SK_a keys are computed for each direction.
+ The payloads marked with SK { ...
+ } are protected using the direction's SK_e and SK_a (
 \begin_inset CommandInset citation
 LatexCommand cite
 key "rfc5996"
@@ -2305,12 +2344,11 @@ IDi
 \end_layout
 
 \begin_layout Standard
-The authentication payload
+The authentication payload 
 \emph on
 AUTH
 \emph default
- contains the signature allowing the peers to verify the authenticity of
- each other.
+ contains the signature allowing the peers to verify each other's authenticity.
  The value inside this payload must be created by the TKM since it is signed
  by a private key only known to the TCB.
  The signature is handed to the untrusted part because the TKM assures that
@@ -2325,7 +2363,7 @@ reference "sub:Signature-generation"
 \end_layout
 
 \begin_layout Standard
-Ananlogous to the IKE_SA_INIT exchange, the
+Analogous to the IKE_SA_INIT exchange, the 
 \emph on
 SAi2
 \emph default
@@ -2345,16 +2383,16 @@ TS
 \end_layout
 
 \begin_layout Standard
-The initiator might also send its user certificate in
+The initiator might also send its user certificate in a 
 \emph on
-a CERT
+CERT
 \emph default
- payload and a list of its trust anchors in
+ payload and a list of its trust anchors in 
 \emph on
 CERTREQ
 \emph default
  payload(s).
- If any
+ If any 
 \emph on
 CERT
 \emph default
@@ -2559,12 +2597,23 @@ SA
 \end_layout
 
 \begin_layout Standard
-Depending on the PFS
+Depending on the perfect forward secrecy (PFS)
 \begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
 PFS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+PFS ensures that a session key derived from a long-term key will not be
+ compromised if the long-term key is disclosed in the future.
 \end_layout
 
 \end_inset
@@ -2874,7 +2923,7 @@ keymat
 
 \begin_layout Standard
 After constructing all payloads, the initiator sends the IKE_SA_INIT message
- to the peer and waits for a response (error handling if the peer is no
+ to the peer and waits for a response (error handling if the peer is not
  answering is omitted from this discussion).
  The responder processes the request in the 
 \family typewriter
@@ -3187,7 +3236,7 @@ PA
 \begin_layout Standard
 After the IKE SA is established, both peers normally install the first child
  SA.
- This step is omitted and explained in detail in the next section 
+ This step is explained in detail in the next section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:flow-CHILD_CREATE_SA"
@@ -3209,7 +3258,7 @@ name "sub:flow-CHILD_CREATE_SA"
 \end_layout
 
 \begin_layout Standard
-The CHILD_CREATE_SA exchange is implemented as task in the 
+The CHILD_CREATE_SA exchange is implemented as a task in the 
 \family typewriter
 child_create.c
 \family default
@@ -3233,18 +3282,8 @@ kernel
 \end_inset
 
 .
- If the connection has PFS
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-Perfect forward secrecy
-\end_layout
-
-\end_inset
-
- enabled, the initiator starts a new DH exchange and builds all required
- payloads.
+ If the connection has PFS enabled, the initiator starts a new DH exchange
+ and builds all required payloads.
  After sending the message, the task changes its state to NEED_MORE and
  waits for an answer.
 \end_layout
@@ -3335,19 +3374,18 @@ IS
 ) functions are used to install the new policy and state into the kernel's
  SPD and SAD databases.
  If no errors occurred, the state of the child SA is set to CHILD_INSTALLED
- and it it attached to the associated IKE SA object.
+ and it is attached to the associated IKE SA object.
 \end_layout
 
 \begin_layout Standard
 The responder then builds the payloads of the response message and sends
  the message back to the initiator.
- The initiator processes the message and after extracting the payloads,
- it calls the
+ The initiator processes the message and calls the
 \family typewriter
  select_and_install
 \family default
- function to derive child keying material and installs the new policy and
- state in the kernel.
+ function to derive child keying material after extracting the payloads.
+ It then installs the new policy and state in the kernel.
 \end_layout
 
 \begin_layout Subsection
@@ -3473,7 +3511,7 @@ reference "sub:flow-CHILD_CREATE_SA"
 
 ) required to establish an IKE SA and the associated child SA are created
  and run by the task manager.
- The tasks then callback to the IKE SA 
+ The tasks then call back the IKE SA 
 \family typewriter
 generate_message
 \family default
@@ -3493,7 +3531,7 @@ generate
  to be encrypted.
  If encryption is enabled, an encrypted payload is created by accessing
  the key material of the IKE SA's keymat object.
- The actual encryption is done by a crypter plugin which in turn uses an
+ The actual encryption is done by a crypter plugin which in turn uses a
  RNG plugin outlined in the previous section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3688,11 +3726,11 @@ name "chap:Design"
 \end_layout
 
 \begin_layout Standard
-The main concept is to separate the security relevant services from all
- other IKEv2 services and split the IKEv2 key management daemon into two
- components: a trusted and an untrusted part.
- The trusted part performs the critical services, stores all relevant keying
- material and exposes the necessary services to the untrusted component
+The main concept is to separate the security relevant functionality from
+ all other IKEv2 services and split the IKEv2 key management daemon into
+ two components: a trusted and an untrusted part.
+ The trusted part performs the critical operations, stores all relevant
+ keying material and exposes the necessary services to the untrusted component
  via a well defined and minimal interface.
  The split of the components must guarantee the fullfilment of the security
  requirements defined in section 
@@ -3820,7 +3858,8 @@ To simplify the implementation of the TCB, the management of context IDs
  The trusted part only supports a limited number of contexts.
  These limits can be inquired from the TCB by the untrusted components by
  using a dedicated exchange.
- Using context IDs outside of the supported range are refused by the TCB.
+ Usage of context IDs outside the supported numeric range is refused by
+ the TCB.
 \end_layout
 
 \begin_layout Section
@@ -3869,8 +3908,7 @@ name "sub:req-TCB-robustness"
 \end_layout
 
 \begin_layout Standard
-The systems comprising the TCB must be implemented using development methodologi
-es and programming languages supporting robust and reliable software.
+The systems comprising the TCB must be robust and reliable.
  The TCB must be as simple as possible and at the same time small in size.
 \end_layout
 
@@ -3886,8 +3924,8 @@ name "sub:req-Separation"
 \end_layout
 
 \begin_layout Standard
-The IKEv2 component must be separated into a trusted and untrusted part,
- to minimize the size and complexity of the TCB.
+The IKEv2 component must be separated into a trusted and untrusted part
+ in such a way that the size and complexity of the TCB are minimal.
 \end_layout
 
 \begin_layout Subsection
@@ -3953,8 +3991,8 @@ reference "enu:thread-model-2"
 
 \begin_layout Standard
 This implies that the procedure used to create the IKE SA keys must be cryptogra
-phically secure to prevent the deduction of the underlying shared secret
- from the keying material.
+phically secure and exhibit the properties of a one-way function to prevent
+ the deduction of the underlying shared secret from the keying material.
 \end_layout
 
 \begin_layout Subsection
@@ -3983,9 +4021,11 @@ reference "sub:req-Separation-of-key"
 \end_layout
 
 \begin_layout Standard
-Values and intermediate values used for cryptographic operations must follow
+Data and intermediate values used for cryptographic operations must follow
  a strict life-cycle and it must be guaranteed, that such values are not
  used more than once.
+ Additionally generation of pathological cryptographic keys (e.g.
+ 0) must be detected and their usage prevented.
 \end_layout
 
 \begin_layout Subsection
@@ -4000,10 +4040,33 @@ name "sub:req-Authentication"
 \end_layout
 
 \begin_layout Standard
-The IKEv2 component must only allow IPSec SAs to be established for peers
+The IKEv2 component must only allow IPsec SAs to be established for peers
  that have successfully been authenticated.
  The authentication must be performed by the TCB to assure the correctness
- of the process.
+ of the process and foil man-in-the-middle (MitM)
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+MitM
+\end_layout
+
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+MitM is a form of active eavesdropping where an attacker maintains independent
+ connections between the victims (e.g.
+ peer and TKM) and relaying their messages while making them believe they
+ talk directly to each other.
+\end_layout
+
+\end_inset
+
+ attacks.
  The authentication state in the TCB must always be unambiguously associated
  with the corresponding SA.
 \end_layout
@@ -4148,6 +4211,45 @@ Encapsulating Security Payload is part of the IPsec protocol suite and provides
 \end_inset
 
  SA are used interchangeably.
+\end_layout
+
+\begin_layout Subsection
+Notation
+\end_layout
+
+\begin_layout Standard
+The protocol is presented as an exchange of messages between the untrusted
+ component IKE and the trusted key manager TKM.
+ The name of the operation is displayed on the left while the communicating
+ entities are separated by an arrow which is directed from the source to
+ the destination.
+ Transmitted data is specified on the right-hand side.
+\end_layout
+
+\begin_layout Standard
+For some exchanges only a status code of the performed operation is returned
+ to IKE.
+ In such cases the response is simply omitted for the sake of brevity.
+\end_layout
+
+\begin_layout Standard
+Since exchanges operate on contexts that contain data and maintain associated
+ state, these must be referenced when performing operations.
+ This is done using context IDs.
+ For example the transmitted parameter 
+\emph on
+nc_id
+\emph default
+ identifies the nonce context to operate on.
+ The rationale and further explanations of context IDs are given in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Contexts-and-identifiers"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -5306,7 +5408,7 @@ These types are numeric integers.
 size
 \family default
  is specified in bytes, which is also the amount of memory an object of
- such type consumes.
+ such a type consumes.
 \end_layout
 
 \begin_layout Standard
@@ -5423,7 +5525,7 @@ reference "sec:xfrm-proxy"
 \end_layout
 
 \begin_layout Standard
-Exchanges are identified by an identifier (
+Exchanges are identified by numeric values (
 \family typewriter
 operation_type
 \family default
@@ -5434,7 +5536,7 @@ reference "sub:Integer-types"
 
 \end_inset
 
-) which is unique on a per-interface basis.
+) which are unique on a per-interface basis.
 \end_layout
 
 \begin_layout Standard
@@ -5852,11 +5954,26 @@ The state of the overall TKM system can be interpreted as the sum of the
 \end_layout
 
 \begin_layout Subsection
-Graph notation
+Notation
 \end_layout
 
 \begin_layout Standard
-Each state machine is depicted by a diagram.
+All states of an FSMs are listed by name and giving a short description
+ of the state.
+ The initial state of the state machine is marked with a *.
+\end_layout
+
+\begin_layout Standard
+Transitions are given by their name, source and target states and a description
+ explaining the actions performed during when transitioning.
+ If a transition can be performed from multiple states, all of them are
+ listed in the source field.
+ A * symbol as source means that the transition can be executed from any
+ state.
+\end_layout
+
+\begin_layout Standard
+Additionally each state machine is depicted by a diagram.
  Transitions are drawn as directed arrows from the source to the target
  state with a label identifying the name of the transition.
 \end_layout
@@ -6152,6 +6269,7 @@ Implementation
 
 \begin_layout Standard
 This chapter describes the implementation of the design outlined in chapter
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "chap:Design"
@@ -6162,7 +6280,7 @@ reference "chap:Design"
  The first section briefly presents how the interface is described in XML,
  how that specification is transformed into various formats and what parts
  of the system are generated based on that specification.
- The next section then describes the remote procedure call library (RPC
+ The next section then describes the remote procedure call (RPC
 \begin_inset Index idx
 status open
 
@@ -6172,7 +6290,7 @@ RPC
 
 \end_inset
 
-) which is used by the various components for communication.
+) library which is used by various components for communication.
 \end_layout
 
 \begin_layout Standard
@@ -6213,6 +6331,14 @@ reference "sec:Additional-components"
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:Limitations"
+
+\end_inset
+
+ and the implementation is examined if and to what degree it meets the requireme
+nts laid out in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Requirements"
 
 \end_inset
 
@@ -6299,9 +6425,9 @@ name "fig:XSL-Transformation"
 \end_layout
 
 \begin_layout Standard
-By automatically generating code and documentation from a single XML source
- assures that the generated documents are always in sync and there is no
- mismatch between the implementation and the specification.
+Automatically generating code and documentation from a single XML source
+ assures that the created documents are always in sync and there is no mismatch
+ between the implementation and the specification.
  The cost of interface change and extension is lowered considerably since
  the generation process is automated and no manual steps are necessary.
  Figure 
@@ -6460,7 +6586,7 @@ status open
 
 \begin_layout Plain Layout
 GNATprove is a formal verification tool for Ada 2012 contracts.
- It can prove that subprograms respect their preconditions and postconditions.
+ It can prove that subprograms honor their preconditions and postconditions.
 \end_layout
 
 \end_inset
@@ -6473,8 +6599,8 @@ key "gnatprove"
 \end_inset
 
  to the source.
- The XML-specification project provides support to run GNATprove automatically,
- after the sources have been generated.
+ The XSL code generation process provides support to run GNATprove automatically
+, after the sources have been created.
 \end_layout
 
 \begin_layout Standard
@@ -6638,9 +6764,9 @@ reference "sub:Basic-operation"
 \end_layout
 
 \begin_layout Standard
-To make use of the tkm-rpc library clients simply include the necessary
- project or header files, which contain the type, constant definitions and
- procedure or function specifications.
+To make use of the library clients simply include the necessary project
+ or header files, which contain the type, constant definitions and procedure
+ or function specifications.
  How the library is intended to be used by clients is described in section
  
 \begin_inset CommandInset ref
@@ -6666,7 +6792,7 @@ reference "sub:Server-side-processing"
 \end_layout
 
 \begin_layout Standard
-When appropriate, the concrete implementation is illustrated using the
+When appropriate, the concrete implementation is illustrated using the 
 \family typewriter
 nc_create
 \family default
@@ -6734,16 +6860,9 @@ reference "sec:Limitations"
 
 \begin_layout Standard
 Most of the library code is automatically generated based on the XML specificati
-on, as described in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:XML-Specification"
-
-\end_inset
-
-.
+on.
  Only the transport-specific parts of sending and receiving requests and
- responses using a specific communication method is implemented manually.
+ responses using a particular communication method is implemented manually.
  The exchange of data is performed using Unix domain sockets.
  The necessary networking functionality is provided by the Anet library,
  which is described in section 
@@ -7049,8 +7168,8 @@ The purpose of an RPC library is to hide the complicated exchange and transport
  details from the user.
  It must be very easy to use and remote calls should look like local procedure
  or function calls to the client.
- The majority of the RPC client library is automatically generated from
- the XML specification.
+ As previously mentioned the majority of the RPC client library is automatically
+ generated from the XML specification.
  An exception is the transport layer.
  The next section explains the motivation and the operation of the transport
  layer abstraction.
@@ -7082,23 +7201,23 @@ name "sub:Transport-mechanism-abstraction"
 \begin_layout Standard
 The transport layer constitutes the lowest level of the RPC library.
  To ease the usage of different communication mechanisms, all necessary
- functionality is encapsulated in the
+ functionality is encapsulated in the 
 \family typewriter
 Tkmrpc.Transport.Client
 \family default
  package.
  The current implementation employs stream-oriented Unix sockets using the
- functionality provided by Anet, which is presented in section 
+ functionality provided by Anet (see section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Anet"
 
 \end_inset
 
-.
+).
  To run the TKM daemon on a different physical machine, switching to a TCP
- socket implementation and connecting to an IP address and port, is all
- that is necessary from the client's point of view.
+ socket implementation and connecting to an IP address and port is all that
+ is necessary from the client's point of view.
 \end_layout
 
 \begin_layout Standard
@@ -7254,10 +7373,8 @@ name "sub:Request-handling"
 \begin_layout Standard
 Based on the XML exchange description Ada procedure definitions are generated.
  Since the exchanges are specified on a per-interface basis (e.g.
-\emph on
-ike
-\emph default
-), procedures belonging together are put in the same package, e.g.
+ IKE or EES), procedures belonging together are put in the same package,
+ e.g.
  
 \family typewriter
 Tkmrpc.Clients.Ike
@@ -7847,7 +7964,7 @@ The intended way for indicating errors during processing of client requests
 Process_Stream
 \family default
  generic's exception block.
- There the result code of the response is set to failure to inidicate an
+ There the result code of the response is set to failure to indicate an
  error to the client.
 \end_layout
 
@@ -7858,14 +7975,14 @@ This mechanism works well in combination with the automatically generated
 \emph on
 System.Assertions.Assert_Failure
 \emph default
- exception, as described in section 
+ exception (see section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "lis:nc_create-ada"
 
 \end_inset
 
-.
+).
  These are then properly processed by the 
 \family typewriter
 Process_Stream
@@ -7875,16 +7992,9 @@ Process_Stream
 \end_layout
 
 \begin_layout Standard
-The current implementation returns 
-\begin_inset Quotes eld
-\end_inset
-
-Invalid_Operation
-\begin_inset Quotes erd
-\end_inset
-
- if an error occurs and does not translate exceptions to their corresponding
- error codes, see also section 
+The current implementation returns Invalid_Operation if an error occurs
+ and does not translate exceptions to their corresponding error codes, see
+ also section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:Limitations"
@@ -7919,7 +8029,7 @@ name "sec:charon-tkm"
 
 \begin_layout Standard
 The untrusted IKEv2 component used in conjunction with the trusted key manager
- infrastructure is implemented as a separate charon
+ infrastructure is implemented as a separate charon 
 \begin_inset Quotes eld
 \end_inset
 
@@ -7927,7 +8037,8 @@ instance
 \begin_inset Quotes erd
 \end_inset
 
- in its own directory below the strongSwan top-level source directory (
+ located in its own directory below the strongSwan top-level source directory
+ (
 \family typewriter
 src/charon-tkm
 \family default
@@ -7957,8 +8068,8 @@ http://projects.gnome.org/NetworkManager/
 \end_inset
 
 .
- The only difference is the registration of custom TKM plugins as final
- step in the startup phase.
+ The only difference is the registration of custom TKM plugins as the final
+ step of the startup phase.
  The charon-tkm daemon does not rely on the dynamic plugin loading mechanism
  for its core plugins, they are statically registered before entering the
  main processing loop.
@@ -8027,8 +8138,8 @@ reference "sub:tkm-rpc-library"
 pragma
 \family default
  Export) to make procedures available to the charon-tkm C code.
- To call Ada code from C requires an initialized Ada runtime, that's why
- the special
+ To call Ada code from C requires an initialized Ada runtime.
+ To that end the special
 \family typewriter
  adainit
 \family default
@@ -8072,7 +8183,7 @@ https://en.wikipedia.org/wiki/GNU_build_system
 \end_inset
 
 , to configure, compile and install the project.
- Ada projects using the GNAT Ada compiler normally use gnatmake or gprbuild
+ Ada projects using the GNAT Ada compiler usually use gnatmake or gprbuild
 \begin_inset Foot
 status open
 
@@ -8085,10 +8196,10 @@ GNAT's Project Manager
  to build projects.
  It is common practice in Ada projects to mix these two concepts by calling
  the respective GNAT project manager from inside a Makefile for example.
- The charon-tkm project therefore provides a Makefile.am file which describes
+ Therefore the charon-tkm project provides a Makefile.am file which describes
  how to build the charon-tkm daemon binary with gprbuild.
  The project uses the more advanced gprbuild manager because it provides
- improved support for mixed language projects (C and Ada in this case).
+ superior support for mixed language projects (C and Ada in this case).
 \end_layout
 
 \begin_layout Subsection
@@ -8096,7 +8207,16 @@ Initialization
 \end_layout
 
 \begin_layout Standard
-Before entering the main loop, the charon-tkm daemon calls the 
+The entry point of the untrusted component is the 
+\family typewriter
+main
+\family default
+ function located in the file 
+\family typewriter
+charon-tkm.c
+\family default
+.
+ Before entering the main loop, the charon-tkm daemon calls the 
 \family typewriter
 tkm_init
 \family default
@@ -8167,7 +8287,11 @@ name "sub:ID-manager"
 \end_layout
 
 \begin_layout Standard
-The TKM ID manager handles the management of the different context ID kinds.
+The TKM ID manager implemented in files 
+\family typewriter
+tkm/tkm_id_manager.[h|c]
+\family default
+ handles the management of the different context ID kinds.
  Its interface is very simple.
  The 
 \family typewriter
@@ -8194,14 +8318,7 @@ release_id
 \end_layout
 
 \begin_layout Subsection
-Chunk map
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Chunk-map"
-
-\end_inset
-
-
+Data passing
 \end_layout
 
 \begin_layout Standard
@@ -8210,13 +8327,19 @@ The TKM code uses two main techniques to pass on information from one plugin
  handle the use case.
  These two techniques allowed to implement the required TKM functionality
  without being too invasive to the upstream strongSwan codebase.
- This is especially true for use cases which are only relevant for the TKM
- project, with no benefit for the project as a whole.
+ This is especially true for situations which are only relevant for the
+ TKM project, with no benefit for the project as a whole.
 \end_layout
 
 \begin_layout Standard
-One of these mechanisms use the chunk map explained in this section, the
- other is explained in the following section 
+One of these mechanisms use the chunk map explained in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Chunk-map"
+
+\end_inset
+
+, the other is explained in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Piggybacking"
@@ -8224,6 +8347,17 @@ reference "sub:Piggybacking"
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Subsubsection
+Chunk map
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Chunk-map"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8240,17 +8374,17 @@ Chunks are strongSwans notion of binary data containing e.g.
 
 .
  This is required to preserve context ID information over plugin borders.
- If for example the nonce plugin allocates a new nonce in a new context,
+ If for example the nonce plugin allocates a fresh nonce in a new context,
  this relation has to be stored because the strongSwan interfaces have no
- knowledge of context IDs, such IDs are only used inside the TKM code.
+ notion of context IDs since such IDs are only used inside the TKM code.
  Therefore, the nonce plugin stores the chunk to context ID relation in
  the chunk map.
- Another plugin which receives the nonce chunk, which is random enough to
- be unique, is able to retrieve the associated context ID by consulting
+ Another plugin which receives the nonce chunk, which is by definition random
+ and unique, is able to retrieve the associated context ID by consulting
  the chunk map.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 Piggybacking
 \begin_inset CommandInset label
 LatexCommand label
@@ -8373,7 +8507,7 @@ name "lis:isa_info_t-struct"
 \end_layout
 
 \begin_layout Standard
-In this case the skd data chunk returned by the
+In this case the sk_d data chunk returned by the
 \family typewriter
  get_skd
 \family default
@@ -8388,7 +8522,7 @@ In this case the skd data chunk returned by the
 derive_ike_keys
 \family default
  procedure of the new keymat as-is without  any processing.
- The information is stored in the skd chunk as shown by listing 
+ The information is stored in the sk_d chunk as shown by listing 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "lis:Piggybacking"
@@ -8453,6 +8587,11 @@ name "lis:Piggybacking"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+This method is simple and does not require a global data structure accessible
+ to the involved plugins thus avoiding the problem of synchronization.
 \end_layout
 
 \begin_layout Subsection
@@ -8521,7 +8660,7 @@ ike_dh_create
 \family typewriter
 ike_dh_generate_key
 \family default
- function as soon it receives the public value when its
+ function as soon it receives the public value when its 
 \family typewriter
 set_other_public_value
 \family default
@@ -8596,8 +8735,13 @@ derive_child_keys
 \family default
  are dispatched into the TCB by using context IDs.
  The keys used to protect the IKE SA are returned to the keymat after the
+ 
 \family typewriter
-derive_ike_keys
+ike_isa_create
+\family default
+ or 
+\family typewriter
+ike_isa_create_child
 \family default
  remote procedure call returns because they are not classified as critical
  (see section 
@@ -8624,8 +8768,8 @@ reference "sub:Piggybacking"
 \family typewriter
 derive_child_keys
 \family default
- function does nothing more than using the encryption key chunks to store
- information needed in the kernel IPsec plugin explained in the next section
+ function does nothing more than use the encryption key chunks to store
+ information needed by the kernel IPsec plugin explained in the next section
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -8678,7 +8822,7 @@ name "sub:pluginKernel-IPsec"
 
 \begin_layout Standard
 After keying material for a new child SA has been derived in the TKM, the
- child SA state must be established by using a kernel IPsec plugin.
+ child SA state must be established using a kernel IPsec plugin.
  In case of the TKM, where no child keying material leaves the TCB and child
  SA policy handling is completely done by the TKM, the kernel plugin can
  be kept very simple.
@@ -8925,7 +9069,12 @@ reference "sub:ESP-SA-Event"
 \end_inset
 
 .
- The service is written in Ada as a subsystem of the charon-tkm daemon.
+ The service is written in Ada as a subsystem of the charon-tkm daemon and
+ is located in the 
+\family typewriter
+ees
+\family default
+ subdirectory.
  It uses the tkm-rpc library outlined in section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -8968,9 +9117,13 @@ name "sub:charon-Exception-handler-(EH)"
 \end_layout
 
 \begin_layout Standard
-The charon TKM code provides a special exception handler which provides
- the functionality to log exception messages from within Ada code into the
- daemon's logfile.
+The charon TKM code located in the 
+\family typewriter
+ehandler
+\family default
+ subdirectory provides a special exception handler which implements the
+ functionality to log exception messages from within Ada code into the daemon's
+ log file.
  This mechanism is implemented using the
 \emph on
  Exceptions_Actions
@@ -8996,7 +9149,7 @@ The registered exception handler calls the imported C function
 \family typewriter
 Charon_Terminate
 \family default
- which logs the exception message into the daemon's logfile and instructs
+ which logs the exception message into the daemon's log file and instructs
  it to terminate.
  
 \end_layout
@@ -9039,7 +9192,7 @@ reference "sub:xfrm-ada"
 
 \end_inset
 
- to provide the IKE interface (
+ to provide the IKE interface (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:IKE-Exchanges"
@@ -9097,8 +9250,8 @@ Nonce generation
 \end_layout
 
 \begin_layout Standard
-Nonces are used to guarantee freshness in the cryptographic operations used
- to derive keying material.
+Nonces are used to guarantee freshness in the cryptographic operations when
+ deriving key material.
  Hence nonce values must be random and must not be predictable.
  The nonce handling is implemented in the 
 \family typewriter
@@ -9167,7 +9320,8 @@ key "rfc3526"
 
 \end_inset
 
- using the The GNU Multiple Precision Arithmetic Library
+.
+ The GNU Multiple Precision Arithmetic Library
 \begin_inset Foot
 status collapsed
 
@@ -9187,7 +9341,7 @@ http://gmplib.org/
 
 \end_inset
 
-, for which an Ada binding exists
+ is used in the implementation since an Ada binding exists
 \begin_inset Foot
 status collapsed
 
@@ -9924,7 +10078,7 @@ name "lis:tkm-signature-generation"
 \end_layout
 
 \begin_layout Standard
-On Line 4 a RSA signer is instantiated.
+On line 4 a RSA signer is instantiated.
  Line 5 retrieves the private key stored in the 
 \family typewriter
 Tkm.Private_Key
@@ -9941,14 +10095,14 @@ Generate
 
 \begin_layout Standard
 The same code is used to create a signature over the local authentication
- octets during the IKE_AUTH exchange, as described in section 
+ octets during the IKE_AUTH exchange (see section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:flow-IKE_AUTH"
 
 \end_inset
 
-.
+).
  The charon IKEv2 daemon currently only supports AUTH octet signatures based
  on the SHA-1 hash algorithm, this must be improved in a future iteration
  so that other hash algorithms are possible.
@@ -10027,7 +10181,7 @@ reference "fig:TKM-trustchain-validation-overview"
 
  provides an overview of the steps performed to establish trust in the user
  certificate provided by a peer during the IKE_AUTH exchange.
- The chosen example involves three certificates: The user certificate 
+ The chosen example involves three certificates: the user certificate 
 \emph on
 A
 \emph default
@@ -10056,12 +10210,12 @@ A
 CA
 \emph default
  trusted by the TKM.
- This is done by verifying the chain of signatures of the the certificates,
- starting from the peer certificate 
+ This is done by verifying the chain of certificate signatures, starting
+ at the bottom with the peer certificate 
 \emph on
 A
 \emph default
- up to the root of trust, the 
+ and moving upwards to the root of trust, the 
 \emph on
 CA
 \emph default
@@ -10203,7 +10357,7 @@ begin
 
 \begin_layout Plain Layout
 
-   return V.Not_Before < Now and then Now < V.Not_After;
+   return V.Not_Before <= Now and then Now <= V.Not_After;
 \end_layout
 
 \begin_layout Plain Layout
@@ -10415,7 +10569,7 @@ The next step is to link the intermediate certificate
 \emph on
 B
 \emph default
- with certificate 
+ with the certificate 
 \emph on
 CA
 \emph default
@@ -10428,11 +10582,11 @@ Cc_Add_Certificate
 \emph on
 B
 \emph default
- must be validated using the public key stored in the 
+ must be validated using the public key stored in the received 
 \emph on
 CA
 \emph default
- certificate received.
+ certificate.
  If the verification is successful, the last step is to check that the top-level
  certificate matches the trusted root 
 \emph on
@@ -10643,8 +10797,8 @@ To make rekeying work in such a scenario, kernel XFRM acquire and expire
  The xfrm-proxy component subscribes to the kernel's XFRM subsystem acquire
  and expire multicast groups to receive events and delivers them to charon
  using the EES service.
- Charon then normally starts create or rekeying jobs for the IPsec policy
- or SA in question.
+ Charon then starts create or rekeying jobs for the IPsec policy or SA in
+ question as usual.
 \end_layout
 
 \begin_layout Section
@@ -10827,8 +10981,8 @@ key "rfc4303"
 \end_layout
 
 \begin_layout Standard
-The TKM uses the XFRM interface via the xfrm-ada library, to manage the
- SPD and SAD and provides the keys for ESP encryption to the kernel.
+The TKM uses the XFRM interface via the xfrm-ada library to manage the SPD
+ and SAD and provide keys for ESP encryption to the kernel.
 \end_layout
 
 \begin_layout Standard
@@ -10899,7 +11053,7 @@ name "sec:Limitations"
 \end_layout
 
 \begin_layout Standard
-This section describes the limitations of the current realisation of the
+This section describes the limitations of the current realization of the
  design outlined in chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -10919,7 +11073,14 @@ Cryptographic algorithms
 
 \begin_layout Standard
 Currently only a selected set of algorithms are implemented.
- Table lists the implemented cryptographic transforms:
+ Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Implemented-cryptographic-algori"
+
+\end_inset
+
+ lists the implemented cryptographic transforms:
 \end_layout
 
 \begin_layout Standard
@@ -11180,6 +11341,13 @@ Diffie-Hellman
 
 \begin_layout Plain Layout
 Implemented cryptographic algorithms
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Implemented-cryptographic-algori"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -11229,7 +11397,7 @@ alice@strongswan.org
 \end_layout
 
 \begin_layout Subsection
-Certificates and Keys
+Certificates and keys
 \end_layout
 
 \begin_layout Standard
@@ -11237,8 +11405,8 @@ Currently only a single CA certificate is supported for certificate chain
  validation.
  Similarly only one private key is supported for authenticating the local
  identity to the peer.
- Similar to the constraints with regards to identity handling, the cause
- for this is also the incomplete implementation of the configuration interface.
+ Akin to the constraints with regards to identity handling, the cause for
+ this is also the incomplete implementation of the configuration interface.
 \end_layout
 
 \begin_layout Subsection
@@ -11270,7 +11438,17 @@ The nonce generation in the TKM is implemented by reading a sequence of
 \end_layout
 
 \begin_layout Section
-Fulfillment of requirements
+Conformance to requirements
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+Conformance
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -11446,7 +11624,7 @@ phy only.
  CA certificate used to verify the peer's authentication data must reside
  in the TCB.
  To make this separation possible, the following TKM-specific strongSwan
- plugins are proposed:
+ plugins are implemented:
 \end_layout
 
 \begin_deeper
@@ -11494,9 +11672,9 @@ reference "sub:req-Integrity"
 
  demands that a misbehaving untrusted part is not able to violate the security
  properties guaranteed by the TCB.
- As a formal model checking of the proposed IKEv2 separation protocol is
- still outstanding, this property is only assumed but not yet formally proven.
- See also section 
+ As a formal analysis of the proposed IKEv2 separation protocol has not
+ been performed, this property is only assumed but not formally proven,
+ see also section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:Limitations"
@@ -11512,7 +11690,7 @@ Conclusion
 
 \begin_layout Standard
 This chapter provides a summary of the contributions and an outlook on possible
- future work related to this work.
+ future work.
 \end_layout
 
 \begin_layout Section
@@ -11789,7 +11967,7 @@ reference "sec:Assumptions"
 \end_inset
 
 .
- Additionally, on an ordinary operating system the amount of code that has
+ Additionally, in an ordinary operating system the amount of code that has
  to be counted to the trusted computing base is in the range of hundred
  thousand or possibly even millions of lines of code.
  This stands in stark contrast to the demand that the TCB should be 
@@ -11802,7 +11980,7 @@ minimal
 \begin_layout Standard
 Integrating the implemented system into an environment that offers superior
  isolation mechanisms and a smaller TCB size is thus a requirement to actually
- attain a higher security level.
+ attain a higher level of security.
  Table 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -12054,7 +12232,7 @@ reference "sub:Transport-mechanism-abstraction"
 \begin_layout Standard
 The same level of separation could be achieved by porting the charon-tkm
  and TKM daemon components to a separation kernel (SK).
- Unfortunately there are no freely available SK as of this writing.
+ Unfortunately there are no freely available SKs ath te time of this writing.
  Some commercial products exist but they are only available to paying customers.
 \end_layout
 
