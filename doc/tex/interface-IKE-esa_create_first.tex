@@ -1,5 +1,5 @@
 \subsubsection{esa\_create\_first}
-IKE uses this exchange to activate the initial child SA for a newly authenticated IKE SA using the security policy specified by sp\_id. As no explicit DH exchange is performed, the generic esa\_create exchange cannot be used. The parameter ea\_id defines the algorithms to use as pseudo-random function, encryption and integrity protection of the CHILD SA. TKM derives keying material for the CHILD SA by using the nonces and the sk\_d key of the IKE SA. The key derivation algorithm is specified in RFC 5996, section 2.17.
+IKE uses this exchange to activate the initial child SA for a newly authenticated IKE SA using the security policy specified by sp\_id. As no explicit DH exchange is performed, the generic esa\_create exchange cannot be used. The parameter ea\_id defines the algorithms to use as pseudo-random function, encryption and integrity protection of the child SA. TKM derives keying material for the child SA by using the nonces and the sk\_d key of the IKE SA. The key derivation algorithm is specified in RFC 5996, section 2.17.
 \paragraph*{Exchange identifier}
 \hex{0A03}
 
