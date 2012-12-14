@@ -11028,7 +11028,13 @@ key "rfc5280"
 \end_inset
 
  library.
- It provides functionality to process ASN.1/DER-encoded TODO: REF X.680/X.690
+ It provides functionality to process ASN.1/DER-encoded 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "x680-2011-c1,x690-2011-c1"
+
+\end_inset
+
  certificates and private keys.
 \end_layout
 
