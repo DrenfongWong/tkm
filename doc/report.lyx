@@ -6346,7 +6346,7 @@ reference "sec:Requirements"
 \end_layout
 
 \begin_layout Section
-XML-Specification
+XML specification
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:XML-Specification"
@@ -8910,22 +8910,6 @@ alice@strongswan.org
  to be found.
 \end_layout
 
-\begin_layout Standard
-The private key handling must be rewritten in a later iteration using a
- TKM specific credential set, which provides an own implementation of a
- private key enumeration function (
-\family typewriter
-create_private_enumerator
-\family default
- of 
-\family typewriter
-credential_set_t
-\family default
-).
- This way a configured private key could be fetched and installed in the
- credential manager on demand.
-\end_layout
-
 \begin_layout Subsection
 Public key plugin
 \begin_inset CommandInset label
@@ -11404,9 +11388,11 @@ alice@strongswan.org
 \end_inset
 
 .
- This is caused by the static configurability of the TKM daemon.
+ This is caused by the static configurability of the TKM daemon and the
+ current private key handling of charon.
  In order to allow the use of arbitrary identities the configuration mechanism
- of TKM and charon-tkm needs to be fully implemented.
+ of TKM and charon-tkm needs to be fully implemented and a TKM credential
+ set must be implemented.
 \end_layout
 
 \begin_layout Subsection
@@ -11420,6 +11406,12 @@ Currently only a single CA certificate is supported for certificate chain
  identity to the peer.
  Akin to the constraints with regards to identity handling, the cause for
  this is also the incomplete implementation of the configuration interface.
+\end_layout
+
+\begin_layout Standard
+Additionally the currently implemented validity checks of certificates are
+ only rudimentary.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -11448,6 +11440,17 @@ The nonce generation in the TKM is implemented by reading a sequence of
  This may not be regarded as a limitation per-se but because the issue of
  random number generation is paramount to any system constructing cryptographic
  keys the authors feel compelled to explicitly mention it.
+\end_layout
+
+\begin_layout Subsection
+Exception mapping
+\end_layout
+
+\begin_layout Standard
+If a processing error on the server-side occurs the status code of the reply
+ message is always set to Invalid_Operation.
+ To provide the client with more specific information about the error exceptions
+ should be inspected and mapped to their corresponding failure code.
 \end_layout
 
 \begin_layout Section
@@ -11743,18 +11746,16 @@ Prototype implementation
 \end_layout
 
 \begin_layout Standard
-All parts of the system have been implemented.
- This allowed the demonstration of the functional capability of the proposed
- design.
+The IKEv2 separation design proposed in this paper has been implemented
+ and demonstrated to be a viable solution to attain a higher level of security.
+ The untrusted parts of the IKE daemon are implemented on top of the existing
+ strongSwan IKE implementation while the trusted components have been implemente
+d from scratch using the Ada programming language.
 \end_layout
 
 \begin_layout Standard
-The untrusted parts of the IKE daemon are implemented on top of the existing
- strongSwan IKE implementation.
- The trusted components have been implemented from scratch using the Ada
- programming language.
- Leveraging the XML specification of the interface and using it to automatically
- generate code for the IKE and TKM errors in the transformation process
+Leveraging the XML specification of the interface and using it to automatically
+ generate code for the IKE and TKM, errors in the transformation process
  from the specification to the code are avoided.
  This mechanism enables changes to the interface at a low cost with a significan
 tly smaller potential for errors compared to a manual translation of the
@@ -11776,11 +11777,6 @@ reference "sec:XML-Specification"
 \end_inset
 
 ).
-\end_layout
-
-\begin_layout Standard
-The current state of the implementation shows that the proposed design actually
- works.
 \end_layout
 
 \begin_layout Section
@@ -11812,6 +11808,84 @@ reference "sec:Assumptions"
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Subsection
+Credential set
+\end_layout
+
+\begin_layout Standard
+The private key handling of charon-tkm must be extended with a TKM specific
+ credential set to allow the usage of private keys with different subject
+ than alice@strongswan.org.
+ The set should provide an own implementation of a private key enumeration
+ function (
+\family typewriter
+create_private_enumerator
+\family default
+ of 
+\family typewriter
+credential_set_t
+\family default
+).
+ This way a configured private key could be fetched and installed in the
+ credential manager on demand.
+\end_layout
+
+\begin_layout Subsection
+Exception mapping
+\end_layout
+
+\begin_layout Standard
+As described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Error-handling"
+
+\end_inset
+
+, exceptions which are raised during processing of a client request are
+ handled by the Process_Stream generic.
+ Exceptions should be mapped to their corresponding failure code (see 
+\family typewriter
+result_type
+\family default
+ constants specified in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Constants"
+
+\end_inset
+
+) and the status code of the response set accordingly.
+ This gives the client more information about what kind of processing error
+ occurred.
+\end_layout
+
+\begin_layout Subsection
+Additional checks for generated key material
+\end_layout
+
+\begin_layout Standard
+The sanity checks for generated Diffie-Hellman values and cryptographic
+ keys should be augmented to avoid the usage of problematic key material
+ undermining the employed encryption or integrity protection mechanisms.
+\end_layout
+
+\begin_layout Subsection
+Validation of certificates
+\end_layout
+
+\begin_layout Standard
+Additional checks outlined in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rfc5280,GIJABS12,rfc2818"
+
+\end_inset
+
+ must be implemented to more accurately verify the validity of certificates
+ and certificate chains.
 \end_layout
 
 \begin_layout Subsection
