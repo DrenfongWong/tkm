@@ -17,7 +17,8 @@ is
       return Tkmrpc.Types.Dh_Pubvalue_Type
    is
       Group_Size       : constant Tkmrpc.Types.Byte_Sequence_Range
-        := Diffie_Hellman.Get_Group_Size (Group_Id => Group);
+        := Diffie_Hellman.Get_Group_Size
+          (Group_Id => Tkmrpc.Types.Dh_Algorithm_Type (Group));
       Random_Chunk, Ya : Tkmrpc.Types.Byte_Sequence (1 .. Group_Size);
       Priv             : Tkmrpc.Types.Dh_Priv_Type
         := Tkmrpc.Types.Null_Dh_Priv_Type;
@@ -31,7 +32,7 @@ is
       --  DH group Id.
 
       Diffie_Hellman.Compute_Xa_Ya
-        (Group_Id     => Group,
+        (Group_Id     => Tkmrpc.Types.Dh_Algorithm_Type (Group),
          Random_Bytes => Random_Chunk,
          Xa           => Priv.Data (1 .. Group_Size),
          Ya           => Ya);
@@ -58,7 +59,8 @@ is
       --  DH group Id.
 
       Group_Id   : constant Tkmrpc.Types.Dh_Algorithm_Type
-        := Tkmrpc.Contexts.dh.get_dha_id (Id => Id);
+        := Tkmrpc.Types.Dh_Algorithm_Type
+          (Tkmrpc.Contexts.dh.get_dha_id (Id => Id));
       Group_Size : constant Tkmrpc.Types.Byte_Sequence_Range
         := Diffie_Hellman.Get_Group_Size (Group_Id => Group_Id);
       Priv       : constant Tkmrpc.Types.Dh_Priv_Type

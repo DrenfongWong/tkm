@@ -145,9 +145,10 @@ package body Server_Ike_Isa_Tests is
       Res           : Results.Result_Type;
    begin
       Servers.Ike.Init;
-      Contexts.dh.create (Id       => 1,
-                          dha_id   => Constants.Modp_4096,
-                          secvalue => Types.Null_Dh_Priv_Type);
+      Contexts.dh.create
+        (Id       => 1,
+         dha_id   => Tkmrpc.Types.Dha_Id_Type (Constants.Modp_4096),
+         secvalue => Types.Null_Dh_Priv_Type);
       Contexts.dh.generate (Id        => 1,
                             dh_key    => Shared_Secret,
                             timestamp => 0);
@@ -388,9 +389,10 @@ package body Server_Ike_Isa_Tests is
       Res           : Results.Result_Type;
    begin
       Servers.Ike.Init;
-      Contexts.dh.create (Id       => 1,
-                          dha_id   => Constants.Modp_4096,
-                          secvalue => Types.Null_Dh_Priv_Type);
+      Contexts.dh.create
+        (Id       => 1,
+         dha_id   => Tkmrpc.Types.Dha_Id_Type (Constants.Modp_4096),
+         secvalue => Types.Null_Dh_Priv_Type);
       Contexts.dh.generate (Id        => 1,
                             dh_key    => Shared_Secret,
                             timestamp => 0);

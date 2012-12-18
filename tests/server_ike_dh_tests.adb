@@ -25,10 +25,11 @@ package body Server_Ike_DH_Tests is
       Null_Bytes : constant Types.Byte_Sequence (1 .. 512) := (others => 0);
    begin
       Servers.Ike.Init;
-      Servers.Ike.Dh_Create (Result   => Res,
-                             Dh_Id    => Id,
-                             Dha_Id   => Constants.Modp_4096,
-                             Pubvalue => Pub);
+      Servers.Ike.Dh_Create
+        (Result   => Res,
+         Dh_Id    => Id,
+         Dha_Id   => Types.Dha_Id_Type (Constants.Modp_4096),
+         Pubvalue => Pub);
       Assert (Condition => Res = Results.Ok,
               Message   => "Dh_Create failed");
       Assert (Condition => Pub.Size = 512,
