@@ -5542,7 +5542,7 @@ reference "sub:Integer-types"
 \begin_layout Standard
 Requests contain an identifier (
 \family typewriter
-req_id
+request_id
 \family default
 )
 \shape italic
@@ -5551,7 +5551,7 @@ req_id
 which is chosen by the client of an exchange.
  The server must set the 
 \family typewriter
-req_id
+request_id
 \family default
  of the corresponding response to be identical.
  This enables the client to match responses to their requests and handle
@@ -6841,7 +6841,7 @@ reference "fig:Request-and-response"
 .
  The operation type of a request or response specifies what exchange it
  is part of.
- Requests are matched to their corresponding responses using the req_id
+ Requests are matched to their corresponding responses using the request_id
  field.
  However, this is currently not implemented (see also the limitation section
  
@@ -6853,7 +6853,7 @@ reference "sec:Limitations"
 
 ).
  Support for multiple simultaneous exchanges and asynchronous request processing
- can be implemented using the req_id matching.
+ can be implemented using the request_id matching.
  Currently a call to the tkm-rpc library blocks the client until the server's
  response is received.
 \end_layout
