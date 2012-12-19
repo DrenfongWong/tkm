@@ -9747,23 +9747,10 @@ key "rfc3447"
 
 \end_inset
 
- private key in DER
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Flex URL
-status collapsed
-
-\begin_layout Plain Layout
-
-http://www.itu.int/ITU-T/x.690
-\end_layout
-
-\end_inset
-
-
-\end_layout
+ private key in DER 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "x690-2011-c1"
 
 \end_inset
 
