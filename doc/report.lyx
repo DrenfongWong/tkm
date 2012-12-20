@@ -6016,7 +6016,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename images/fsm-nc.svg
-	width 57text%
+	scale 58
 
 \end_inset
 
@@ -6061,7 +6061,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename images/fsm-dh.svg
-	width 85text%
+	scale 58
 
 \end_inset
 
@@ -6106,7 +6106,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename images/fsm-cc.svg
-	width 100text%
+	scale 58
 
 \end_inset
 
@@ -6143,14 +6143,14 @@ filename "tex/contexts-ae.tex"
 \begin_layout Standard
 \begin_inset Float figure
 wide false
-sideways true
-status collapsed
+sideways false
+status open
 
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
 	filename images/fsm-ae.svg
-	width 100text%
+	scale 58
 
 \end_inset
 
@@ -6195,7 +6195,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename images/fsm-isa.svg
-	width 72text%
+	scale 58
 
 \end_inset
 
@@ -6240,7 +6240,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename images/fsm-esa.svg
-	width 85text%
+	scale 58
 
 \end_inset
 
