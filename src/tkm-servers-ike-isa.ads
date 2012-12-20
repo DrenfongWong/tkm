@@ -55,6 +55,9 @@ is
    procedure Reset (Isa_Id : Tkmrpc.Types.Isa_Id_Type);
    --  Reset ISA context with given id.
 
+   procedure Skip_Create_First (Isa_Id : Tkmrpc.Types.Isa_Id_Type);
+   --  Skip creation of first child SA.
+
    Authentication_Failure : exception;
 
 end Tkm.Servers.Ike.Isa;

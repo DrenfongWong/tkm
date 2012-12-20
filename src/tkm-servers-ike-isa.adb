@@ -467,4 +467,14 @@ is
       end;
    end Sign;
 
+   -------------------------------------------------------------------------
+
+   procedure Skip_Create_First (Isa_Id : Tkmrpc.Types.Isa_Id_Type)
+   is
+      Ae_Id : constant Tkmrpc.Types.Ae_Id_Type
+        := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
+   begin
+      Tkmrpc.Contexts.ae.activate (Id => Ae_Id);
+   end Skip_Create_First;
+
 end Tkm.Servers.Ike.Isa;

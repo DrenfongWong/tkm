@@ -377,12 +377,9 @@ is
      (Result : out Results.Result_Type;
       Isa_Id : Types.Isa_Id_Type)
    is
-      pragma Unreferenced (Isa_Id);
    begin
-
-      --  Auto-generated stub.
-
-      Result := Results.Invalid_Operation;
+      Tkm.Servers.Ike.Isa.Skip_Create_First (Isa_Id => Isa_Id);
+      Result := Results.Ok;
    end Isa_Skip_Create_First;
 
    -------------------------------------------------------------------------

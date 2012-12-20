@@ -483,6 +483,84 @@ package body Server_Ike_Isa_Tests is
 
    -------------------------------------------------------------------------
 
+   procedure Check_Isa_Skip_Create_First
+   is
+      use type Tkmrpc.Results.Result_Type;
+      use type Contexts.ae.ae_State_Type;
+
+      Res : Results.Result_Type;
+   begin
+      Servers.Ike.Init;
+      Contexts.dh.create
+        (Id       => 1,
+         dha_id   => Tkmrpc.Types.Dha_Id_Type (Constants.Modp_4096),
+         secvalue => Types.Null_Dh_Priv_Type);
+      Contexts.dh.generate (Id        => 1,
+                            dh_key    => Types.Null_Dh_Key_Type,
+                            timestamp => 0);
+      Contexts.nc.create (Id    => 1,
+                          nonce => Types.Null_Nonce_Type);
+      Contexts.ae.create
+        (Id              => 1,
+         iag_id          => 1,
+         dhag_id         => 1,
+         creation_time   => 1,
+         initiator       => 1,
+         sk_ike_auth_loc => (Size => 64, Data => (others => 1)),
+         sk_ike_auth_rem => (Size => 64, Data => (others => 1)),
+         nonce_loc       => (Size => 64, Data => (others => 1)),
+         nonce_rem       => (Size => 64, Data => (others => 1)));
+      Contexts.ae.sign
+        (Id    => 1,
+         lc_id => 1);
+      Contexts.ae.authenticate
+        (Id              => 1,
+         ca_context      => 1,
+         ra_id           => 1,
+         remote_identity => 1,
+         not_before      => 1,
+         not_after       => 1);
+      Contexts.isa.create (Id            => 1,
+                           ae_id         => 1,
+                           ia_id         => 1,
+                           sk_d          => Types.Null_Key_Type,
+                           creation_time => 0);
+
+      Servers.Ike.Isa_Skip_Create_First (Result => Res,
+                                         Isa_Id => 1);
+
+      Assert (Condition => Res = Results.Ok,
+              Message   => "Isa_Skip_Create_First failed");
+      Assert (Condition => Contexts.ae.Get_State
+              (Id => 1) = Contexts.ae.active,
+              Message   => "AE context not active");
+
+      Servers.Ike.Isa_Reset (Result => Res,
+                             Isa_Id => 1);
+      Servers.Ike.Ae_Reset (Result => Res,
+                            Ae_Id  => 1);
+      Servers.Ike.Nc_Reset (Result => Res,
+                            Nc_Id  => 1);
+      Servers.Ike.Dh_Reset (Result => Res,
+                            Dh_Id  => 1);
+      Servers.Ike.Finalize;
+
+   exception
+      when others =>
+         Servers.Ike.Isa_Reset (Result => Res,
+                                Isa_Id => 1);
+         Servers.Ike.Ae_Reset (Result => Res,
+                               Ae_Id  => 1);
+         Servers.Ike.Nc_Reset (Result => Res,
+                               Nc_Id  => 1);
+         Servers.Ike.Dh_Reset (Result => Res,
+                               Dh_Id  => 1);
+         Servers.Ike.Finalize;
+         raise;
+   end Check_Isa_Skip_Create_First;
+
+   -------------------------------------------------------------------------
+
    procedure Initialize (T : in out Testcase)
    is
    begin
@@ -493,6 +571,9 @@ package body Server_Ike_Isa_Tests is
       T.Add_Test_Routine
         (Routine => Check_Isa_Create_Child'Access,
          Name    => "Check Isa_Create_Child");
+      T.Add_Test_Routine
+        (Routine => Check_Isa_Skip_Create_First'Access,
+         Name    => "Check Isa_Skip_Create_First");
    end Initialize;
 
 end Server_Ike_Isa_Tests;

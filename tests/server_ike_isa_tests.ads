@@ -13,4 +13,7 @@ package Server_Ike_Isa_Tests is
    procedure Check_Isa_Create_Child;
    --  Check IKE SA child creation (rekey).
 
+   procedure Check_Isa_Skip_Create_First;
+   --  Check IKE SA skip first child creation.
+
 end Server_Ike_Isa_Tests;
