@@ -9,6 +9,7 @@ with Assertion_Tests;
 with Random_Tests;
 with Locked_Mem_Tests;
 with Util_Tests;
+with Config_Tests;
 with Diffie_Hellman_Tests;
 with Hmac_Tests;
 with Prf_Plus_Tests;
@@ -38,6 +39,8 @@ begin
              T     => new Locked_Mem_Tests.Testcase);
    Add_Test (Suite => S.all,
              T     => new Util_Tests.Testcase);
+   Add_Test (Suite => S.all,
+             T     => new Config_Tests.Testcase);
    Add_Test (Suite => S.all,
              T     => new Diffie_Hellman_Tests.Testcase);
    Add_Test (Suite => S.all,

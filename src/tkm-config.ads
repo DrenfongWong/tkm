@@ -1,3 +1,5 @@
+with Anet;
+
 package Tkm.Config
 is
 
@@ -29,5 +31,34 @@ is
 
    Lifetime_Soft : constant := 30;
    --  ESP SA lifetime in seconds (soft).
+
+   type Security_Policy_Type is record
+      Id            : Tkmrpc.Types.Sp_Id_Type;
+      Local_Addr    : Anet.IPv4_Addr_Type;
+      Remote_Addr   : Anet.IPv4_Addr_Type;
+      Lifetime_Soft : Tkmrpc.Types.Abs_Time_Type;
+      Lifetime_Hard : Tkmrpc.Types.Abs_Time_Type;
+   end record;
+   --  Security policy describing a connection.
+
+   type Security_Policies_Type is array (Positive range <>)
+     of Security_Policy_Type;
+
+   type Config_Type
+     (Policy_Count : Positive)
+   is record
+      Policies : Security_Policies_Type (1 .. Policy_Count);
+   end record;
+   --  TKM Configuration.
+
+   function Read (Filename : String) return Config_Type;
+   --  Load config from file specified by filename.
+
+   procedure Write
+     (Config   : Config_Type;
+      Filename : String);
+   --  Write configuration to file specified by filename.
+
+   Config_Error : exception;
 
 end Tkm.Config;
