@@ -56,7 +56,7 @@ is
    is
       pragma Precondition (Tkmrpc.Contexts.ae.Has_State
         (Id    => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
-         State => Tkmrpc.Contexts.ae.authenticated));
+         State => Tkmrpc.Contexts.ae.active));
       use type Tkmrpc.Types.Init_Type;
 
       Secret    : Tkmrpc.Types.Dh_Key_Type;
@@ -101,10 +101,6 @@ is
       Esp_Spi_Loc : Tkmrpc.Types.Esp_Spi_Type;
       Esp_Spi_Rem : Tkmrpc.Types.Esp_Spi_Type)
    is
-      pragma Precondition (Tkmrpc.Contexts.ae.Has_State
-        (Id    => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
-         State => Tkmrpc.Contexts.ae.authenticated));
-
       package Key_Locker is new Tkm.Locked_Memory
         (Element_Type => Tkmrpc.Types.Key_Type);
 
@@ -234,6 +230,7 @@ is
                   Initiator   => Initiator,
                   Esp_Spi_Loc => Esp_Spi_Loc,
                   Esp_Spi_Rem => Esp_Spi_Rem);
+      Tkmrpc.Contexts.ae.activate (Id => Ae_Id);
    end Create_First;
 
    -------------------------------------------------------------------------
@@ -251,7 +248,7 @@ is
    is
       pragma Precondition (Tkmrpc.Contexts.ae.Has_State
         (Id    => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
-         State => Tkmrpc.Contexts.ae.authenticated));
+         State => Tkmrpc.Contexts.ae.active));
       use type Tkmrpc.Types.Init_Type;
 
       Nonce_Loc : Tkmrpc.Types.Nonce_Type;
