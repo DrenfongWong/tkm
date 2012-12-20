@@ -208,11 +208,12 @@ is
         (Id    => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
          State => Tkmrpc.Contexts.ae.authenticated));
 
+      use type Tkmrpc.Types.Init_Type;
+
       Ae_Id     : constant Tkmrpc.Types.Ae_Id_Type
         := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
-      Initiator : constant Boolean := Tkmrpc.Contexts.ae.Has_initiator
-        (Id        => Ae_Id,
-         initiator => 1);
+      Initiator : constant Boolean := Tkmrpc.Contexts.ae.is_initiator
+        (Id => Ae_Id) = 1;
       Nonce_Loc : constant Tkmrpc.Types.Nonce_Type
         := Tkmrpc.Contexts.ae.get_nonce_loc (Id => Ae_Id);
       Nonce_Rem : constant Tkmrpc.Types.Nonce_Type
