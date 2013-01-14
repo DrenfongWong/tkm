@@ -1059,7 +1059,24 @@ Hypervisor
  a complete Linux kernel (dom0) with direct access to hardware to operate.
  The fact that the dom0 kernel must be accounted as part of the trusted
  system makes it unsuitable for in-depth review and therefore unusable as
- part of a TCB.
+ part of a TCB
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Concepts for Dom0 disaggregation exist 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Colp:2011:BUH:2043556.2043575"
+
+\end_inset
+
+ but they have not been implemented in Xen.
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -1168,6 +1185,20 @@ key "Cremers:2011:KEI:2041225.2041249,DBLP:conf/sp/Meadows99"
  still undergo the same rigorous verification as the original protocols
  to formally show the delivered security improvements compared to its monolithic
  ancestor.
+\end_layout
+
+\begin_layout Standard
+The project is based on the concept of IKEv2 disaggregation described in
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "secunet:01"
+
+\end_inset
+
+.
+ The document is the result of preceding collaboration with secunet Security
+ Network AG.
 \end_layout
 
 \begin_layout Section
@@ -1413,7 +1444,7 @@ key "Aciicmez:2007:PSB:1229285.1266999,cryptoeprint:2010:594,Zhang:2012:CSC:2382
 \end_layout
 
 \begin_layout Itemize
-Denial-of-service attacks (DoS
+Denial-of-Service attacks (DoS
 \begin_inset Index idx
 status open
 
@@ -2146,7 +2177,7 @@ Ni
 \emph default
  used in the initial exchange must be randomly chosen, must be at least
  128 bits in size, and must be at least half the key size of the negotiated
- pseudorandom function (PRF).
+ pseudo-random function (PRF).
  These constraints must be enforced by the TKM.
  Values created by the responder can not be controlled by the TKM so these
  values are taken as is.
@@ -3733,7 +3764,7 @@ The main concept is to separate the security relevant functionality from
  The trusted part performs the critical operations, stores all relevant
  keying material and exposes the necessary services to the untrusted component
  via a well defined and minimal interface.
- The split of the components must guarantee the fullfilment of the security
+ The split of the components must guarantee the fulfillment of the security
  requirements defined in section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4540,7 +4571,7 @@ end{messages}
 \end_layout
 
 \begin_layout Standard
-In possesion of the necessary data and keys, the IKE_AUTH protocol step,
+In possession of the necessary data and keys, the IKE_AUTH protocol step,
  described in section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -9218,8 +9249,8 @@ Client communication
 \end_layout
 
 \begin_layout Standard
-Exchanges between charon-tkm and the TKM daemon are transfered using a Unix
- domain socket.
+Exchanges between charon-tkm and the TKM daemon are transferred using a
+ Unix domain socket.
  The TKM implementation instantiates the 
 \family typewriter
 Process_Stream
@@ -11755,7 +11786,7 @@ Leveraging the XML specification of the interface and using it to automatically
 tly smaller potential for errors compared to a manual translation of the
  specification into code.
  Since the implementation spans multiple programming languages (Ada and
- C) this takes even more burden off the implementor.
+ C) this takes even more burden off the implementer.
 \end_layout
 
 \begin_layout Standard
@@ -12082,10 +12113,9 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="5" columns="3">
+<lyxtabular version="3" rows="5" columns="2">
 <features booktabs="true" tabularvalignment="middle">
 <column alignment="left" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0pt">
 <row>
 <cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
@@ -12095,17 +12125,6 @@ status open
 
 \series bold
 Name
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\series bold
-Complexity
 \end_layout
 
 \end_inset
@@ -12136,15 +12155,6 @@ Physical separation
 \begin_inset Text
 
 \begin_layout Plain Layout
-+
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 none
 \end_layout
 
@@ -12157,15 +12167,6 @@ none
 
 \begin_layout Plain Layout
 Linux Containers
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-+
 \end_layout
 
 \end_inset
@@ -12204,15 +12205,6 @@ SELinux
 \begin_inset Text
 
 \begin_layout Plain Layout
-++
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset Flex URL
 status open
 
@@ -12235,15 +12227,6 @@ http://selinuxproject.org/
 
 \begin_layout Plain Layout
 Separation Kernel
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-+++
 \end_layout
 
 \end_inset
@@ -12319,7 +12302,7 @@ reference "sub:Transport-mechanism-abstraction"
 \begin_layout Standard
 The same level of separation could be achieved by porting the charon-tkm
  and TKM daemon components to a separation kernel (SK).
- Unfortunately there are no freely available SKs ath te time of this writing.
+ Unfortunately there are no freely available SKs at the time of this writing.
  Some commercial products exist but they are only available to paying customers.
 \end_layout
 
