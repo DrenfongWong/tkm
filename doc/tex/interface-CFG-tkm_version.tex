@@ -7,15 +7,15 @@ Returns the version of the TKM - CFG interface.
 \begin{exchangeparameters}{tkm\_version request parameters}
 operation & operation\_type & Exchange ID: \hex{0000} \\
 
-req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+request\_id & request\_id\_type & Request ID, chosen by untrusted \\
 \end{exchangeparameters}
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{tkm\_version response parameters}
 
 operation & operation\_type & Exchange ID: \hex{0000} \\
-req\_id & req\_id\_type & Request ID, returned identically \\
-status & status\_type & Error code \\
+request\_id & request\_id\_type & Request ID, returned identically \\
+result & result\_type & Status code \\
 version & version\_type & \\
 \end{exchangeparameters}
 

@@ -7,7 +7,7 @@ Resets an authenticated endpoint context to its initial ae\_clean state. All dep
 \begin{exchangeparameters}{ae\_reset request parameters}
 operation & operation\_type & Exchange ID: \hex{0800} \\
 
-req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+request\_id & request\_id\_type & Request ID, chosen by untrusted \\
 ae\_id & ae\_id\_type & Handle of AE context to reset \\
 \end{exchangeparameters}
 
@@ -15,7 +15,7 @@ ae\_id & ae\_id\_type & Handle of AE context to reset \\
 \begin{exchangeparameters}{ae\_reset response parameters}
 
 operation & operation\_type & Exchange ID: \hex{0800} \\
-req\_id & req\_id\_type & Request ID, returned identically \\
-status & status\_type & Error code \\
+request\_id & request\_id\_type & Request ID, returned identically \\
+result & result\_type & Status code \\
 \end{exchangeparameters}
 

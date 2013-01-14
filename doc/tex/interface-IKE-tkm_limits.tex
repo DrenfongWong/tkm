@@ -7,15 +7,15 @@ Returns limits of various TKM IKE resources.
 \begin{exchangeparameters}{tkm\_limits request parameters}
 operation & operation\_type & Exchange ID: \hex{0001} \\
 
-req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+request\_id & request\_id\_type & Request ID, chosen by untrusted \\
 \end{exchangeparameters}
 
 \paragraph{Response} ~\\
 \begin{exchangeparameters}{tkm\_limits response parameters}
 
 operation & operation\_type & Exchange ID: \hex{0001} \\
-req\_id & req\_id\_type & Request ID, returned identically \\
-status & status\_type & Error code \\
+request\_id & request\_id\_type & Request ID, returned identically \\
+result & result\_type & Status code \\
 max\_active\_requests & active\_requests\_type & Maximum number of simultaneously active requests \\
 nc\_contexts & nc\_id\_type & Maximum number of nonce contexts \\
 dh\_contexts & dh\_id\_type & Maximum number of Diffie-Hellman contexts \\

@@ -7,7 +7,7 @@ Resets a certificate chain context to its initial cc\_clean state.
 \begin{exchangeparameters}{cc\_reset request parameters}
 operation & operation\_type & Exchange ID: \hex{0300} \\
 
-req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+request\_id & request\_id\_type & Request ID, chosen by untrusted \\
 cc\_id & cc\_id\_type & Handle of certificate chain to reset \\
 \end{exchangeparameters}
 
@@ -15,7 +15,7 @@ cc\_id & cc\_id\_type & Handle of certificate chain to reset \\
 \begin{exchangeparameters}{cc\_reset response parameters}
 
 operation & operation\_type & Exchange ID: \hex{0300} \\
-req\_id & req\_id\_type & Request ID, returned identically \\
-status & status\_type & Error code \\
+request\_id & request\_id\_type & Request ID, returned identically \\
+result & result\_type & Status code \\
 \end{exchangeparameters}
 

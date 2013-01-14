@@ -7,7 +7,7 @@ Creates and returns a nonce of a given length.
 \begin{exchangeparameters}{nc\_create request parameters}
 operation & operation\_type & Exchange ID: \hex{0101} \\
 
-req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+request\_id & request\_id\_type & Request ID, chosen by untrusted \\
 nc\_id & nc\_id\_type & Handle of nonce \\
 nonce\_length & nonce\_length\_type & Length of nonce in bytes \\
 \end{exchangeparameters}
@@ -16,8 +16,8 @@ nonce\_length & nonce\_length\_type & Length of nonce in bytes \\
 \begin{exchangeparameters}{nc\_create response parameters}
 
 operation & operation\_type & Exchange ID: \hex{0101} \\
-req\_id & req\_id\_type & Request ID, returned identically \\
-status & status\_type & Error code \\
+request\_id & request\_id\_type & Request ID, returned identically \\
+result & result\_type & Status code \\
 nonce & nonce\_type & Generated nonce \\
 \end{exchangeparameters}
 

@@ -7,7 +7,7 @@ IKE uses this exchange to request derivation of IKE key material for a new IKE S
 \begin{exchangeparameters}{isa\_create request parameters}
 operation & operation\_type & Exchange ID: \hex{0901} \\
 
-req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+request\_id & request\_id\_type & Request ID, chosen by untrusted \\
 isa\_id & isa\_id\_type & Handle of ISA context to create \\
 ae\_id & ae\_id\_type & Handle of AE context to create \\
 ia\_id & ia\_id\_type & Handle of IKE algorithms \\
@@ -23,8 +23,8 @@ spi\_rem & ike\_spi\_type & Remote IKE security policy identifier \\
 \begin{exchangeparameters}{isa\_create response parameters}
 
 operation & operation\_type & Exchange ID: \hex{0901} \\
-req\_id & req\_id\_type & Request ID, returned identically \\
-status & status\_type & Error code \\
+request\_id & request\_id\_type & Request ID, returned identically \\
+result & result\_type & Status code \\
 sk\_ai & key\_type & Integrity protection key of initiator \\
 sk\_ar & key\_type & Integrity protection key of responder \\
 sk\_ei & key\_type & Encryption key of initiator \\

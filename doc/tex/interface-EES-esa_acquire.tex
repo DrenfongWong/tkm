@@ -7,7 +7,7 @@ TKM uses this exchange to request the initiation of an ESP SA with associated Se
 \begin{exchangeparameters}{esa\_acquire request parameters}
 operation & operation\_type & Exchange ID: \hex{0100} \\
 
-req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+request\_id & request\_id\_type & Request ID, chosen by untrusted \\
 sp\_id & sp\_id\_type & Handle of associated security policy to acquire ESP SA for \\
 \end{exchangeparameters}
 
@@ -15,7 +15,7 @@ sp\_id & sp\_id\_type & Handle of associated security policy to acquire ESP SA f
 \begin{exchangeparameters}{esa\_acquire response parameters}
 
 operation & operation\_type & Exchange ID: \hex{0100} \\
-req\_id & req\_id\_type & Request ID, returned identically \\
-status & status\_type & Error code \\
+request\_id & request\_id\_type & Request ID, returned identically \\
+result & result\_type & Status code \\
 \end{exchangeparameters}
 

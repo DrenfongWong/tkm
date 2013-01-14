@@ -7,7 +7,7 @@ IKE uses this exchange to activate the initial child SA for a newly authenticate
 \begin{exchangeparameters}{esa\_create\_first request parameters}
 operation & operation\_type & Exchange ID: \hex{0A03} \\
 
-req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+request\_id & request\_id\_type & Request ID, chosen by untrusted \\
 esa\_id & esa\_id\_type & Handle of ESP SA to create \\
 isa\_id & isa\_id\_type & Handle of associated IKE SA \\
 sp\_id & sp\_id\_type & Handle of associated security policy \\
@@ -20,7 +20,7 @@ esp\_spi\_rem & esp\_spi\_type & Remote ESP security policy identifier \\
 \begin{exchangeparameters}{esa\_create\_first response parameters}
 
 operation & operation\_type & Exchange ID: \hex{0A03} \\
-req\_id & req\_id\_type & Request ID, returned identically \\
-status & status\_type & Error code \\
+request\_id & request\_id\_type & Request ID, returned identically \\
+result & result\_type & Status code \\
 \end{exchangeparameters}
 

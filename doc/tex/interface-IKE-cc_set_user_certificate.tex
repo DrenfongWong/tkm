@@ -7,7 +7,7 @@ Sets the user certificate of a specified, clean certificate chain context. The u
 \begin{exchangeparameters}{cc\_set\_user\_certificate request parameters}
 operation & operation\_type & Exchange ID: \hex{0301} \\
 
-req\_id & req\_id\_type & Request ID, chosen by untrusted \\
+request\_id & request\_id\_type & Request ID, chosen by untrusted \\
 cc\_id & cc\_id\_type & Handle of certificate chain to store certificate \\
 ri\_id & ri\_id\_type & Handle of remote identity \\
 autha\_id & autha\_id\_type & Handle of authentication algorithm \\
@@ -18,7 +18,7 @@ certificate & certificate\_type & ASN.1/DER encoded user certificate \\
 \begin{exchangeparameters}{cc\_set\_user\_certificate response parameters}
 
 operation & operation\_type & Exchange ID: \hex{0301} \\
-req\_id & req\_id\_type & Request ID, returned identically \\
-status & status\_type & Error code \\
+request\_id & request\_id\_type & Request ID, returned identically \\
+result & result\_type & Status code \\
 \end{exchangeparameters}
 
