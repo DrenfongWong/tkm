@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+   <xs:simpleType name="securityPolicyIdType">
+        <xs:annotation>
+            <xs:documentation>Restrict to range of security policy id type</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="100"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="ipAddressType">
+        <xs:annotation>
+            <xs:documentation>IPv4 address</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="(([0-9]{1,3}).){3}([0-9]{1,3})"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="localParametersType">
+        <xs:sequence>
+            <xs:element name="ip" type="ipAddressType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="remoteParametersType">
+        <xs:sequence>
+            <xs:element name="ip" type="ipAddressType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="lifetimeType">
+        <xs:sequence>
+            <xs:element name="soft" type="xs:unsignedLong" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="hard" type="xs:unsignedLong" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="policyType">
+        <xs:sequence>
+            <xs:element name="local" type="localParametersType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="remote" type="remoteParametersType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="lifetime" type="lifetimeType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="securityPolicyIdType" use="required" />
+    </xs:complexType>
+
+    <xs:element name="tkmconfig">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="policy" type="policyType" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
