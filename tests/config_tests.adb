@@ -1,7 +1,7 @@
 with Anet.Util;
 with Anet.OS;
 
-with Tkm.Config;
+with Tkm.Config.Xml;
 
 package body Config_Tests is
 
@@ -35,6 +35,9 @@ package body Config_Tests is
       T.Add_Test_Routine
         (Routine => Write_And_Read_Config'Access,
          Name    => "Write and read config file");
+      T.Add_Test_Routine
+        (Routine => Xml_To_Tkm_Config'Access,
+         Name    => "Convert Xml to Tkm config");
    end Initialize;
 
    -------------------------------------------------------------------------
@@ -69,5 +72,26 @@ package body Config_Tests is
             Ignore_Missing => False);
          raise;
    end Write_And_Read_Config;
+
+   -------------------------------------------------------------------------
+
+   procedure Xml_To_Tkm_Config
+   is
+      use type Config.Config_Type;
+
+      Cfg : Config.Xml.XML_Config;
+   begin
+      Config.Xml.Parse (Data   => Cfg,
+                        File   => "data/refconfig.xml",
+                        Schema => "schema/tkmconfig.xsd");
+
+      declare
+         Tkm_Cfg : constant Config.Config_Type
+           := Config.Xml.Convert (Data => Cfg);
+      begin
+         Assert (Condition => Tkm_Cfg = Ref_Config,
+                 Message   => "Converted config mismatch");
+      end;
+   end Xml_To_Tkm_Config;
 
 end Config_Tests;

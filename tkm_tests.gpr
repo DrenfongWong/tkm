@@ -1,4 +1,5 @@
 with "ahven";
+with "xmlada";
 with "tkm_common";
 
 project Tkm_Tests is
