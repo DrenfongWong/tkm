@@ -30,6 +30,14 @@ package body Config_Tests is
          Policies     => Ref_Policies);
    --  Reference config.
 
+   Ref_Ike_Cfg  : constant String
+     := "stroke add 1 alice@strongswan.org bob@strongswan.org 192.168.0.2 " &
+   "192.168.0.3 192.168.0.2 192.168.0.3 1 aes256-sha512-modp4096! " &
+   "aliceCert.pem" & ASCII.LF &
+   "stroke add 2 alice@strongswan.org bob@strongswan.org 192.168.0.2 " &
+   "192.168.0.4 192.168.0.2 192.168.0.4 2 aes256-sha512-modp4096! " &
+   "aliceCert.pem" & ASCII.LF;
+
    -------------------------------------------------------------------------
 
    procedure Initialize (T : in out Testcase)
@@ -42,6 +50,9 @@ package body Config_Tests is
       T.Add_Test_Routine
         (Routine => Xml_To_Tkm_Config'Access,
          Name    => "Convert Xml to Tkm config");
+      T.Add_Test_Routine
+        (Routine => Xml_To_Ike_Config'Access,
+         Name    => "Convert Xml to Ike config");
    end Initialize;
 
    -------------------------------------------------------------------------
@@ -76,6 +87,20 @@ package body Config_Tests is
             Ignore_Missing => False);
          raise;
    end Write_And_Read_Config;
+
+   -------------------------------------------------------------------------
+
+   procedure Xml_To_Ike_Config
+   is
+      Cfg : Config.Xml.XML_Config;
+   begin
+      Config.Xml.Parse (Data   => Cfg,
+                        File   => "data/refconfig.xml",
+                        Schema => "schema/tkmconfig.xsd");
+      Assert
+        (Condition => Config.Xml.To_Ike_Config (Data => Cfg) = Ref_Ike_Cfg,
+         Message   => "Converted Ike config mismatch");
+   end Xml_To_Ike_Config;
 
    -------------------------------------------------------------------------
 

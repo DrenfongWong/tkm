@@ -15,6 +15,9 @@ is
    function To_Tkm_Config (Data : XML_Config) return Config_Type;
    --  Create TKM config instance from given XML document.
 
+   function To_Ike_Config (Data : XML_Config) return String;
+   --  Create IKE config script from given XML document.
+
 private
 
    type XML_Config is new DOM.Core.Document;

@@ -35,6 +35,16 @@ is
    Identity_Tag  : constant String := "identity";
    Cert_Tag      : constant String := "certificate";
 
+   function S
+     (U : Ada.Strings.Unbounded.Unbounded_String)
+      return String
+      renames Ada.Strings.Unbounded.To_String;
+
+   function U
+     (S : String)
+      return Ada.Strings.Unbounded.Unbounded_String
+      renames Ada.Strings.Unbounded.To_Unbounded_String;
+
    function Get_Element_By_Tag_Name
      (Node     : DOM.Core.Element;
       Tag_Name : String)
@@ -159,16 +169,6 @@ is
          Lifetime_Hard   : String))
    is
       package DC renames DOM.Core;
-
-      function S
-        (U : Ada.Strings.Unbounded.Unbounded_String)
-         return String
-         renames Ada.Strings.Unbounded.To_String;
-
-      function U
-        (S : String)
-        return Ada.Strings.Unbounded.Unbounded_String
-        renames Ada.Strings.Unbounded.To_Unbounded_String;
 
       List : DC.Node_List;
    begin
@@ -307,6 +307,51 @@ is
 
       return Identity;
    end To_Identity;
+
+   -------------------------------------------------------------------------
+
+   function To_Ike_Config (Data : XML_Config) return String
+   is
+      Script : Ada.Strings.Unbounded.Unbounded_String;
+
+      procedure Process_Policy
+        (Id              : String;
+         Local_Identity  : String;
+         Local_Addr      : String;
+         Local_Cert      : String;
+         Remote_Identity : String;
+         Remote_Addr     : String;
+         Lifetime_Soft   : String;
+         Lifetime_Hard   : String);
+      --  Add new connection entry for given policy to script.
+
+      procedure Process_Policy
+        (Id              : String;
+         Local_Identity  : String;
+         Local_Addr      : String;
+         Local_Cert      : String;
+         Remote_Identity : String;
+         Remote_Addr     : String;
+         Lifetime_Soft   : String;
+         Lifetime_Hard   : String)
+      is
+         pragma Unreferenced (Lifetime_Soft, Lifetime_Hard);
+      begin
+         Ada.Strings.Unbounded.Append
+           (Source   => Script,
+            New_Item => "stroke add " & Id & " " & Local_Identity & " "
+           & Remote_Identity & " " & Local_Addr & " " & Remote_Addr & " "
+           & Local_Addr & " " & Remote_Addr & " "
+           & Id & " "
+           & "aes256-sha512-modp4096! "
+           & Local_Cert & ASCII.LF);
+      end Process_Policy;
+   begin
+      Iterate (Data    => Data,
+               Process => Process_Policy'Access);
+
+      return S (Script);
+   end To_Ike_Config;
 
    -------------------------------------------------------------------------
 

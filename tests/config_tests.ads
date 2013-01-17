@@ -13,4 +13,7 @@ package Config_Tests is
    procedure Xml_To_Tkm_Config;
    --  Read XML configuration file and convert to TKM config.
 
+   procedure Xml_To_Ike_Config;
+   --  Read XML configuration file and convert to IKE config.
+
 end Config_Tests;
