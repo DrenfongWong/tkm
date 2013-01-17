@@ -36,8 +36,10 @@ is
       Id              : Tkmrpc.Types.Sp_Id_Type;
       Local_Identity  : Tkmrpc.Types.Identity_Type;
       Local_Addr      : Anet.IPv4_Addr_Type;
+      Local_Net       : Anet.IPv4_Addr_Type;
       Remote_Identity : Tkmrpc.Types.Identity_Type;
       Remote_Addr     : Anet.IPv4_Addr_Type;
+      Remote_Net      : Anet.IPv4_Addr_Type;
       Lifetime_Soft   : Tkmrpc.Types.Abs_Time_Type;
       Lifetime_Hard   : Tkmrpc.Types.Abs_Time_Type;
    end record;

@@ -34,6 +34,7 @@ is
    Hard_Tag      : constant String := "hard";
    Identity_Tag  : constant String := "identity";
    Cert_Tag      : constant String := "certificate";
+   Net_Tag       : constant String := "net";
 
    function S
      (U : Ada.Strings.Unbounded.Unbounded_String)
@@ -67,9 +68,11 @@ is
         (Id              : String;
          Local_Identity  : String;
          Local_Addr      : String;
+         Local_Net       : String;
          Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
+         Remote_Net      : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String));
    --  Invokes given process procedure for each policy tag found in given xml
@@ -162,9 +165,11 @@ is
         (Id              : String;
          Local_Identity  : String;
          Local_Addr      : String;
+         Local_Net       : String;
          Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
+         Remote_Net      : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String))
    is
@@ -187,9 +192,11 @@ is
                   Name => Policy_Id_Tag));
             Local_Identity  : Ada.Strings.Unbounded.Unbounded_String;
             Local_Addr      : Ada.Strings.Unbounded.Unbounded_String;
+            Local_Net       : Ada.Strings.Unbounded.Unbounded_String;
             Local_Cert      : Ada.Strings.Unbounded.Unbounded_String;
             Remote_Identity : Ada.Strings.Unbounded.Unbounded_String;
             Remote_Addr     : Ada.Strings.Unbounded.Unbounded_String;
+            Remote_Net      : Ada.Strings.Unbounded.Unbounded_String;
             Lifetime_Soft   : Ada.Strings.Unbounded.Unbounded_String;
             Lifetime_Hard   : Ada.Strings.Unbounded.Unbounded_String;
 
@@ -203,6 +210,9 @@ is
             Local_Addr := U (Get_Element_Value_By_Tag_Name
               (Node     => Node,
                Tag_Name => Ip_Addr_Tag));
+            Local_Net := U (Get_Element_Value_By_Tag_Name
+              (Node     => Node,
+               Tag_Name => Net_Tag));
             Local_Cert := U (Get_Element_Value_By_Tag_Name
               (Node     => Node,
                Tag_Name => Cert_Tag));
@@ -215,6 +225,9 @@ is
             Remote_Addr := U (Get_Element_Value_By_Tag_Name
               (Node     => Node,
                Tag_Name => Ip_Addr_Tag));
+            Remote_Net := U (Get_Element_Value_By_Tag_Name
+              (Node     => Node,
+               Tag_Name => Net_Tag));
 
             Node  := Get_Element_By_Tag_Name (Node     => Policy_Node,
                                               Tag_Name => Lifetime_Tag);
@@ -228,9 +241,11 @@ is
             Process (Id              => Id,
                      Local_Identity  => S (Local_Identity),
                      Local_Addr      => S (Local_Addr),
+                     Local_Net       => S (Local_Net),
                      Local_Cert      => S (Local_Cert),
                      Remote_Identity => S (Remote_Identity),
                      Remote_Addr     => S (Remote_Addr),
+                     Remote_Net      => S (Remote_Net),
                      Lifetime_Soft   => S (Lifetime_Soft),
                      Lifetime_Hard   => S (Lifetime_Hard));
          end;
@@ -318,9 +333,11 @@ is
         (Id              : String;
          Local_Identity  : String;
          Local_Addr      : String;
+         Local_Net       : String;
          Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
+         Remote_Net      : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String);
       --  Add new connection entry for given policy to script.
@@ -329,9 +346,11 @@ is
         (Id              : String;
          Local_Identity  : String;
          Local_Addr      : String;
+         Local_Net       : String;
          Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
+         Remote_Net      : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String)
       is
@@ -341,7 +360,7 @@ is
            (Source   => Script,
             New_Item => "stroke add " & Id & " " & Local_Identity & " "
            & Remote_Identity & " " & Local_Addr & " " & Remote_Addr & " "
-           & Local_Addr & " " & Remote_Addr & " "
+           & Local_Net & " " & Remote_Net & " "
            & Id & " "
            & "aes256-sha512-modp4096! "
            & Local_Cert & ASCII.LF);
@@ -363,9 +382,11 @@ is
         (Id              : String;
          Local_Identity  : String;
          Local_Addr      : String;
+         Local_Net       : String;
          Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
+         Remote_Net      : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String);
       --  Add new policy with given values to policy list.
@@ -374,9 +395,11 @@ is
         (Id              : String;
          Local_Identity  : String;
          Local_Addr      : String;
+         Local_Net       : String;
          Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
+         Remote_Net      : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String)
       is
@@ -387,8 +410,10 @@ is
          Policy.Id              := Tkmrpc.Types.Sp_Id_Type'Value (Id);
          Policy.Local_Identity  := To_Identity (Str => Local_Identity);
          Policy.Local_Addr      := Anet.To_IPv4_Addr (Str => Local_Addr);
+         Policy.Local_Net       := Anet.To_IPv4_Addr (Str => Local_Net);
          Policy.Remote_Identity := To_Identity (Str => Remote_Identity);
          Policy.Remote_Addr     := Anet.To_IPv4_Addr (Str => Remote_Addr);
+         Policy.Remote_Net      := Anet.To_IPv4_Addr (Str => Remote_Net);
          Policy.Lifetime_Soft   := Tkmrpc.Types.Abs_Time_Type'Value
            (Lifetime_Soft);
          Policy.Lifetime_Hard   := Tkmrpc.Types.Abs_Time_Type'Value

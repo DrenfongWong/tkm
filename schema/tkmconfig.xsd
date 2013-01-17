@@ -40,6 +40,7 @@
         <xs:sequence>
             <xs:element name="identity" type="identityType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="ip" type="ipAddressType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="net" type="ipAddressType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="certificate" type="certificateFilenameType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
@@ -48,6 +49,7 @@
         <xs:sequence>
             <xs:element name="identity" type="identityType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="ip" type="ipAddressType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="net" type="ipAddressType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 

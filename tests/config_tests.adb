@@ -12,15 +12,19 @@ package body Config_Tests is
      := (1 => (Id              => 1,
                Local_Identity  => Config.Local_Id,
                Local_Addr      => (192, 168, 0, 2),
+               Local_Net       => (192, 168, 0, 2),
                Remote_Identity => Config.Remote_Id,
                Remote_Addr     => (192, 168, 0, 3),
+               Remote_Net      => (192, 168, 0, 3),
                Lifetime_Soft   => Config.Lifetime_Soft,
                Lifetime_Hard   => Config.Lifetime_Hard),
          2 => (Id            => 2,
                Local_Identity  => Config.Local_Id,
                Local_Addr      => (192, 168, 0, 2),
+               Local_Net       => (192, 168, 100, 0),
                Remote_Identity => Config.Remote_Id,
-               Remote_Addr   => (192, 168, 0, 4),
+               Remote_Addr     => (192, 168, 0, 4),
+               Remote_Net      => (192, 168, 200, 0),
                Lifetime_Soft => Config.Lifetime_Soft,
                Lifetime_Hard => Config.Lifetime_Hard));
    --  Reference policies.
@@ -35,7 +39,7 @@ package body Config_Tests is
    "192.168.0.3 192.168.0.2 192.168.0.3 1 aes256-sha512-modp4096! " &
    "aliceCert.pem" & ASCII.LF &
    "stroke add 2 alice@strongswan.org bob@strongswan.org 192.168.0.2 " &
-   "192.168.0.4 192.168.0.2 192.168.0.4 2 aes256-sha512-modp4096! " &
+   "192.168.0.4 192.168.100.0 192.168.200.0 2 aes256-sha512-modp4096! " &
    "aliceCert.pem" & ASCII.LF;
 
    -------------------------------------------------------------------------

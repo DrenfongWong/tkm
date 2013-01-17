@@ -3,11 +3,13 @@
         <local>
             <identity>alice@strongswan.org</identity>
             <ip>192.168.0.2</ip>
+            <net>192.168.0.2</net>
             <certificate>aliceCert.pem</certificate>
         </local>
         <remote>
             <identity>bob@strongswan.org</identity>
             <ip>192.168.0.3</ip>
+            <net>192.168.0.3</net>
         </remote>
         <lifetime>
             <soft>30</soft>
@@ -18,11 +20,13 @@
         <local>
             <identity>alice@strongswan.org</identity>
             <ip>192.168.0.2</ip>
+            <net>192.168.100.0</net>
             <certificate>aliceCert.pem</certificate>
         </local>
         <remote>
             <identity>bob@strongswan.org</identity>
             <ip>192.168.0.4</ip>
+            <net>192.168.200.0</net>
         </remote>
         <lifetime>
             <soft>30</soft>
