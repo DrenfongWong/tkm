@@ -91,7 +91,7 @@ package body Config_Tests is
 
       declare
          Tkm_Cfg : constant Config.Config_Type
-           := Config.Xml.Convert (Data => Cfg);
+           := Config.Xml.To_Tkm_Config (Data => Cfg);
       begin
          Assert (Condition => Tkm_Cfg = Ref_Config,
                  Message   => "Converted config mismatch");

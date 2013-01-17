@@ -12,8 +12,8 @@ is
    --  Parse the contents of given file into the DOM data structure. The XML
    --  data is validated against the given XML schema.
 
-   function Convert (Data : XML_Config) return Config_Type;
-   --  Convert given XML document to TKM config type.
+   function To_Tkm_Config (Data : XML_Config) return Config_Type;
+   --  Create TKM config instance from given XML document.
 
 private
 

@@ -73,60 +73,6 @@ is
 
    -------------------------------------------------------------------------
 
-   function Convert (Data : XML_Config) return Config_Type
-   is
-      Policies : Policies_Package.List;
-
-      procedure Process_Policy
-        (Id              : String;
-         Local_Identity  : String;
-         Local_Addr      : String;
-         Remote_Identity : String;
-         Remote_Addr     : String;
-         Lifetime_Soft   : String;
-         Lifetime_Hard   : String);
-      --  Add new policy with given values to policy list.
-
-      procedure Process_Policy
-        (Id              : String;
-         Local_Identity  : String;
-         Local_Addr      : String;
-         Remote_Identity : String;
-         Remote_Addr     : String;
-         Lifetime_Soft   : String;
-         Lifetime_Hard   : String)
-      is
-         Policy : Security_Policy_Type;
-      begin
-         Policy.Id              := Tkmrpc.Types.Sp_Id_Type'Value (Id);
-         Policy.Local_Identity  := To_Identity (Str => Local_Identity);
-         Policy.Local_Addr      := Anet.To_IPv4_Addr (Str => Local_Addr);
-         Policy.Remote_Identity := To_Identity (Str => Remote_Identity);
-         Policy.Remote_Addr     := Anet.To_IPv4_Addr (Str => Remote_Addr);
-         Policy.Lifetime_Soft   := Tkmrpc.Types.Abs_Time_Type'Value
-           (Lifetime_Soft);
-         Policy.Lifetime_Hard   := Tkmrpc.Types.Abs_Time_Type'Value
-           (Lifetime_Hard);
-
-         Policies.Append (New_Item => Policy);
-      end Process_Policy;
-   begin
-      Iterate (Data    => Data,
-               Process => Process_Policy'Access);
-
-      if Policies.Length = 0 then
-         raise Config_Error with "No policies in XML config present";
-      end if;
-
-      return Cfg : Config_Type
-        (Policy_Count => Positive (Policies.Length))
-      do
-         Cfg.Policies := To_Array (List => Policies);
-      end return;
-   end Convert;
-
-   -------------------------------------------------------------------------
-
    function Get_Element_By_Tag_Name
      (Node     : DOM.Core.Element;
       Tag_Name : String)
@@ -353,5 +299,59 @@ is
 
       return Identity;
    end To_Identity;
+
+   -------------------------------------------------------------------------
+
+   function To_Tkm_Config (Data : XML_Config) return Config_Type
+   is
+      Policies : Policies_Package.List;
+
+      procedure Process_Policy
+        (Id              : String;
+         Local_Identity  : String;
+         Local_Addr      : String;
+         Remote_Identity : String;
+         Remote_Addr     : String;
+         Lifetime_Soft   : String;
+         Lifetime_Hard   : String);
+      --  Add new policy with given values to policy list.
+
+      procedure Process_Policy
+        (Id              : String;
+         Local_Identity  : String;
+         Local_Addr      : String;
+         Remote_Identity : String;
+         Remote_Addr     : String;
+         Lifetime_Soft   : String;
+         Lifetime_Hard   : String)
+      is
+         Policy : Security_Policy_Type;
+      begin
+         Policy.Id              := Tkmrpc.Types.Sp_Id_Type'Value (Id);
+         Policy.Local_Identity  := To_Identity (Str => Local_Identity);
+         Policy.Local_Addr      := Anet.To_IPv4_Addr (Str => Local_Addr);
+         Policy.Remote_Identity := To_Identity (Str => Remote_Identity);
+         Policy.Remote_Addr     := Anet.To_IPv4_Addr (Str => Remote_Addr);
+         Policy.Lifetime_Soft   := Tkmrpc.Types.Abs_Time_Type'Value
+           (Lifetime_Soft);
+         Policy.Lifetime_Hard   := Tkmrpc.Types.Abs_Time_Type'Value
+           (Lifetime_Hard);
+
+         Policies.Append (New_Item => Policy);
+      end Process_Policy;
+   begin
+      Iterate (Data    => Data,
+               Process => Process_Policy'Access);
+
+      if Policies.Length = 0 then
+         raise Config_Error with "No policies in XML config present";
+      end if;
+
+      return Cfg : Config_Type
+        (Policy_Count => Positive (Policies.Length))
+      do
+         Cfg.Policies := To_Array (List => Policies);
+      end return;
+   end To_Tkm_Config;
 
 end Tkm.Config.Xml;
