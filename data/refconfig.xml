@@ -1,9 +1,11 @@
 <tkmconfig>
     <policy id="1">
         <local>
+            <identity>alice@strongswan.org</identity>
             <ip>192.168.0.2</ip>
         </local>
         <remote>
+            <identity>bob@strongswan.org</identity>
             <ip>192.168.0.3</ip>
         </remote>
         <lifetime>
@@ -13,9 +15,11 @@
     </policy>
     <policy id="2">
         <local>
+            <identity>alice@strongswan.org</identity>
             <ip>192.168.0.2</ip>
         </local>
         <remote>
+            <identity>bob@strongswan.org</identity>
             <ip>192.168.0.4</ip>
         </remote>
         <lifetime>

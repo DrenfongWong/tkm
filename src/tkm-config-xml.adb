@@ -31,6 +31,7 @@ is
    Lifetime_Tag  : constant String := "lifetime";
    Soft_Tag      : constant String := "soft";
    Hard_Tag      : constant String := "hard";
+   Identity_Tag  : constant String := "identity";
 
    function Get_Element_By_Tag_Name
      (Node     : DOM.Core.Element;
@@ -51,11 +52,13 @@ is
    procedure Iterate
      (Data    : XML_Config;
       Process : not null access procedure
-        (Id            : String;
-         Local_Addr    : String;
-         Remote_Addr   : String;
-         Lifetime_Soft : String;
-         Lifetime_Hard : String));
+        (Id              : String;
+         Local_Identity  : String;
+         Local_Addr      : String;
+         Remote_Identity : String;
+         Remote_Addr     : String;
+         Lifetime_Soft   : String;
+         Lifetime_Hard   : String));
    --  Invokes given process procedure for each policy tag found in given xml
    --  config.
 
@@ -64,6 +67,9 @@ is
       return Security_Policies_Type;
    --  Convert given policy list to security policy array type.
 
+   function To_Identity (Str : String) return Tkmrpc.Types.Identity_Type;
+   --  Create identity type from given string.
+
    -------------------------------------------------------------------------
 
    function Convert (Data : XML_Config) return Config_Type
@@ -71,28 +77,34 @@ is
       Policies : Policies_Package.List;
 
       procedure Process_Policy
-        (Id            : String;
-         Local_Addr    : String;
-         Remote_Addr   : String;
-         Lifetime_Soft : String;
-         Lifetime_Hard : String);
+        (Id              : String;
+         Local_Identity  : String;
+         Local_Addr      : String;
+         Remote_Identity : String;
+         Remote_Addr     : String;
+         Lifetime_Soft   : String;
+         Lifetime_Hard   : String);
       --  Add new policy with given values to policy list.
 
       procedure Process_Policy
-        (Id            : String;
-         Local_Addr    : String;
-         Remote_Addr   : String;
-         Lifetime_Soft : String;
-         Lifetime_Hard : String)
+        (Id              : String;
+         Local_Identity  : String;
+         Local_Addr      : String;
+         Remote_Identity : String;
+         Remote_Addr     : String;
+         Lifetime_Soft   : String;
+         Lifetime_Hard   : String)
       is
          Policy : Security_Policy_Type;
       begin
-         Policy.Id            := Tkmrpc.Types.Sp_Id_Type'Value (Id);
-         Policy.Local_Addr    := Anet.To_IPv4_Addr (Str => Local_Addr);
-         Policy.Remote_Addr   := Anet.To_IPv4_Addr (Str => Remote_Addr);
-         Policy.Lifetime_Soft := Tkmrpc.Types.Abs_Time_Type'Value
+         Policy.Id              := Tkmrpc.Types.Sp_Id_Type'Value (Id);
+         Policy.Local_Identity  := To_Identity (Str => Local_Identity);
+         Policy.Local_Addr      := Anet.To_IPv4_Addr (Str => Local_Addr);
+         Policy.Remote_Identity := To_Identity (Str => Remote_Identity);
+         Policy.Remote_Addr     := Anet.To_IPv4_Addr (Str => Remote_Addr);
+         Policy.Lifetime_Soft   := Tkmrpc.Types.Abs_Time_Type'Value
            (Lifetime_Soft);
-         Policy.Lifetime_Hard := Tkmrpc.Types.Abs_Time_Type'Value
+         Policy.Lifetime_Hard   := Tkmrpc.Types.Abs_Time_Type'Value
            (Lifetime_Hard);
 
          Policies.Append (New_Item => Policy);
@@ -183,11 +195,13 @@ is
    procedure Iterate
      (Data    : XML_Config;
       Process : not null access procedure
-        (Id            : String;
-         Local_Addr    : String;
-         Remote_Addr   : String;
-         Lifetime_Soft : String;
-         Lifetime_Hard : String))
+        (Id              : String;
+         Local_Identity  : String;
+         Local_Addr      : String;
+         Remote_Identity : String;
+         Remote_Addr     : String;
+         Lifetime_Soft   : String;
+         Lifetime_Hard   : String))
    is
       package DC renames DOM.Core;
 
@@ -216,21 +230,29 @@ is
               (N => DC.Nodes.Get_Named_Item
                  (Map  => DC.Nodes.Attributes (N => Policy_Node),
                   Name => Policy_Id_Tag));
-            Local_Addr    : Ada.Strings.Unbounded.Unbounded_String;
-            Remote_Addr   : Ada.Strings.Unbounded.Unbounded_String;
-            Lifetime_Soft : Ada.Strings.Unbounded.Unbounded_String;
-            Lifetime_Hard : Ada.Strings.Unbounded.Unbounded_String;
+            Local_Identity  : Ada.Strings.Unbounded.Unbounded_String;
+            Local_Addr      : Ada.Strings.Unbounded.Unbounded_String;
+            Remote_Identity : Ada.Strings.Unbounded.Unbounded_String;
+            Remote_Addr     : Ada.Strings.Unbounded.Unbounded_String;
+            Lifetime_Soft   : Ada.Strings.Unbounded.Unbounded_String;
+            Lifetime_Hard   : Ada.Strings.Unbounded.Unbounded_String;
 
             Node : DC.Node;
          begin
             Node := Get_Element_By_Tag_Name (Node     => Policy_Node,
                                              Tag_Name => Local_Tag);
+            Local_Identity := U (Get_Element_Value_By_Tag_Name
+              (Node     => Node,
+               Tag_Name => Identity_Tag));
             Local_Addr := U (Get_Element_Value_By_Tag_Name
               (Node     => Node,
                Tag_Name => Ip_Addr_Tag));
 
             Node  := Get_Element_By_Tag_Name (Node     => Policy_Node,
                                               Tag_Name => Remote_Tag);
+            Remote_Identity := U (Get_Element_Value_By_Tag_Name
+              (Node     => Node,
+               Tag_Name => Identity_Tag));
             Remote_Addr := U (Get_Element_Value_By_Tag_Name
               (Node     => Node,
                Tag_Name => Ip_Addr_Tag));
@@ -244,11 +266,13 @@ is
               (Node     => Node,
                Tag_Name => Hard_Tag));
 
-            Process (Id            => Id,
-                     Local_Addr    => S (Local_Addr),
-                     Remote_Addr   => S (Remote_Addr),
-                     Lifetime_Soft => S (Lifetime_Soft),
-                     Lifetime_Hard => S (Lifetime_Hard));
+            Process (Id              => Id,
+                     Local_Identity  => S (Local_Identity),
+                     Local_Addr      => S (Local_Addr),
+                     Remote_Identity => S (Remote_Identity),
+                     Remote_Addr     => S (Remote_Addr),
+                     Lifetime_Soft   => S (Lifetime_Soft),
+                     Lifetime_Hard   => S (Lifetime_Hard));
          end;
       end loop;
       DOM.Core.Free (List => List);
@@ -297,5 +321,24 @@ is
       end loop;
       return Policies;
    end To_Array;
+
+   -------------------------------------------------------------------------
+
+   function To_Identity (Str : String) return Tkmrpc.Types.Identity_Type
+   is
+
+      --  Initialize with IKE identity header.
+
+      Identity : Tkmrpc.Types.Identity_Type
+        := (Size => Str'Length + 4,
+            Data => (1      => 03,
+                     others => 0));
+   begin
+      for I in Str'Range loop
+         Identity.Data (I + 4) := Character'Pos (Str (I));
+      end loop;
+
+      return Identity;
+   end To_Identity;
 
 end Tkm.Config.Xml;

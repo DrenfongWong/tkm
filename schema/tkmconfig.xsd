@@ -11,6 +11,15 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="identityType">
+        <xs:annotation>
+            <xs:documentation>Restrict string length to match size of identity type</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="64"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="ipAddressType">
         <xs:annotation>
             <xs:documentation>IPv4 address</xs:documentation>
@@ -22,12 +31,14 @@
 
     <xs:complexType name="localParametersType">
         <xs:sequence>
+            <xs:element name="identity" type="identityType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="ip" type="ipAddressType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="remoteParametersType">
         <xs:sequence>
+            <xs:element name="identity" type="identityType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="ip" type="ipAddressType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>

@@ -33,11 +33,13 @@ is
    --  ESP SA lifetime in seconds (soft).
 
    type Security_Policy_Type is record
-      Id            : Tkmrpc.Types.Sp_Id_Type;
-      Local_Addr    : Anet.IPv4_Addr_Type;
-      Remote_Addr   : Anet.IPv4_Addr_Type;
-      Lifetime_Soft : Tkmrpc.Types.Abs_Time_Type;
-      Lifetime_Hard : Tkmrpc.Types.Abs_Time_Type;
+      Id              : Tkmrpc.Types.Sp_Id_Type;
+      Local_Identity  : Tkmrpc.Types.Identity_Type;
+      Local_Addr      : Anet.IPv4_Addr_Type;
+      Remote_Identity : Tkmrpc.Types.Identity_Type;
+      Remote_Addr     : Anet.IPv4_Addr_Type;
+      Lifetime_Soft   : Tkmrpc.Types.Abs_Time_Type;
+      Lifetime_Hard   : Tkmrpc.Types.Abs_Time_Type;
    end record;
    --  Security policy describing a connection.
 

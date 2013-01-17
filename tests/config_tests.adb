@@ -9,13 +9,17 @@ package body Config_Tests is
    use Tkm;
 
    Ref_Policies : constant Config.Security_Policies_Type (1 .. 2)
-     := (1 => (Id            => 1,
-               Local_Addr    => (192, 168, 0, 2),
-               Remote_Addr   => (192, 168, 0, 3),
-               Lifetime_Soft => Config.Lifetime_Soft,
-               Lifetime_Hard => Config.Lifetime_Hard),
+     := (1 => (Id              => 1,
+               Local_Identity  => Config.Local_Id,
+               Local_Addr      => (192, 168, 0, 2),
+               Remote_Identity => Config.Remote_Id,
+               Remote_Addr     => (192, 168, 0, 3),
+               Lifetime_Soft   => Config.Lifetime_Soft,
+               Lifetime_Hard   => Config.Lifetime_Hard),
          2 => (Id            => 2,
-               Local_Addr    => (192, 168, 0, 2),
+               Local_Identity  => Config.Local_Id,
+               Local_Addr      => (192, 168, 0, 2),
+               Remote_Identity => Config.Remote_Id,
                Remote_Addr   => (192, 168, 0, 4),
                Lifetime_Soft => Config.Lifetime_Soft,
                Lifetime_Hard => Config.Lifetime_Hard));
