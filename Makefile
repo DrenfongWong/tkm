@@ -30,7 +30,12 @@ $(VERSION_SPEC): git-rev
 	@echo "     \"$(VERSION)\";"                   >> $@
 	@echo "end Tkm.Version;"                       >> $@
 
-build_tools: tkm_tools.gpr $(VERSION_SPEC)
+build_tools: $(OBJDIR)/key_manager $(OBJDIR)/cfg_tool
+
+$(OBJDIR)/cfg_tool: tkm_cfgtool.gpr $(VERSION_SPEC)
+	@gprbuild $(BUILD_OPTS) -P$<
+
+$(OBJDIR)/key_manager: tkm_tools.gpr $(VERSION_SPEC)
 	@gprbuild $(BUILD_OPTS) -P$<
 
 build_tests: tkm_tests.gpr
