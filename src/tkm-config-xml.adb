@@ -1,3 +1,4 @@
+with Ada.Exceptions;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Doubly_Linked_Lists;
 
@@ -188,6 +189,11 @@ is
       Input_Sources.File.Close (Input => File_Input);
 
       return Schema_Read.Get_Grammar;
+
+   exception
+      when E : others =>
+         raise Config_Error with "Error reading XML schema '" & File & "': "
+           & Ada.Exceptions.Exception_Message (X => E);
    end Get_Grammar;
 
    -------------------------------------------------------------------------
@@ -292,11 +298,18 @@ is
       Reader.Set_Feature (Name  => Sax.Readers.Schema_Validation_Feature,
                           Value => True);
 
-      Input_Sources.File.Open (Filename => File,
-                               Input    => File_Input);
-      Reader.Parse (Input => File_Input);
-      Input_Sources.File.Close (Input => File_Input);
-      Data := XML_Config (Reader.Get_Tree);
+      begin
+         Input_Sources.File.Open (Filename => File,
+                                  Input    => File_Input);
+         Reader.Parse (Input => File_Input);
+         Input_Sources.File.Close (Input => File_Input);
+         Data := XML_Config (Reader.Get_Tree);
+
+      exception
+         when E : others =>
+            raise Config_Error with "Error parsing XML config '" & File & "': "
+              & Ada.Exceptions.Exception_Message (X => E);
+      end;
    end Parse;
 
    -------------------------------------------------------------------------
