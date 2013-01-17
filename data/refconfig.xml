@@ -3,6 +3,7 @@
         <local>
             <identity>alice@strongswan.org</identity>
             <ip>192.168.0.2</ip>
+            <certificate>aliceCert.pem</certificate>
         </local>
         <remote>
             <identity>bob@strongswan.org</identity>
@@ -17,6 +18,7 @@
         <local>
             <identity>alice@strongswan.org</identity>
             <ip>192.168.0.2</ip>
+            <certificate>aliceCert.pem</certificate>
         </local>
         <remote>
             <identity>bob@strongswan.org</identity>

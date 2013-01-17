@@ -20,6 +20,13 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="certificateFilenameType">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="255"/>
+            <xs:pattern value="[a-zA-Z0-9\.\-\+/~_#$!]*"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="ipAddressType">
         <xs:annotation>
             <xs:documentation>IPv4 address</xs:documentation>
@@ -33,6 +40,7 @@
         <xs:sequence>
             <xs:element name="identity" type="identityType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="ip" type="ipAddressType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="certificate" type="certificateFilenameType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 

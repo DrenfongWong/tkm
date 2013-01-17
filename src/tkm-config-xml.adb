@@ -33,6 +33,7 @@ is
    Soft_Tag      : constant String := "soft";
    Hard_Tag      : constant String := "hard";
    Identity_Tag  : constant String := "identity";
+   Cert_Tag      : constant String := "certificate";
 
    function Get_Element_By_Tag_Name
      (Node     : DOM.Core.Element;
@@ -56,6 +57,7 @@ is
         (Id              : String;
          Local_Identity  : String;
          Local_Addr      : String;
+         Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Lifetime_Soft   : String;
@@ -150,6 +152,7 @@ is
         (Id              : String;
          Local_Identity  : String;
          Local_Addr      : String;
+         Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Lifetime_Soft   : String;
@@ -184,6 +187,7 @@ is
                   Name => Policy_Id_Tag));
             Local_Identity  : Ada.Strings.Unbounded.Unbounded_String;
             Local_Addr      : Ada.Strings.Unbounded.Unbounded_String;
+            Local_Cert      : Ada.Strings.Unbounded.Unbounded_String;
             Remote_Identity : Ada.Strings.Unbounded.Unbounded_String;
             Remote_Addr     : Ada.Strings.Unbounded.Unbounded_String;
             Lifetime_Soft   : Ada.Strings.Unbounded.Unbounded_String;
@@ -199,6 +203,9 @@ is
             Local_Addr := U (Get_Element_Value_By_Tag_Name
               (Node     => Node,
                Tag_Name => Ip_Addr_Tag));
+            Local_Cert := U (Get_Element_Value_By_Tag_Name
+              (Node     => Node,
+               Tag_Name => Cert_Tag));
 
             Node  := Get_Element_By_Tag_Name (Node     => Policy_Node,
                                               Tag_Name => Remote_Tag);
@@ -221,6 +228,7 @@ is
             Process (Id              => Id,
                      Local_Identity  => S (Local_Identity),
                      Local_Addr      => S (Local_Addr),
+                     Local_Cert      => S (Local_Cert),
                      Remote_Identity => S (Remote_Identity),
                      Remote_Addr     => S (Remote_Addr),
                      Lifetime_Soft   => S (Lifetime_Soft),
@@ -310,6 +318,7 @@ is
         (Id              : String;
          Local_Identity  : String;
          Local_Addr      : String;
+         Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Lifetime_Soft   : String;
@@ -320,11 +329,14 @@ is
         (Id              : String;
          Local_Identity  : String;
          Local_Addr      : String;
+         Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String)
       is
+         pragma Unreferenced (Local_Cert);
+
          Policy : Security_Policy_Type;
       begin
          Policy.Id              := Tkmrpc.Types.Sp_Id_Type'Value (Id);
