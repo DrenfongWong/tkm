@@ -6,6 +6,15 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Clear
+   is
+   begin
+      Current_Config.Policies := (others => Null_Security_Policy);
+      Policy_Count   := 0;
+   end Clear;
+
+   -------------------------------------------------------------------------
+
    function Get_Policy_Count return Natural
    is
    begin

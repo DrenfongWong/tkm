@@ -82,6 +82,10 @@ package body Config_Tests is
       Assert (Condition => Config.Get_Policy_Count = Ref_Config.Policy_Count,
               Message   => "Policy count mismatch");
 
+      Config.Clear;
+      Assert (Condition => Config.Is_Empty,
+              Message   => "Config is not empty");
+
       Anet.OS.Delete_File
         (Filename       => Tmp_Filename,
          Ignore_Missing => False);

@@ -48,6 +48,8 @@ is
    end record;
    --  Security policy describing a connection.
 
+   Null_Security_Policy : constant Security_Policy_Type;
+
    type Security_Policies_Type is array (Positive range <>)
      of Security_Policy_Type;
 
@@ -69,6 +71,9 @@ is
    procedure Load (Filename : String);
    --  Load config from given file.
 
+   procedure Clear;
+   --  Clear configuration.
+
    function Is_Empty return Boolean;
    --  Returns True if no configuration is present.
 
@@ -78,6 +83,17 @@ is
    Config_Error : exception;
 
 private
+
+   Null_Security_Policy : constant Security_Policy_Type
+     := (Id              => Tkmrpc.Types.Sp_Id_Type'First,
+         Local_Identity  => Tkmrpc.Types.Null_Identity_Type,
+         Local_Addr      => Anet.Any_Addr,
+         Local_Net       => Anet.Any_Addr,
+         Remote_Identity => Tkmrpc.Types.Null_Identity_Type,
+         Remote_Addr     => Anet.Any_Addr,
+         Remote_Net      => Anet.Any_Addr,
+         Lifetime_Soft   => Tkmrpc.Types.Abs_Time_Type'First,
+         Lifetime_Hard   => Tkmrpc.Types.Abs_Time_Type'First);
 
    Policy_Count   : Natural := 0;
    Current_Config : Config_Type (Policy_Count => Max_Policy_Count);
