@@ -115,16 +115,11 @@ begin
 
    Tkm.Private_Key.Load (Path => To_String (Private_Key));
 
-   --  Install test policies
+   --  Install configured policies
 
    Tkm.Xfrm.Init;
    Tkm.Xfrm.Flush;
-   Tkm.Xfrm.Add_Policy (Direction   => Tkm.Xfrm.Direction_Out,
-                        Source      => Tkm.Config.Local_Addr,
-                        Destination => Tkm.Config.Peer_Addr);
-   Tkm.Xfrm.Add_Policy (Direction   => Tkm.Xfrm.Direction_In,
-                        Source      => Tkm.Config.Peer_Addr,
-                        Destination => Tkm.Config.Local_Addr);
+   Tkm.Config.Iterate (Process => Tkm.Xfrm.Add_Policy'Access);
 
    Sock.Init;
    Sock.Bind (Path => Anet.Sockets.Unix.Path_Type (IKE_Socket));

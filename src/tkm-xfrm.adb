@@ -1,3 +1,5 @@
+with Interfaces;
+
 with Anet;
 
 with Xfrm.Sockets;
@@ -10,30 +12,27 @@ is
    package L renames Tkm.Logger;
    package X renames Standard.Xfrm.Sockets;
 
-   Dir_Map : constant array (Direction_Type) of X.Direction_Type
-     := (Direction_In  => X.Direction_In,
-         Direction_Out => X.Direction_Out,
-         Direction_Fwd => X.Direction_Fwd);
-   --  Policy direction map.
-
    Sock : X.Xfrm_Socket_Type;
    --  Netlink/XFRM socket.
 
    -------------------------------------------------------------------------
 
-   procedure Add_Policy
-     (Direction   : Direction_Type;
-      Source      : String;
-      Destination : String)
+   procedure Add_Policy (Policy : Config.Security_Policy_Type)
    is
    begin
-      L.Log (Message => "Adding policy [ " & Source & " => " & Destination
-             & ", " & Direction'Img & " ]");
+      L.Log (Message => "Adding policy [" & Policy.Id'Img & ", "
+             & Anet.To_String (Address => Policy.Local_Addr) & " => "
+             & Anet.To_String (Address => Policy.Remote_Addr) & " ]");
       Sock.Add_Policy
-        (Src       => Anet.To_IPv4_Addr (Str => Source),
-         Dst       => Anet.To_IPv4_Addr (Str => Destination),
-         Reqid     => 1,
-         Direction => Dir_Map (Direction));
+        (Src       => Policy.Local_Addr,
+         Dst       => Policy.Remote_Addr,
+         Reqid     => Interfaces.Unsigned_32 (Policy.Id),
+         Direction => X.Direction_Out);
+      Sock.Add_Policy
+        (Src       => Policy.Remote_Addr,
+         Dst       => Policy.Local_Addr,
+         Reqid     => Interfaces.Unsigned_32 (Policy.Id),
+         Direction => X.Direction_In);
    end Add_Policy;
 
    -------------------------------------------------------------------------
