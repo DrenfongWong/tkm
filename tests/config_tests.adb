@@ -69,11 +69,16 @@ package body Config_Tests is
       Tmp_Filename : constant String
         := "/tmp/tkm.test-config-" & Anet.Util.Random_String (Len => 8);
    begin
+      Assert (Condition => Config.Is_Empty,
+              Message   => "Config is not empty");
+
       Config.Write
         (Config   => Ref_Config,
          Filename => Tmp_Filename);
 
       Config.Load (Filename => Tmp_Filename);
+      Assert (Condition => not Config.Is_Empty,
+              Message   => "Config is empty");
       Assert (Condition => Config.Get_Policy_Count = Ref_Config.Policy_Count,
               Message   => "Policy count mismatch");
 

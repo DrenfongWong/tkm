@@ -14,6 +14,10 @@ is
 
    -------------------------------------------------------------------------
 
+   function Is_Empty return Boolean is (Policy_Count = 0);
+
+   -------------------------------------------------------------------------
+
    procedure Load (Filename : String)
    is
       New_Cfg : constant Config_Type := Read (Filename => Filename);

@@ -69,6 +69,9 @@ is
    procedure Load (Filename : String);
    --  Load config from given file.
 
+   function Is_Empty return Boolean;
+   --  Returns True if no configuration is present.
+
    function Get_Policy_Count return Natural;
    --  Returns number of policies present in current config.
 
