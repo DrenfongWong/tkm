@@ -144,33 +144,25 @@ is
              (Input => Int_R.Data (Int_R.Data'First .. Int_R.Size)));
 
       Xfrm.Add_State
-        (Source        => Config.Local_Addr,
-         Destination   => Config.Peer_Addr,
-         SPI           => Esp_Spi_Rem,
-         Enc_Key       => (if Initiator then
-                           Enc_I.Data (Enc_I.Data'First .. Enc_I.Size)
-                           else
-                           Enc_R.Data (Enc_R.Data'First .. Enc_R.Size)),
-         Auth_Key      => (if Initiator then
-                           Int_I.Data (Int_I.Data'First .. Int_I.Size)
-                           else
-                           Int_R.Data (Int_R.Data'First .. Int_R.Size)),
-         Lifetime_Soft => Config.Lifetime_Soft,
-         Lifetime_Hard => Config.Lifetime_Hard);
-      Xfrm.Add_State
-        (Source        => Config.Peer_Addr,
-         Destination   => Config.Local_Addr,
-         SPI           => Esp_Spi_Loc,
-         Enc_Key       => (if Initiator then
+        (Policy_Id    => Sp_Id,
+         SPI_In       => Esp_Spi_Loc,
+         SPI_Out      => Esp_Spi_Rem,
+         Enc_Key_In   => (if Initiator then
                            Enc_R.Data (Enc_R.Data'First .. Enc_R.Size)
                            else
                            Enc_I.Data (Enc_I.Data'First .. Enc_I.Size)),
-         Auth_Key      => (if Initiator then
+         Enc_Key_Out  => (if Initiator then
+                           Enc_I.Data (Enc_I.Data'First .. Enc_I.Size)
+                           else
+                           Enc_R.Data (Enc_R.Data'First .. Enc_R.Size)),
+         Auth_Key_In  => (if Initiator then
                            Int_R.Data (Int_R.Data'First .. Int_R.Size)
                            else
                            Int_I.Data (Int_I.Data'First .. Int_I.Size)),
-         Lifetime_Soft => Config.Lifetime_Soft,
-         Lifetime_Hard => Config.Lifetime_Hard);
+         Auth_Key_Out => (if Initiator then
+                           Int_I.Data (Int_I.Data'First .. Int_I.Size)
+                           else
+                           Int_R.Data (Int_R.Data'First .. Int_R.Size)));
 
       Key_Locker.Wipe (Object => Enc_I'Access);
       Key_Locker.Wipe (Object => Enc_R'Access);
@@ -182,7 +174,7 @@ is
       Key_Locker.Unlock (Object => Int_I'Access);
       Key_Locker.Unlock (Object => Int_R'Access);
 
-      Esa_Spi_Mapping (Esa_Id).Local := Esp_Spi_Loc;
+      Esa_Spi_Mapping (Esa_Id).Local  := Esp_Spi_Loc;
       Esa_Spi_Mapping (Esa_Id).Remote := Esp_Spi_Rem;
 
       Tkmrpc.Contexts.esa.create (Id    => Esa_Id,

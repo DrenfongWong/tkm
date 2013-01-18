@@ -15,15 +15,14 @@ is
    --  Add XFRM policy for given security policy.
 
    procedure Add_State
-     (Source        : String;
-      Destination   : String;
-      SPI           : Tkmrpc.Types.Esp_Spi_Type;
-      Enc_Key       : Tkmrpc.Types.Byte_Sequence;
-      Auth_Key      : Tkmrpc.Types.Byte_Sequence;
-      Lifetime_Soft : Tkmrpc.Types.Rel_Time_Type;
-      Lifetime_Hard : Tkmrpc.Types.Rel_Time_Type);
-   --  Add XFRM state with given parameters. Lifetimes are specified in
-   --  seconds.
+     (Policy_Id    : Tkmrpc.Types.Sp_Id_Type;
+      SPI_In       : Tkmrpc.Types.Esp_Spi_Type;
+      SPI_Out      : Tkmrpc.Types.Esp_Spi_Type;
+      Enc_Key_In   : Tkmrpc.Types.Byte_Sequence;
+      Enc_Key_Out  : Tkmrpc.Types.Byte_Sequence;
+      Auth_Key_In  : Tkmrpc.Types.Byte_Sequence;
+      Auth_Key_Out : Tkmrpc.Types.Byte_Sequence);
+   --  Add XFRM state for specified policy with given parameters.
 
    procedure Delete_State
      (Destination : String;
