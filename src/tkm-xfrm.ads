@@ -25,9 +25,10 @@ is
    --  Add XFRM state for specified policy with given parameters.
 
    procedure Delete_State
-     (Destination : String;
-      SPI         : Tkmrpc.Types.Esp_Spi_Type);
-   --  Delete XFRM state with given parameters.
+     (Policy_Id : Tkmrpc.Types.Sp_Id_Type;
+      SPI_In    : Tkmrpc.Types.Esp_Spi_Type;
+      SPI_Out   : Tkmrpc.Types.Esp_Spi_Type);
+   --  Delete XFRM state for specified policy with given parameters.
 
    Xfrm_Error : exception;
 

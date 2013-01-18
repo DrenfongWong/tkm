@@ -7,7 +7,6 @@ with Tkmrpc.Contexts.esa;
 with Tkm.Logger;
 with Tkm.Utils;
 with Tkm.Key_Derivation;
-with Tkm.Config;
 with Tkm.Xfrm;
 with Tkm.Locked_Memory;
 
@@ -17,6 +16,7 @@ is
    package L renames Tkm.Logger;
 
    type Esp_Spis_Type is record
+      Sp_Id  : Tkmrpc.Types.Sp_Id_Type;
       Local  : Tkmrpc.Types.Esp_Spi_Type;
       Remote : Tkmrpc.Types.Esp_Spi_Type;
    end record;
@@ -174,6 +174,7 @@ is
       Key_Locker.Unlock (Object => Int_I'Access);
       Key_Locker.Unlock (Object => Int_R'Access);
 
+      Esa_Spi_Mapping (Esa_Id).Sp_Id  := Sp_Id;
       Esa_Spi_Mapping (Esa_Id).Local  := Esp_Spi_Loc;
       Esa_Spi_Mapping (Esa_Id).Remote := Esp_Spi_Rem;
 
@@ -274,11 +275,12 @@ is
       L.Log (Message => "Resetting ESA context" & Esa_Id'Img);
 
       if Esa_Spi_Mapping (Esa_Id).Local /= 0 then
-         Xfrm.Delete_State (Destination => Config.Peer_Addr,
-                            SPI         => Esa_Spi_Mapping (Esa_Id).Remote);
-         Xfrm.Delete_State (Destination => Config.Local_Addr,
-                            SPI         => Esa_Spi_Mapping (Esa_Id).Local);
-         Esa_Spi_Mapping (Esa_Id).Local := 0;
+         Xfrm.Delete_State
+           (Policy_Id => Esa_Spi_Mapping (Esa_Id).Sp_Id,
+            SPI_In    => Esa_Spi_Mapping (Esa_Id).Local,
+            SPI_Out   => Esa_Spi_Mapping (Esa_Id).Remote);
+         Esa_Spi_Mapping (Esa_Id).Sp_Id  := Tkmrpc.Types.Sp_Id_Type'First;
+         Esa_Spi_Mapping (Esa_Id).Local  := 0;
          Esa_Spi_Mapping (Esa_Id).Remote := 0;
       end if;
 

@@ -106,15 +106,29 @@ is
    -------------------------------------------------------------------------
 
    procedure Delete_State
-     (Destination : String;
-      SPI         : Tkmrpc.Types.Esp_Spi_Type)
+     (Policy_Id : Tkmrpc.Types.Sp_Id_Type;
+      SPI_In    : Tkmrpc.Types.Esp_Spi_Type;
+      SPI_Out   : Tkmrpc.Types.Esp_Spi_Type)
    is
+      Policy : constant Config.Security_Policy_Type
+        := Config.Get_Policy (Id => Policy_Id);
    begin
-      L.Log (Message => "Deleting SA [ => " & Destination & ", SPI"
-             & SPI'Img & " ]");
+      L.Log (Message => "Deleting SA [" & Policy.Id'Img & ", "
+             & Anet.To_String (Address => Policy.Local_Addr) & " <=> "
+             & Anet.To_String (Address => Policy.Remote_Addr)
+             & ", SPI_in" & SPI_In'Img & ", SPI_out" & SPI_Out'Img & " ]");
+
+      --  Delete outbound state
+
       Sock.Delete_State
-        (Dst => Anet.To_IPv4_Addr (Str => Destination),
-         Spi => SPI);
+        (Dst => Policy.Remote_Addr,
+         Spi => SPI_Out);
+
+      --  Delete inbound state
+
+      Sock.Delete_State
+        (Dst => Policy.Local_Addr,
+         Spi => SPI_In);
    end Delete_State;
 
    -------------------------------------------------------------------------
