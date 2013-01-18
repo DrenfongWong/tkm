@@ -6,6 +6,24 @@ is
 
    -------------------------------------------------------------------------
 
+   function Get_Policy_Count return Natural
+   is
+   begin
+      return Policy_Count;
+   end Get_Policy_Count;
+
+   -------------------------------------------------------------------------
+
+   procedure Load (Filename : String)
+   is
+      New_Cfg : constant Config_Type := Read (Filename => Filename);
+   begin
+      Policy_Count := New_Cfg.Policy_Count;
+      Current_Config.Policies (1 .. Policy_Count) := New_Cfg.Policies;
+   end Load;
+
+   -------------------------------------------------------------------------
+
    function Read (Filename : String) return Config_Type
    is
       File : Ada.Text_IO.File_Type;

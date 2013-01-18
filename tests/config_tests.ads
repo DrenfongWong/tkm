@@ -10,6 +10,9 @@ package Config_Tests is
    procedure Write_And_Read_Config;
    --  Write and read configuration file.
 
+   procedure Load_Config;
+   --  Load config from file.
+
    procedure Xml_To_Tkm_Config;
    --  Read XML configuration file and convert to TKM config.
 

@@ -52,12 +52,42 @@ package body Config_Tests is
         (Routine => Write_And_Read_Config'Access,
          Name    => "Write and read config file");
       T.Add_Test_Routine
+        (Routine => Load_Config'Access,
+         Name    => "Load config from file");
+      T.Add_Test_Routine
         (Routine => Xml_To_Tkm_Config'Access,
          Name    => "Convert Xml to Tkm config");
       T.Add_Test_Routine
         (Routine => Xml_To_Ike_Config'Access,
          Name    => "Convert Xml to Ike config");
    end Initialize;
+
+   -------------------------------------------------------------------------
+
+   procedure Load_Config
+   is
+      Tmp_Filename : constant String
+        := "/tmp/tkm.test-config-" & Anet.Util.Random_String (Len => 8);
+   begin
+      Config.Write
+        (Config   => Ref_Config,
+         Filename => Tmp_Filename);
+
+      Config.Load (Filename => Tmp_Filename);
+      Assert (Condition => Config.Get_Policy_Count = Ref_Config.Policy_Count,
+              Message   => "Policy count mismatch");
+
+      Anet.OS.Delete_File
+        (Filename       => Tmp_Filename,
+         Ignore_Missing => False);
+
+   exception
+      when others =>
+         Anet.OS.Delete_File
+           (Filename       => Tmp_Filename,
+            Ignore_Missing => False);
+         raise;
+   end Load_Config;
 
    -------------------------------------------------------------------------
 

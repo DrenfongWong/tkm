@@ -32,6 +32,9 @@ is
    Lifetime_Soft : constant := 30;
    --  ESP SA lifetime in seconds (soft).
 
+   Max_Policy_Count : constant := 32;
+   --  Maximum number of policies.
+
    type Security_Policy_Type is record
       Id              : Tkmrpc.Types.Sp_Id_Type;
       Local_Identity  : Tkmrpc.Types.Identity_Type;
@@ -63,6 +66,17 @@ is
       Filename : String);
    --  Write configuration to file specified by filename.
 
+   procedure Load (Filename : String);
+   --  Load config from given file.
+
+   function Get_Policy_Count return Natural;
+   --  Returns number of policies present in current config.
+
    Config_Error : exception;
+
+private
+
+   Policy_Count   : Natural := 0;
+   Current_Config : Config_Type (Policy_Count => Max_Policy_Count);
 
 end Tkm.Config;
