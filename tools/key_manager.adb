@@ -42,14 +42,16 @@ is
       use Ada.Command_Line;
    begin
       L.Log (Message => Msg);
-      L.Log (Message => "Usage: " & Command_Name & " -k <key> -r <rootcert>");
+      L.Log (Message => "Usage: " & Command_Name & " -c <config> -k <key> "
+             & "-r <rootcert>");
+      L.Log (Message => "  -c configuration file");
       L.Log (Message => "  -k RSA private key in DER format");
       L.Log (Message => "  -r Root CA certificate in DER format");
       L.Stop;
       Set_Exit_Status (Code => Failure);
    end Print_Usage;
 
-   Private_Key, Ca_Cert : Unbounded_String;
+   Private_Key, Ca_Cert, Cfg_File : Unbounded_String;
 
    IKE_Socket : constant String := "/tmp/tkm.rpc.ike";
    Sock       : aliased Anet.Sockets.Unix.TCP_Socket_Type;
@@ -61,8 +63,11 @@ begin
 
    begin
       loop
-         case GNAT.Command_Line.Getopt ("k: r:") is
+         case GNAT.Command_Line.Getopt ("c: k: r:") is
             when ASCII.NUL => exit;
+            when 'c'       =>
+               Cfg_File := To_Unbounded_String
+                 (GNAT.Command_Line.Parameter);
             when 'k'       =>
                Private_Key := To_Unbounded_String
                  (GNAT.Command_Line.Parameter);
@@ -85,6 +90,10 @@ begin
          return;
    end;
 
+   if Cfg_File = Null_Unbounded_String then
+      Print_Usage (Msg => "No configuration file specified");
+      return;
+   end if;
    if Private_Key = Null_Unbounded_String then
       Print_Usage (Msg => "No RSA private key specified");
       return;
@@ -93,6 +102,10 @@ begin
       Print_Usage (Msg => "No root CA certificate specified");
       return;
    end if;
+
+   --  Load configuration
+
+   Tkm.Config.Load (Filename => To_String (Cfg_File));
 
    --  Load CA certificate
 
