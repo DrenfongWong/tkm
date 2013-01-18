@@ -15,6 +15,23 @@ is
 
    -------------------------------------------------------------------------
 
+   function Get_Policy
+     (Id : Tkmrpc.Types.Sp_Id_Type)
+      return Security_Policy_Type
+   is
+      use type Tkmrpc.Types.Sp_Id_Type;
+   begin
+      for I in Current_Config.Policies'Range loop
+         if Current_Config.Policies (I).Id = Id then
+            return Current_Config.Policies (I);
+         end if;
+      end loop;
+
+      raise Config_Error with "No policy with id " & Id'Img & " in config";
+   end Get_Policy;
+
+   -------------------------------------------------------------------------
+
    function Get_Policy_Count return Natural
    is
    begin

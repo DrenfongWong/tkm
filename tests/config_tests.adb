@@ -1,3 +1,5 @@
+with System.Assertions;
+
 with Anet.Util;
 with Anet.OS;
 
@@ -44,6 +46,38 @@ package body Config_Tests is
 
    -------------------------------------------------------------------------
 
+   procedure Get_Policy
+   is
+      use type Config.Security_Policy_Type;
+
+      Tmp_Filename : constant String
+        := "/tmp/tkm.test-config-" & Anet.Util.Random_String (Len => 8);
+   begin
+      Config.Clear;
+      begin
+         declare
+            Dummy : Config.Security_Policy_Type := Config.Get_Policy (Id => 1);
+            pragma Unreferenced (Dummy);
+         begin
+            Fail (Message => "Assertion error expected");
+         end;
+
+      exception
+         when System.Assertions.Assert_Failure => null;
+      end;
+
+      Config.Write
+        (Config   => Ref_Config,
+         Filename => Tmp_Filename);
+      Config.Load (Filename => Tmp_Filename);
+
+      Assert (Condition => Config.Get_Policy
+              (Id => Ref_Policies (1).Id) = Ref_Policies (1),
+              Message   => "Policy mismatch");
+   end Get_Policy;
+
+   -------------------------------------------------------------------------
+
    procedure Initialize (T : in out Testcase)
    is
    begin
@@ -60,12 +94,17 @@ package body Config_Tests is
       T.Add_Test_Routine
         (Routine => Xml_To_Ike_Config'Access,
          Name    => "Convert Xml to Ike config");
+      T.Add_Test_Routine
+        (Routine => Get_Policy'Access,
+         Name    => "Get policy from config");
    end Initialize;
 
    -------------------------------------------------------------------------
 
    procedure Load_Config
    is
+      use type Config.Security_Policy_Type;
+
       Tmp_Filename : constant String
         := "/tmp/tkm.test-config-" & Anet.Util.Random_String (Len => 8);
    begin

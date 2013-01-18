@@ -19,4 +19,7 @@ package Config_Tests is
    procedure Xml_To_Ike_Config;
    --  Read XML configuration file and convert to IKE config.
 
+   procedure Get_Policy;
+   --  Get policy from config.
+
 end Config_Tests;

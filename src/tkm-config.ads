@@ -80,6 +80,14 @@ is
    function Get_Policy_Count return Natural;
    --  Returns number of policies present in current config.
 
+   function Get_Policy
+     (Id : Tkmrpc.Types.Sp_Id_Type)
+      return Security_Policy_Type
+   with
+     Pre => not Is_Empty;
+   --  Returns policy with given id from the config. A config error is raised
+   --  if no policy with given id exists.
+
    Config_Error : exception;
 
 private
