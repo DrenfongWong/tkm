@@ -97,7 +97,39 @@ package body Config_Tests is
       T.Add_Test_Routine
         (Routine => Get_Policy'Access,
          Name    => "Get policy from config");
+      T.Add_Test_Routine
+        (Routine => Iterate_Policies'Access,
+         Name    => "Iterate over policies in config");
    end Initialize;
+
+   -------------------------------------------------------------------------
+
+   procedure Iterate_Policies
+   is
+      Counter : Natural := 0;
+
+      procedure Inc_Counter (Policy : Config.Security_Policy_Type);
+      --  Increment counter for each policy.
+
+      procedure Inc_Counter (Policy : Config.Security_Policy_Type)
+      is
+         pragma Unreferenced (Policy);
+      begin
+         Counter := Counter + 1;
+      end Inc_Counter;
+
+      Tmp_Filename : constant String
+        := "/tmp/tkm.test-config-" & Anet.Util.Random_String (Len => 8);
+   begin
+      Config.Write
+        (Config   => Ref_Config,
+         Filename => Tmp_Filename);
+      Config.Load (Filename => Tmp_Filename);
+
+      Config.Iterate (Process => Inc_Counter'Access);
+      Assert (Condition => Counter = Ref_Config.Policy_Count,
+              Message   => "Counter mismatch");
+   end Iterate_Policies;
 
    -------------------------------------------------------------------------
 

@@ -44,6 +44,17 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Iterate
+     (Process : not null access procedure (Policy : Security_Policy_Type))
+   is
+   begin
+      for I in Current_Config.Policies'First .. Policy_Count loop
+         Process (Policy => Current_Config.Policies (I));
+      end loop;
+   end Iterate;
+
+   -------------------------------------------------------------------------
+
    procedure Load (Filename : String)
    is
       New_Cfg : constant Config_Type := Read (Filename => Filename);

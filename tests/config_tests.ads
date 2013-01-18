@@ -22,4 +22,7 @@ package Config_Tests is
    procedure Get_Policy;
    --  Get policy from config.
 
+   procedure Iterate_Policies;
+   --  Iterate over all policies.
+
 end Config_Tests;

@@ -88,6 +88,12 @@ is
    --  Returns policy with given id from the config. A config error is raised
    --  if no policy with given id exists.
 
+   procedure Iterate
+     (Process : not null access procedure (Policy : Security_Policy_Type))
+   with
+     Pre => not Is_Empty;
+   --  Calls the given process procedure for each policy in the config.
+
    Config_Error : exception;
 
 private
