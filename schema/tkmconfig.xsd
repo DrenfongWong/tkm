@@ -11,7 +11,17 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="identityType">
+    <xs:simpleType name="identityIdType">
+        <xs:annotation>
+            <xs:documentation>Restrict to range of identity id type</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="100"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="identityStringType">
         <xs:annotation>
             <xs:documentation>Restrict string length to match size of identity type</xs:documentation>
         </xs:annotation>
@@ -36,18 +46,25 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:complexType name="identityType">
+        <xs:sequence>
+            <xs:element name="identity" type="identityStringType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="certificate" type="certificateFilenameType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="identityIdType" use="required"/>
+    </xs:complexType>
+
     <xs:complexType name="localParametersType">
         <xs:sequence>
-            <xs:element name="identity" type="identityType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="identity_id" type="identityIdType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="ip" type="ipAddressType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="net" type="ipAddressType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="certificate" type="certificateFilenameType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="remoteParametersType">
         <xs:sequence>
-            <xs:element name="identity" type="identityType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="identity" type="identityStringType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="ip" type="ipAddressType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="net" type="ipAddressType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
@@ -66,12 +83,13 @@
             <xs:element name="remote" type="remoteParametersType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="lifetime" type="lifetimeType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
-        <xs:attribute name="id" type="securityPolicyIdType" use="required" />
+        <xs:attribute name="id" type="securityPolicyIdType" use="required"/>
     </xs:complexType>
 
     <xs:element name="tkmconfig">
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="local_identity" type="identityType" minOccurs="1" maxOccurs="unbounded"/>
                 <xs:element name="policy" type="policyType" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>

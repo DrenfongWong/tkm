@@ -9,8 +9,10 @@ is
    procedure Clear
    is
    begin
-      Current_Config.Policies := (others => Null_Security_Policy);
-      Policy_Count   := 0;
+      Current_Config.Policies     := (others => Null_Security_Policy);
+      Policy_Count                := 0;
+      Current_Config.L_Identities := (others => Null_Local_Identity);
+      L_Ident_Count               := 0;
    end Clear;
 
    -------------------------------------------------------------------------
@@ -40,7 +42,8 @@ is
 
    -------------------------------------------------------------------------
 
-   function Is_Empty return Boolean is (Policy_Count = 0);
+   function Is_Empty return Boolean is
+      (Policy_Count = 0 and then L_Ident_Count = 0);
 
    -------------------------------------------------------------------------
 
@@ -61,6 +64,8 @@ is
    begin
       Policy_Count := New_Cfg.Policy_Count;
       Current_Config.Policies (1 .. Policy_Count) := New_Cfg.Policies;
+      L_Ident_Count := New_Cfg.Local_Ids_Count;
+      Current_Config.L_Identities (1 .. L_Ident_Count) := New_Cfg.L_Identities;
    end Load;
 
    -------------------------------------------------------------------------

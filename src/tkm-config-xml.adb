@@ -37,18 +37,19 @@ is
      (Key_Type     => Tkmrpc.Types.Li_Id_Type,
       Element_Type => Local_Id_Type);
 
-   Policy_Tag     : constant String := "policy";
-   Id_Tag         : constant String := "id";
-   Local_Tag      : constant String := "local";
-   Remote_Tag     : constant String := "remote";
-   Ip_Addr_Tag    : constant String := "ip";
-   Lifetime_Tag   : constant String := "lifetime";
-   Soft_Tag       : constant String := "soft";
-   Hard_Tag       : constant String := "hard";
-   Identity_Tag   : constant String := "identity";
-   L_Identity_Tag : constant String := "local_identity";
-   Cert_Tag       : constant String := "certificate";
-   Net_Tag        : constant String := "net";
+   Policy_Tag      : constant String := "policy";
+   Id_Tag          : constant String := "id";
+   Local_Tag       : constant String := "local";
+   Remote_Tag      : constant String := "remote";
+   Ip_Addr_Tag     : constant String := "ip";
+   Lifetime_Tag    : constant String := "lifetime";
+   Soft_Tag        : constant String := "soft";
+   Hard_Tag        : constant String := "hard";
+   Identity_Tag    : constant String := "identity";
+   Identity_Id_Tag : constant String := "identity_id";
+   L_Identity_Tag  : constant String := "local_identity";
+   Cert_Tag        : constant String := "certificate";
+   Net_Tag         : constant String := "net";
 
    function S
      (U : Ada.Strings.Unbounded.Unbounded_String)
@@ -93,7 +94,6 @@ is
          Local_Identity  : String;
          Local_Addr      : String;
          Local_Net       : String;
-         Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Remote_Net      : String;
@@ -114,6 +114,11 @@ is
    function To_Array
      (List : Policies_Package.List)
       return Security_Policies_Type;
+   --  Convert given policy list to security policy array type.
+
+   function To_Array
+     (Data : Local_Ids_Pkg.Map)
+      return Local_Identities_Type;
    --  Convert given policy list to security policy array type.
 
    function To_Identity (Str : String) return Tkmrpc.Types.Identity_Type;
@@ -295,7 +300,6 @@ is
          Local_Identity  : String;
          Local_Addr      : String;
          Local_Net       : String;
-         Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Remote_Net      : String;
@@ -316,7 +320,6 @@ is
          Local_Identity  : Ada.Strings.Unbounded.Unbounded_String;
          Local_Addr      : Ada.Strings.Unbounded.Unbounded_String;
          Local_Net       : Ada.Strings.Unbounded.Unbounded_String;
-         Local_Cert      : Ada.Strings.Unbounded.Unbounded_String;
          Remote_Identity : Ada.Strings.Unbounded.Unbounded_String;
          Remote_Addr     : Ada.Strings.Unbounded.Unbounded_String;
          Remote_Net      : Ada.Strings.Unbounded.Unbounded_String;
@@ -329,16 +332,13 @@ is
                                           Tag_Name => Local_Tag);
          Local_Identity := U (Get_Element_Value_By_Tag_Name
            (Node     => Node,
-            Tag_Name => Identity_Tag));
+            Tag_Name => Identity_Id_Tag));
          Local_Addr := U (Get_Element_Value_By_Tag_Name
            (Node     => Node,
             Tag_Name => Ip_Addr_Tag));
          Local_Net := U (Get_Element_Value_By_Tag_Name
            (Node     => Node,
             Tag_Name => Net_Tag));
-         Local_Cert := U (Get_Element_Value_By_Tag_Name
-           (Node     => Node,
-            Tag_Name => Cert_Tag));
 
          Node := Get_Element_By_Tag_Name (Node     => Policy_Node,
                                            Tag_Name => Remote_Tag);
@@ -365,7 +365,6 @@ is
                   Local_Identity  => S (Local_Identity),
                   Local_Addr      => S (Local_Addr),
                   Local_Net       => S (Local_Net),
-                  Local_Cert      => S (Local_Cert),
                   Remote_Identity => S (Remote_Identity),
                   Remote_Addr     => S (Remote_Addr),
                   Remote_Net      => S (Remote_Net),
@@ -431,6 +430,35 @@ is
 
    -------------------------------------------------------------------------
 
+   function To_Array
+     (Data : Local_Ids_Pkg.Map)
+      return Local_Identities_Type
+   is
+      use type Local_Ids_Pkg.Cursor;
+
+      subtype Index_Range is Natural range 0 .. Natural (Data.Length);
+      subtype Idents_Range is Index_Range range 1 .. Index_Range'Last;
+
+      Identities : Local_Identities_Type (Idents_Range);
+      Pos        : Local_Ids_Pkg.Cursor := Data.First;
+      Idx        : Index_Range          := Index_Range'First;
+   begin
+      while Pos /= Local_Ids_Pkg.No_Element loop
+         Idx := Idx + 1;
+         declare
+            Elem : constant Local_Id_Type := Local_Ids_Pkg.Element
+              (Position => Pos);
+         begin
+            Identities (Idx) := (Id => Elem.Id,
+                                 Name => To_Identity (Str => S (Elem.Name)));
+         end;
+         Local_Ids_Pkg.Next (Position => Pos);
+      end loop;
+      return Identities;
+   end To_Array;
+
+   -------------------------------------------------------------------------
+
    function To_Identity (Str : String) return Tkmrpc.Types.Identity_Type
    is
 
@@ -452,6 +480,9 @@ is
 
    function To_Ike_Config (Data : XML_Config) return String
    is
+      L_Identities : constant Local_Ids_Pkg.Map
+        := Get_Local_Identities (Data => Data);
+
       Script : Ada.Strings.Unbounded.Unbounded_String;
 
       procedure Process_Policy
@@ -459,7 +490,6 @@ is
          Local_Identity  : String;
          Local_Addr      : String;
          Local_Net       : String;
-         Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Remote_Net      : String;
@@ -467,12 +497,13 @@ is
          Lifetime_Hard   : String);
       --  Add new connection entry for given policy to script.
 
+      ----------------------------------------------------------------------
+
       procedure Process_Policy
         (Id              : String;
          Local_Identity  : String;
          Local_Addr      : String;
          Local_Net       : String;
-         Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Remote_Net      : String;
@@ -480,15 +511,22 @@ is
          Lifetime_Hard   : String)
       is
          pragma Unreferenced (Lifetime_Soft, Lifetime_Hard);
+
+         L_Id : constant Tkmrpc.Types.Li_Id_Type
+           := Tkmrpc.Types.Li_Id_Type'Value (Local_Identity);
+         L_Ident : constant Local_Id_Type
+           := L_Identities.Element (Key => L_Id);
       begin
          Ada.Strings.Unbounded.Append
            (Source   => Script,
-            New_Item => "stroke add " & Id & " " & Local_Identity & " "
-           & Remote_Identity & " " & Local_Addr & " " & Remote_Addr & " "
-           & Local_Net & " " & Remote_Net & " "
-           & Id & " "
+            New_Item => "stroke add " & Id & " "
+            & S (L_Ident.Name)& " " & Remote_Identity & " "
+            & Local_Addr & " " & Remote_Addr & " "
+            & Local_Net & " " & Remote_Net & " "
+            & Id & " "
             & "aes256-sha512-modp4096! "
-            & Local_Cert & ASCII.LF);
+            &  S (L_Ident.Cert)
+            & ASCII.LF);
          Ada.Strings.Unbounded.Append
            (Source   => Script,
             New_Item => "stroke route " & Id & ASCII.LF);
@@ -504,6 +542,9 @@ is
 
    function To_Tkm_Config (Data : XML_Config) return Config_Type
    is
+      L_Identities : constant Local_Ids_Pkg.Map
+        := Get_Local_Identities (Data => Data);
+
       Policies : Policies_Package.List;
 
       procedure Process_Policy
@@ -511,7 +552,6 @@ is
          Local_Identity  : String;
          Local_Addr      : String;
          Local_Net       : String;
-         Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Remote_Net      : String;
@@ -519,24 +559,24 @@ is
          Lifetime_Hard   : String);
       --  Add new policy with given values to policy list.
 
+      ----------------------------------------------------------------------
+
       procedure Process_Policy
         (Id              : String;
          Local_Identity  : String;
          Local_Addr      : String;
          Local_Net       : String;
-         Local_Cert      : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Remote_Net      : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String)
       is
-         pragma Unreferenced (Local_Cert);
-
          Policy : Security_Policy_Type;
       begin
          Policy.Id              := Tkmrpc.Types.Sp_Id_Type'Value (Id);
-         Policy.Local_Identity  := To_Identity (Str => Local_Identity);
+         Policy.Local_Identity  := Tkmrpc.Types.Li_Id_Type'Value
+           (Local_Identity);
          Policy.Local_Addr      := Anet.To_IPv4_Addr (Str => Local_Addr);
          Policy.Local_Net       := Anet.To_IPv4_Addr (Str => Local_Net);
          Policy.Remote_Identity := To_Identity (Str => Remote_Identity);
@@ -552,15 +592,16 @@ is
    begin
       Iterate (Data    => Data,
                Process => Process_Policy'Access);
-
       if Policies.Length = 0 then
          raise Config_Error with "No policies in XML config present";
       end if;
 
       return Cfg : Config_Type
-        (Policy_Count => Positive (Policies.Length))
+        (Policy_Count    => Positive (Policies.Length),
+         Local_Ids_Count => Positive (L_Identities.Length))
       do
-         Cfg.Policies := To_Array (List => Policies);
+         Cfg.Policies     := To_Array (List => Policies);
+         Cfg.L_Identities := To_Array (Data => L_Identities);
       end return;
    end To_Tkm_Config;
 
