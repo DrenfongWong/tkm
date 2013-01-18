@@ -4,6 +4,7 @@ with Anet.Util;
 with Anet.OS;
 
 with Tkm.Config.Xml;
+with Tkm.Config.Test;
 
 package body Config_Tests is
 
@@ -49,9 +50,6 @@ package body Config_Tests is
    procedure Get_Policy
    is
       use type Config.Security_Policy_Type;
-
-      Tmp_Filename : constant String
-        := "/tmp/tkm.test-config-" & Anet.Util.Random_String (Len => 8);
    begin
       Config.Clear;
       begin
@@ -66,10 +64,7 @@ package body Config_Tests is
          when System.Assertions.Assert_Failure => null;
       end;
 
-      Config.Write
-        (Config   => Ref_Config,
-         Filename => Tmp_Filename);
-      Config.Load (Filename => Tmp_Filename);
+      Config.Test.Load (Cfg => Ref_Config);
 
       Assert (Condition => Config.Get_Policy
               (Id => Ref_Policies (1).Id) = Ref_Policies (1),
@@ -117,14 +112,8 @@ package body Config_Tests is
       begin
          Counter := Counter + 1;
       end Inc_Counter;
-
-      Tmp_Filename : constant String
-        := "/tmp/tkm.test-config-" & Anet.Util.Random_String (Len => 8);
    begin
-      Config.Write
-        (Config   => Ref_Config,
-         Filename => Tmp_Filename);
-      Config.Load (Filename => Tmp_Filename);
+      Config.Test.Load (Cfg => Ref_Config);
 
       Config.Iterate (Process => Inc_Counter'Access);
       Assert (Condition => Counter = Ref_Config.Policy_Count,
