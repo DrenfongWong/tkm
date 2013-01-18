@@ -38,6 +38,13 @@ is
    Ike_File : Unbounded_String;
    Tkm_File : Unbounded_String;
    Config   : Tkm.Config.Xml.XML_Config;
+
+   Script_Header : constant String
+     := "#!/bin/sh" & ASCII.LF & ASCII.LF
+       & "# This script was generated with TKM config tool ("
+     & Tkm.Version.Version_String & ")"  & ASCII.LF & ASCII.LF
+     & "# Make sure all certificates have been properly read" & ASCII.LF
+     & "stroke rereadall" & ASCII.LF & ASCII.LF;
 begin
    begin
       loop
@@ -100,6 +107,8 @@ begin
            (File => File,
             Mode => Ada.Text_IO.Out_File,
             Name => To_String (Ike_File));
+         Ada.Text_IO.Put (File => File,
+                          Item => Script_Header);
          Ada.Text_IO.Put
            (File => File,
             Item => Tkm.Config.Xml.To_Ike_Config (Data => Config));
