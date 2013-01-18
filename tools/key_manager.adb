@@ -42,9 +42,9 @@ is
       use Ada.Command_Line;
    begin
       L.Log (Message => Msg);
-      L.Log (Message => "Usage: " & Command_Name & " -c <cacert> -k <key>");
-      L.Log (Message => "  -c CA certificate in DER format");
+      L.Log (Message => "Usage: " & Command_Name & " -k <key> -r <rootcert>");
       L.Log (Message => "  -k RSA private key in DER format");
+      L.Log (Message => "  -r Root CA certificate in DER format");
       L.Stop;
       Set_Exit_Status (Code => Failure);
    end Print_Usage;
@@ -61,13 +61,13 @@ begin
 
    begin
       loop
-         case GNAT.Command_Line.Getopt ("c: k:") is
+         case GNAT.Command_Line.Getopt ("k: r:") is
             when ASCII.NUL => exit;
-            when 'c'       =>
-               Ca_Cert := To_Unbounded_String
-                 (GNAT.Command_Line.Parameter);
             when 'k'       =>
                Private_Key := To_Unbounded_String
+                 (GNAT.Command_Line.Parameter);
+            when 'r'       =>
+               Ca_Cert := To_Unbounded_String
                  (GNAT.Command_Line.Parameter);
             when others    =>
                raise Program_Error;
@@ -90,7 +90,7 @@ begin
       return;
    end if;
    if Ca_Cert = Null_Unbounded_String then
-      Print_Usage (Msg => "No CA certificate specified");
+      Print_Usage (Msg => "No root CA certificate specified");
       return;
    end if;
 
