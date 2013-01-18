@@ -1,6 +1,7 @@
 with Ada.Exceptions;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Doubly_Linked_Lists;
+with Ada.Containers.Ordered_Maps;
 
 with DOM.Core.Nodes;
 with DOM.Core.Elements;
@@ -20,21 +21,34 @@ is
    package DR renames Schema.Dom_Readers;
 
    use type Ada.Containers.Count_Type;
+   use type Tkmrpc.Types.Li_Id_Type;
 
    package Policies_Package is new Ada.Containers.Doubly_Linked_Lists
      (Element_Type => Security_Policy_Type);
 
-   Policy_Tag    : constant String := "policy";
-   Policy_Id_Tag : constant String := "id";
-   Local_Tag     : constant String := "local";
-   Remote_Tag    : constant String := "remote";
-   Ip_Addr_Tag   : constant String := "ip";
-   Lifetime_Tag  : constant String := "lifetime";
-   Soft_Tag      : constant String := "soft";
-   Hard_Tag      : constant String := "hard";
-   Identity_Tag  : constant String := "identity";
-   Cert_Tag      : constant String := "certificate";
-   Net_Tag       : constant String := "net";
+   type Local_Id_Type is record
+      Id   : Tkmrpc.Types.Li_Id_Type;
+      Name : Ada.Strings.Unbounded.Unbounded_String;
+      Cert : Ada.Strings.Unbounded.Unbounded_String;
+   end record;
+   --  Local identity type as stored in the XML config.
+
+   package Local_Ids_Pkg is new Ada.Containers.Ordered_Maps
+     (Key_Type     => Tkmrpc.Types.Li_Id_Type,
+      Element_Type => Local_Id_Type);
+
+   Policy_Tag     : constant String := "policy";
+   Id_Tag         : constant String := "id";
+   Local_Tag      : constant String := "local";
+   Remote_Tag     : constant String := "remote";
+   Ip_Addr_Tag    : constant String := "ip";
+   Lifetime_Tag   : constant String := "lifetime";
+   Soft_Tag       : constant String := "soft";
+   Hard_Tag       : constant String := "hard";
+   Identity_Tag   : constant String := "identity";
+   L_Identity_Tag : constant String := "local_identity";
+   Cert_Tag       : constant String := "certificate";
+   Net_Tag        : constant String := "net";
 
    function S
      (U : Ada.Strings.Unbounded.Unbounded_String)
@@ -62,6 +76,9 @@ is
    function Get_Grammar (File : String) return Schema.Validators.XML_Grammar;
    --  Load grammar from given XML schema file.
 
+   function Get_Local_Identities (Data : XML_Config) return Local_Ids_Pkg.Map;
+   --  Returns a map of all local identities in the given XML config.
+
    procedure For_Each_Node
      (Data     : XML_Config;
       Tag_Name : String;
@@ -85,6 +102,15 @@ is
    --  Invokes given process procedure for each policy tag found in given xml
    --  config.
 
+   procedure For_Each_L_Identity
+     (Data    : XML_Config;
+      Process : not null access procedure
+        (Id          : String;
+         Name        : String;
+         Certificate : String));
+   --  Invokes given process procedure for each local identity tag found in
+   --  given xml config.
+
    function To_Array
      (List : Policies_Package.List)
       return Security_Policies_Type;
@@ -92,6 +118,46 @@ is
 
    function To_Identity (Str : String) return Tkmrpc.Types.Identity_Type;
    --  Create identity type from given string.
+
+   -------------------------------------------------------------------------
+
+   procedure For_Each_L_Identity
+     (Data    : XML_Config;
+      Process : not null access procedure
+        (Id          : String;
+         Name        : String;
+         Certificate : String))
+   is
+      package DC renames DOM.Core;
+
+      procedure Process_L_Identity_Node (L_Id_Node : DOM.Core.Node);
+      --  Process given local identitynode.
+
+      procedure Process_L_Identity_Node (L_Id_Node : DOM.Core.Node)
+      is
+         Id            : constant String := DC.Nodes.Node_Value
+           (N => DC.Nodes.Get_Named_Item
+              (Map  => DC.Nodes.Attributes (N => L_Id_Node),
+               Name => Id_Tag));
+         Name : Ada.Strings.Unbounded.Unbounded_String;
+         Cert : Ada.Strings.Unbounded.Unbounded_String;
+      begin
+         Name := U (Get_Element_Value_By_Tag_Name
+           (Node     => L_Id_Node,
+            Tag_Name => Identity_Tag));
+         Cert := U (Get_Element_Value_By_Tag_Name
+           (Node     => L_Id_Node,
+            Tag_Name => Cert_Tag));
+
+         Process (Id          => Id,
+                  Name        => S (Name),
+                  Certificate => S (Cert));
+      end Process_L_Identity_Node;
+   begin
+      For_Each_Node (Data     => Data,
+                     Tag_Name => L_Identity_Tag,
+                     Process  => Process_L_Identity_Node'Access);
+   end For_Each_L_Identity;
 
    -------------------------------------------------------------------------
 
@@ -189,6 +255,39 @@ is
 
    -------------------------------------------------------------------------
 
+   function Get_Local_Identities (Data : XML_Config) return Local_Ids_Pkg.Map
+   is
+      L_Identities : Local_Ids_Pkg.Map;
+
+      procedure Process_L_Identity
+        (Id          : String;
+         Name        : String;
+         Certificate : String);
+      --  Add new local identity with given values to local identities list.
+
+      procedure Process_L_Identity
+        (Id          : String;
+         Name        : String;
+         Certificate : String)
+      is
+         Identity : Local_Id_Type;
+      begin
+         Identity.Id   := Tkmrpc.Types.Li_Id_Type'Value (Id);
+         Identity.Name := U (Name);
+         Identity.Cert := U (Certificate);
+
+         L_Identities.Insert (Key      => Identity.Id,
+                              New_Item => Identity);
+      end Process_L_Identity;
+   begin
+      For_Each_L_Identity (Data    => Data,
+                           Process => Process_L_Identity'Access);
+
+      return L_Identities;
+   end Get_Local_Identities;
+
+   -------------------------------------------------------------------------
+
    procedure Iterate
      (Data    : XML_Config;
       Process : not null access procedure
@@ -213,7 +312,7 @@ is
          Id            : constant String := DC.Nodes.Node_Value
            (N => DC.Nodes.Get_Named_Item
               (Map  => DC.Nodes.Attributes (N => Policy_Node),
-               Name => Policy_Id_Tag));
+               Name => Id_Tag));
          Local_Identity  : Ada.Strings.Unbounded.Unbounded_String;
          Local_Addr      : Ada.Strings.Unbounded.Unbounded_String;
          Local_Net       : Ada.Strings.Unbounded.Unbounded_String;
