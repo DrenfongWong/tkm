@@ -62,6 +62,13 @@ is
    function Get_Grammar (File : String) return Schema.Validators.XML_Grammar;
    --  Load grammar from given XML schema file.
 
+   procedure For_Each_Node
+     (Data     : XML_Config;
+      Tag_Name : String;
+      Process : not null access procedure (Node : DOM.Core.Node));
+   --  Invoke the given process procedure for each tag with specified name in
+   --  the given XML config.
+
    procedure Iterate
      (Data    : XML_Config;
       Process : not null access procedure
@@ -85,6 +92,29 @@ is
 
    function To_Identity (Str : String) return Tkmrpc.Types.Identity_Type;
    --  Create identity type from given string.
+
+   -------------------------------------------------------------------------
+
+   procedure For_Each_Node
+     (Data     : XML_Config;
+      Tag_Name : String;
+      Process : not null access procedure (Node : DOM.Core.Node))
+   is
+      package DC renames DOM.Core;
+
+      List : DC.Node_List;
+   begin
+      List := DC.Documents.Get_Elements_By_Tag_Name
+        (Doc      => DC.Document (Data),
+         Tag_Name => Tag_Name);
+
+      for Index in 1 .. DC.Nodes.Length (List => List) loop
+         Process (Node => DC.Nodes.Item
+                  (List  => List,
+                   Index => Index - 1));
+      end loop;
+      DOM.Core.Free (List => List);
+   end For_Each_Node;
 
    -------------------------------------------------------------------------
 
@@ -175,82 +205,78 @@ is
    is
       package DC renames DOM.Core;
 
-      List : DC.Node_List;
+      procedure Process_Policy_Node (Policy_Node : DOM.Core.Node);
+      --  Process given policy node.
+
+      procedure Process_Policy_Node (Policy_Node : DOM.Core.Node)
+      is
+         Id            : constant String := DC.Nodes.Node_Value
+           (N => DC.Nodes.Get_Named_Item
+              (Map  => DC.Nodes.Attributes (N => Policy_Node),
+               Name => Policy_Id_Tag));
+         Local_Identity  : Ada.Strings.Unbounded.Unbounded_String;
+         Local_Addr      : Ada.Strings.Unbounded.Unbounded_String;
+         Local_Net       : Ada.Strings.Unbounded.Unbounded_String;
+         Local_Cert      : Ada.Strings.Unbounded.Unbounded_String;
+         Remote_Identity : Ada.Strings.Unbounded.Unbounded_String;
+         Remote_Addr     : Ada.Strings.Unbounded.Unbounded_String;
+         Remote_Net      : Ada.Strings.Unbounded.Unbounded_String;
+         Lifetime_Soft   : Ada.Strings.Unbounded.Unbounded_String;
+         Lifetime_Hard   : Ada.Strings.Unbounded.Unbounded_String;
+
+         Node : DC.Node;
+      begin
+         Node := Get_Element_By_Tag_Name (Node     => Policy_Node,
+                                          Tag_Name => Local_Tag);
+         Local_Identity := U (Get_Element_Value_By_Tag_Name
+           (Node     => Node,
+            Tag_Name => Identity_Tag));
+         Local_Addr := U (Get_Element_Value_By_Tag_Name
+           (Node     => Node,
+            Tag_Name => Ip_Addr_Tag));
+         Local_Net := U (Get_Element_Value_By_Tag_Name
+           (Node     => Node,
+            Tag_Name => Net_Tag));
+         Local_Cert := U (Get_Element_Value_By_Tag_Name
+           (Node     => Node,
+            Tag_Name => Cert_Tag));
+
+         Node := Get_Element_By_Tag_Name (Node     => Policy_Node,
+                                           Tag_Name => Remote_Tag);
+         Remote_Identity := U (Get_Element_Value_By_Tag_Name
+           (Node     => Node,
+            Tag_Name => Identity_Tag));
+         Remote_Addr := U (Get_Element_Value_By_Tag_Name
+           (Node     => Node,
+            Tag_Name => Ip_Addr_Tag));
+         Remote_Net := U (Get_Element_Value_By_Tag_Name
+           (Node     => Node,
+            Tag_Name => Net_Tag));
+
+         Node := Get_Element_By_Tag_Name (Node     => Policy_Node,
+                                           Tag_Name => Lifetime_Tag);
+         Lifetime_Soft := U (Get_Element_Value_By_Tag_Name
+           (Node     => Node,
+            Tag_Name => Soft_Tag));
+         Lifetime_Hard := U (Get_Element_Value_By_Tag_Name
+           (Node     => Node,
+            Tag_Name => Hard_Tag));
+
+         Process (Id              => Id,
+                  Local_Identity  => S (Local_Identity),
+                  Local_Addr      => S (Local_Addr),
+                  Local_Net       => S (Local_Net),
+                  Local_Cert      => S (Local_Cert),
+                  Remote_Identity => S (Remote_Identity),
+                  Remote_Addr     => S (Remote_Addr),
+                  Remote_Net      => S (Remote_Net),
+                  Lifetime_Soft   => S (Lifetime_Soft),
+                  Lifetime_Hard   => S (Lifetime_Hard));
+      end Process_Policy_Node;
    begin
-      List := DC.Documents.Get_Elements_By_Tag_Name
-        (Doc      => DC.Document (Data),
-         Tag_Name => Policy_Tag);
-
-      for Index in 1 .. DC.Nodes.Length (List => List) loop
-         declare
-            Policy_Node   : constant DC.Node := DC.Nodes.Item
-              (List  => List,
-               Index => Index - 1);
-            Id            : constant String := DC.Nodes.Node_Value
-              (N => DC.Nodes.Get_Named_Item
-                 (Map  => DC.Nodes.Attributes (N => Policy_Node),
-                  Name => Policy_Id_Tag));
-            Local_Identity  : Ada.Strings.Unbounded.Unbounded_String;
-            Local_Addr      : Ada.Strings.Unbounded.Unbounded_String;
-            Local_Net       : Ada.Strings.Unbounded.Unbounded_String;
-            Local_Cert      : Ada.Strings.Unbounded.Unbounded_String;
-            Remote_Identity : Ada.Strings.Unbounded.Unbounded_String;
-            Remote_Addr     : Ada.Strings.Unbounded.Unbounded_String;
-            Remote_Net      : Ada.Strings.Unbounded.Unbounded_String;
-            Lifetime_Soft   : Ada.Strings.Unbounded.Unbounded_String;
-            Lifetime_Hard   : Ada.Strings.Unbounded.Unbounded_String;
-
-            Node : DC.Node;
-         begin
-            Node := Get_Element_By_Tag_Name (Node     => Policy_Node,
-                                             Tag_Name => Local_Tag);
-            Local_Identity := U (Get_Element_Value_By_Tag_Name
-              (Node     => Node,
-               Tag_Name => Identity_Tag));
-            Local_Addr := U (Get_Element_Value_By_Tag_Name
-              (Node     => Node,
-               Tag_Name => Ip_Addr_Tag));
-            Local_Net := U (Get_Element_Value_By_Tag_Name
-              (Node     => Node,
-               Tag_Name => Net_Tag));
-            Local_Cert := U (Get_Element_Value_By_Tag_Name
-              (Node     => Node,
-               Tag_Name => Cert_Tag));
-
-            Node  := Get_Element_By_Tag_Name (Node     => Policy_Node,
-                                              Tag_Name => Remote_Tag);
-            Remote_Identity := U (Get_Element_Value_By_Tag_Name
-              (Node     => Node,
-               Tag_Name => Identity_Tag));
-            Remote_Addr := U (Get_Element_Value_By_Tag_Name
-              (Node     => Node,
-               Tag_Name => Ip_Addr_Tag));
-            Remote_Net := U (Get_Element_Value_By_Tag_Name
-              (Node     => Node,
-               Tag_Name => Net_Tag));
-
-            Node  := Get_Element_By_Tag_Name (Node     => Policy_Node,
-                                              Tag_Name => Lifetime_Tag);
-            Lifetime_Soft := U (Get_Element_Value_By_Tag_Name
-              (Node     => Node,
-               Tag_Name => Soft_Tag));
-            Lifetime_Hard := U (Get_Element_Value_By_Tag_Name
-              (Node     => Node,
-               Tag_Name => Hard_Tag));
-
-            Process (Id              => Id,
-                     Local_Identity  => S (Local_Identity),
-                     Local_Addr      => S (Local_Addr),
-                     Local_Net       => S (Local_Net),
-                     Local_Cert      => S (Local_Cert),
-                     Remote_Identity => S (Remote_Identity),
-                     Remote_Addr     => S (Remote_Addr),
-                     Remote_Net      => S (Remote_Net),
-                     Lifetime_Soft   => S (Lifetime_Soft),
-                     Lifetime_Hard   => S (Lifetime_Hard));
-         end;
-      end loop;
-      DOM.Core.Free (List => List);
+      For_Each_Node (Data     => Data,
+                     Tag_Name => Policy_Tag,
+                     Process  => Process_Policy_Node'Access);
    end Iterate;
 
    -------------------------------------------------------------------------
