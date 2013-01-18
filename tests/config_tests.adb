@@ -41,9 +41,11 @@ package body Config_Tests is
      := "stroke add 1 alice@strongswan.org bob@strongswan.org 192.168.0.2 " &
    "192.168.0.3 192.168.0.2 192.168.0.3 1 aes256-sha512-modp4096! " &
    "aliceCert.pem" & ASCII.LF &
+   "stroke route 1" & ASCII.LF &
    "stroke add 2 alice@strongswan.org bob@strongswan.org 192.168.0.2 " &
    "192.168.0.4 192.168.100.0 192.168.200.0 2 aes256-sha512-modp4096! " &
-   "aliceCert.pem" & ASCII.LF;
+   "aliceCert.pem" & ASCII.LF &
+   "stroke route 2" & ASCII.LF;
 
    -------------------------------------------------------------------------
 

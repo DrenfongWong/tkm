@@ -362,8 +362,11 @@ is
            & Remote_Identity & " " & Local_Addr & " " & Remote_Addr & " "
            & Local_Net & " " & Remote_Net & " "
            & Id & " "
-           & "aes256-sha512-modp4096! "
-           & Local_Cert & ASCII.LF);
+            & "aes256-sha512-modp4096! "
+            & Local_Cert & ASCII.LF);
+         Ada.Strings.Unbounded.Append
+           (Source   => Script,
+            New_Item => "stroke route " & Id & ASCII.LF);
       end Process_Policy;
    begin
       Iterate (Data    => Data,
