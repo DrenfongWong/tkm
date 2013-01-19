@@ -424,8 +424,6 @@ is
       Init_Message :     Tkmrpc.Types.Init_Message_Type;
       Signature    : out Tkmrpc.Types.Signature_Type)
    is
-      pragma Unreferenced (Lc_Id);
-
       package RSA renames Crypto.Rsa_Pkcs1_Sha1;
 
       Privkey : constant X509.Keys.RSA_Private_Key_Type := Private_Key.Get;
@@ -433,10 +431,11 @@ is
       Ae_Id   : constant Tkmrpc.Types.Ae_Id_Type
         := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
       Octets  : constant Tkmrpc.Types.Byte_Sequence
-        := Compute_Auth_Octets (Ae_Id        => Ae_Id,
-                                Init_Message => Init_Message,
-                                Idx          => Config.Local_Id,
-                                Verify       => False);
+        := Compute_Auth_Octets
+          (Ae_Id        => Ae_Id,
+           Init_Message => Init_Message,
+           Idx          => Config.Get_Local_Identity (Id => Lc_Id).Name,
+           Verify       => False);
    begin
       L.Log (Message => "Generating local signature for ISA context"
              & Isa_Id'Img);
