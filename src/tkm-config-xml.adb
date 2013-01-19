@@ -15,10 +15,14 @@ with Schema.Validators;
 with Schema.Dom_Readers;
 with Schema.Schema_Readers;
 
+with Tkm.Config.Xml.Tags;
+
 package body Tkm.Config.Xml
 is
 
    package DR renames Schema.Dom_Readers;
+
+   use Tkm.Config.Xml.Tags;
 
    use type Ada.Containers.Count_Type;
    use type Tkmrpc.Types.Li_Id_Type;
@@ -36,20 +40,6 @@ is
    package Local_Ids_Pkg is new Ada.Containers.Ordered_Maps
      (Key_Type     => Tkmrpc.Types.Li_Id_Type,
       Element_Type => Local_Id_Type);
-
-   Policy_Tag      : constant String := "policy";
-   Id_Tag          : constant String := "id";
-   Local_Tag       : constant String := "local";
-   Remote_Tag      : constant String := "remote";
-   Ip_Addr_Tag     : constant String := "ip";
-   Lifetime_Tag    : constant String := "lifetime";
-   Soft_Tag        : constant String := "soft";
-   Hard_Tag        : constant String := "hard";
-   Identity_Tag    : constant String := "identity";
-   Identity_Id_Tag : constant String := "identity_id";
-   L_Identity_Tag  : constant String := "local_identity";
-   Cert_Tag        : constant String := "certificate";
-   Net_Tag         : constant String := "net";
 
    function S
      (U : Ada.Strings.Unbounded.Unbounded_String)
