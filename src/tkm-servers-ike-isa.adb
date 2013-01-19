@@ -59,11 +59,21 @@ is
          Verifier : RSA.Verifier_Type;
          Ae_Id    : constant Tkmrpc.Types.Ae_Id_Type
            := Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id);
+         Ri_Id    : constant Tkmrpc.Types.Ri_Id_Type
+           := Tkmrpc.Contexts.cc.get_remote_id (Id => Cc_Id);
+
+         --  The ri_id is equal to the policy id for now and can be used to get
+         --  the ri from the corresponding policy. This must be adjusted once
+         --  IKE processes TKM-specific config data and thus supports fully
+         --  fledged remote identity handling.
+
          Octets   : constant Tkmrpc.Types.Byte_Sequence
-           := Compute_Auth_Octets (Ae_Id        => Ae_Id,
-                                   Init_Message => Init_Message,
-                                   Idx          => Config.Remote_Id,
-                                   Verify       => True);
+           := Compute_Auth_Octets
+             (Ae_Id        => Ae_Id,
+              Init_Message => Init_Message,
+              Idx          => Config.Get_Policy
+                (Id => Tkmrpc.Types.Sp_Id_Type (Ri_Id)).Remote_Identity,
+              Verify       => True);
       begin
          RSA.Init (Ctx => Verifier,
                    N   => X509.Keys.Get_Modulus (Key => Pubkey),
