@@ -17,6 +17,24 @@ is
 
    -------------------------------------------------------------------------
 
+   function Get_Local_Identity
+     (Id : Tkmrpc.Types.Li_Id_Type)
+      return Local_Identity_Type
+   is
+      use type Tkmrpc.Types.Li_Id_Type;
+   begin
+      for I in Current_Config.L_Identities'Range loop
+         if Current_Config.L_Identities (I).Id = Id then
+            return Current_Config.L_Identities (I);
+         end if;
+      end loop;
+
+      raise Config_Error with "No local identity with id " & Id'Img
+        & " in config";
+   end Get_Local_Identity;
+
+   -------------------------------------------------------------------------
+
    function Get_Policy
      (Id : Tkmrpc.Types.Sp_Id_Type)
       return Security_Policy_Type

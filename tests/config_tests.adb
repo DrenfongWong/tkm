@@ -62,6 +62,33 @@ package body Config_Tests is
 
    -------------------------------------------------------------------------
 
+   procedure Get_Local_Identity
+   is
+      use type Config.Local_Identity_Type;
+   begin
+      Config.Clear;
+      Config.Test.Load (Cfg => Ref_Config);
+
+      Assert (Condition => Config.Get_Local_Identity
+              (Id => Ref_Local_Ids (1).Id) = Ref_Local_Ids (1),
+              Message   => "Local identity mismatch");
+
+      begin
+         declare
+            Dummy : constant Config.Local_Identity_Type
+              := Config.Get_Local_Identity (Id => 42);
+            pragma Unreferenced (Dummy);
+         begin
+            Fail (Message => "Expected config error");
+         end;
+
+      exception
+         when Config.Config_Error => null;
+      end;
+   end Get_Local_Identity;
+
+   -------------------------------------------------------------------------
+
    procedure Get_Policy
    is
       use type Config.Security_Policy_Type;
@@ -110,6 +137,9 @@ package body Config_Tests is
       T.Add_Test_Routine
         (Routine => Iterate_Policies'Access,
          Name    => "Iterate over policies in config");
+      T.Add_Test_Routine
+        (Routine => Get_Local_Identity'Access,
+         Name    => "Get local identity from config");
    end Initialize;
 
    -------------------------------------------------------------------------

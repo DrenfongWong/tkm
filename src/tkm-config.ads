@@ -104,6 +104,14 @@ is
    --  Returns policy with given id from the config. A config error is raised
    --  if no policy with given id exists.
 
+   function Get_Local_Identity
+     (Id : Tkmrpc.Types.Li_Id_Type)
+      return Local_Identity_Type
+   with
+     Pre => not Is_Empty;
+   --  Returns local identity with given id from the config. A config error is
+   --  raised if no local identity with given id exists.
+
    procedure Iterate
      (Process : not null access procedure (Policy : Security_Policy_Type))
    with

@@ -25,4 +25,7 @@ package Config_Tests is
    procedure Iterate_Policies;
    --  Iterate over all policies.
 
+   procedure Get_Local_Identity;
+   --  Get local identity from config.
+
 end Config_Tests;
