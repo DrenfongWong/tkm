@@ -1,20 +1,35 @@
 package body Tkm.Identities
 is
 
+   ID_Payload_Hdr : constant Tkmrpc.Types.Byte_Sequence := (3, 0, 0, 0);
+   --  IKE ID payload header, see RFC 5996, section 3.5.
+
+   -------------------------------------------------------------------------
+
+   function Encode
+     (Identity : Tkmrpc.Types.Identity_Type)
+      return Tkmrpc.Types.Identity_Type
+   is
+      Ident : Tkmrpc.Types.Identity_Type
+        := (Size => Identity.Size + ID_Payload_Hdr'Length,
+            Data => (others => 0));
+   begin
+      Ident.Data (Ident.Data'First .. ID_Payload_Hdr'Length) := ID_Payload_Hdr;
+      Ident.Data (Ident.Data'First + ID_Payload_Hdr'Length .. Ident.Size)
+        := Identity.Data (Identity.Data'First .. Identity.Size);
+      return Ident;
+   end Encode;
+
    -------------------------------------------------------------------------
 
    function To_Identity (Str : String) return Tkmrpc.Types.Identity_Type
    is
-
-      --  Initialize with IKE identity header.
-
       Identity : Tkmrpc.Types.Identity_Type
-        := (Size => Str'Length + 4,
-            Data => (1      => 03,
-                     others => 0));
+        := (Size => Str'Length,
+            Data => (others => 0));
    begin
       for I in Str'Range loop
-         Identity.Data (I + 4) := Character'Pos (Str (I));
+         Identity.Data (I) := Character'Pos (Str (I));
       end loop;
 
       return Identity;

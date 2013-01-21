@@ -15,6 +15,11 @@ is
    function To_Identity (Str : String) return Tkmrpc.Types.Identity_Type;
    --  Create identity type from given string.
 
+   function Encode
+     (Identity : Tkmrpc.Types.Identity_Type)
+      return Tkmrpc.Types.Identity_Type;
+   --  Encode given identity by prepending IKE ID payload header.
+
 private
 
    Null_Local_Identity : constant Local_Identity_Type

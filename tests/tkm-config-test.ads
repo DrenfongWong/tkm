@@ -2,20 +2,19 @@ package Tkm.Config.Test
 is
 
    Alice_Id : constant Tkmrpc.Types.Identity_Type
-     := (Size => 24,
+     := (Size => 20,
          Data =>
-           (16#03#, 16#00#, 16#00#, 16#00#, 16#61#, 16#6C#, 16#69#, 16#63#,
-            16#65#, 16#40#, 16#73#, 16#74#, 16#72#, 16#6F#, 16#6E#, 16#67#,
-            16#73#, 16#77#, 16#61#, 16#6E#, 16#2E#, 16#6F#, 16#72#, 16#67#,
-            others => 0));
+           (16#61#, 16#6C#, 16#69#, 16#63#, 16#65#, 16#40#, 16#73#, 16#74#,
+            16#72#, 16#6F#, 16#6E#, 16#67#, 16#73#, 16#77#, 16#61#, 16#6E#,
+            16#2E#, 16#6F#, 16#72#, 16#67#, others => 0));
    --  alice@strongswan.org.
 
-   Bod_Id : constant Tkmrpc.Types.Identity_Type
-     := (Size => 22,
+   Bob_Id : constant Tkmrpc.Types.Identity_Type
+     := (Size => 18,
          Data =>
-           (16#03#, 16#00#, 16#00#, 16#00#, 16#62#, 16#6f#, 16#62#, 16#40#,
-            16#73#, 16#74#, 16#72#, 16#6f#, 16#6e#, 16#67#, 16#73#, 16#77#,
-            16#61#, 16#6e#, 16#2e#, 16#6f#, 16#72#, 16#67#, others => 0));
+           (16#62#, 16#6f#, 16#62#, 16#40#, 16#73#, 16#74#, 16#72#, 16#6f#,
+            16#6e#, 16#67#, 16#73#, 16#77#, 16#61#, 16#6e#, 16#2e#, 16#6f#,
+            16#72#, 16#67#, others => 0));
    --  bob@strongswan.org.
 
    Lifetime_Hard : constant := 60;
@@ -34,7 +33,7 @@ is
                Local_Identity  => 1,
                Local_Addr      => (192, 168, 0, 2),
                Local_Net       => (192, 168, 0, 2),
-               Remote_Identity => Bod_Id,
+               Remote_Identity => Bob_Id,
                Remote_Addr     => (192, 168, 0, 3),
                Remote_Net      => (192, 168, 0, 3),
                Lifetime_Soft   => Lifetime_Soft,
@@ -43,7 +42,7 @@ is
                Local_Identity  => 1,
                Local_Addr      => (192, 168, 0, 2),
                Local_Net       => (192, 168, 100, 0),
-               Remote_Identity => Bod_Id,
+               Remote_Identity => Bob_Id,
                Remote_Addr     => (192, 168, 0, 4),
                Remote_Net      => (192, 168, 200, 0),
                Lifetime_Soft => Lifetime_Soft,
