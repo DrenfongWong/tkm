@@ -7,6 +7,8 @@ with Tkmrpc.Contexts.cc;
 with Tkm.Utils;
 with Tkm.Logger;
 with Tkm.Ca_Cert;
+with Tkm.Config;
+with Tkm.Identities;
 with Tkm.Crypto.Rsa_Pkcs1_Sha256;
 
 package body Tkm.Servers.Ike.Cc
@@ -17,6 +19,12 @@ is
    procedure Validate (Cert : X509.Certs.Certificate_Type);
    --  Check validity of given certificate and raise exception if the check
    --  fails.
+
+   procedure Verify_Identity
+     (Cert  : X509.Certs.Certificate_Type;
+      Ri_Id : Tkmrpc.Types.Ri_Id_Type);
+   --  Check that the subject of the certificate matches the remote identity
+   --  specified by id and raise an exception if the identity does not match.
 
    -------------------------------------------------------------------------
 
@@ -137,6 +145,10 @@ is
          Cert   => User_Cert);
       Validate (Cert => User_Cert);
 
+      Verify_Identity
+        (Cert  => User_Cert,
+         Ri_Id => Ri_Id);
+
       L.Log (Message => "Setting user certificate '"
              & X509.Certs.Get_Subject (Cert => User_Cert)
              & "' for CC context" & Cc_Id'Img);
@@ -163,5 +175,22 @@ is
            & "' not valid";
       end if;
    end Validate;
+
+   -------------------------------------------------------------------------
+
+   procedure Verify_Identity
+     (Cert  : X509.Certs.Certificate_Type;
+      Ri_Id : Tkmrpc.Types.Ri_Id_Type)
+   is
+      Subject    : constant String := X509.Certs.Get_Subject (Cert => Cert);
+      R_Identity : constant String := Identities.To_String
+        (Identity => Config.Get_Policy
+           (Id => Tkmrpc.Types.Sp_Id_Type (Ri_Id)).Remote_Identity);
+   begin
+      if Subject /=  R_Identity then
+         raise Invalid_Certificate with "Certificate subject '" & Subject
+           & "' and remote identity '" & R_Identity & "' mismatch";
+      end if;
+   end Verify_Identity;
 
 end Tkm.Servers.Ike.Cc;
