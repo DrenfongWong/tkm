@@ -41,4 +41,6 @@ is
    procedure Reset (Esa_Id : Tkmrpc.Types.Esa_Id_Type);
    --  Reset ESA context with given id.
 
+   Policy_Violation : exception;
+
 end Tkm.Servers.Ike.Esa;

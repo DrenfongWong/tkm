@@ -1,3 +1,5 @@
+with Ada.Strings.Fixed;
+
 with X509.Certs;
 with X509.Keys;
 with X509.Validity;
@@ -187,7 +189,12 @@ is
         (Identity => Config.Get_Policy
            (Id => Tkmrpc.Types.Sp_Id_Type (Ri_Id)).Remote_Identity);
    begin
-      if Subject /=  R_Identity then
+
+      --  Check that identity string is part of subject.
+
+      if Ada.Strings.Fixed.Index (Source  => Subject,
+                                   Pattern => R_Identity) = 0
+      then
          raise Invalid_Certificate with "Certificate subject '" & Subject
            & "' and remote identity '" & R_Identity & "' mismatch";
       end if;

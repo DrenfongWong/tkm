@@ -63,6 +63,13 @@ is
       Secret    : Tkmrpc.Types.Dh_Key_Type;
       Nonce_Loc : Tkmrpc.Types.Nonce_Type;
    begin
+      if Tkmrpc.Contexts.ae.get_ri_id
+        (Id => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id))
+        /= Tkmrpc.Types.Ri_Id_Type (Sp_Id)
+      then
+         raise Policy_Violation with "Remote identity of AE context differs";
+      end if;
+
       Tkmrpc.Contexts.nc.consume (Id    => Nc_Loc_Id,
                                   nonce => Nonce_Loc);
       Tkmrpc.Contexts.dh.consume (Id     => Dh_Id,
