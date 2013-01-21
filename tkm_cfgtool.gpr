@@ -6,8 +6,8 @@ project Tkm_Cfgtool is
    Compiler_Switches := Tkm_Common.Compiler_Switches & "-gnatwale";
    Linker_Switches   := ();
 
-   for Main use ("cfg_tool");
-   for Source_Dirs use ("src", "tools");
+   for Main use ("tkm_cfgtool");
+   for Source_Dirs use ("src", "tools/cfgtool");
    for Object_Dir use "obj";
 
    package Compiler is

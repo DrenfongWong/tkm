@@ -8,7 +8,7 @@ with GNAT.Command_Line;
 with Tkm.Version;
 with Tkm.Config.Xml;
 
-procedure Cfg_Tool
+procedure Tkm_Cfgtool
 is
 
    use Ada.Strings.Unbounded;
@@ -129,4 +129,4 @@ exception
       Ada.Text_IO.Put_Line ("Terminating due to error");
       Ada.Text_IO.Put_Line (Ada.Exceptions.Exception_Information (X => E));
       Ada.Command_Line.Set_Exit_Status (Code => Ada.Command_Line.Failure);
-end Cfg_Tool;
+end Tkm_Cfgtool;
