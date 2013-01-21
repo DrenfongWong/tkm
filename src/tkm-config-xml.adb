@@ -11,11 +11,10 @@ with Input_Sources.File;
 
 with Sax.Readers;
 
-with Schema.Validators;
 with Schema.Dom_Readers;
-with Schema.Schema_Readers;
 
 with Tkm.Config.Xml.Tags;
+with Tkm.Config.Xml.Grammar;
 
 package body Tkm.Config.Xml
 is
@@ -63,9 +62,6 @@ is
       return String;
    --  Return value of child element of given E with specified tag name. If the
    --  element does not exist an empty string is returned.
-
-   function Get_Grammar (File : String) return Schema.Validators.XML_Grammar;
-   --  Load grammar from given XML schema file.
 
    function Get_Local_Identities (Data : XML_Config) return Local_Ids_Pkg.Map;
    --  Returns a map of all local identities in the given XML config.
@@ -229,27 +225,6 @@ is
 
    -------------------------------------------------------------------------
 
-   function Get_Grammar (File : String) return Schema.Validators.XML_Grammar
-   is
-      Schema_Read : Schema.Schema_Readers.Schema_Reader;
-      File_Input  : Input_Sources.File.File_Input;
-   begin
-      Input_Sources.File.Open (Filename => File,
-                               Input    => File_Input);
-      Schema.Schema_Readers.Parse (Parser => Schema_Read,
-                                   Input  => File_Input);
-      Input_Sources.File.Close (Input => File_Input);
-
-      return Schema_Read.Get_Grammar;
-
-   exception
-      when E : others =>
-         raise Config_Error with "Error reading XML schema '" & File & "': "
-           & Ada.Exceptions.Exception_Message (X => E);
-   end Get_Grammar;
-
-   -------------------------------------------------------------------------
-
    function Get_Local_Identities (Data : XML_Config) return Local_Ids_Pkg.Map
    is
       L_Identities : Local_Ids_Pkg.Map;
@@ -377,7 +352,7 @@ is
       Reader     : DR.Tree_Reader;
       File_Input : Input_Sources.File.File_Input;
    begin
-      Reader.Set_Grammar (Grammar => Get_Grammar (File => Schema));
+      Reader.Set_Grammar (Grammar => Grammar.Get_Grammar (File => Schema));
       Reader.Set_Feature (Name  => Sax.Readers.Schema_Validation_Feature,
                           Value => True);
 
