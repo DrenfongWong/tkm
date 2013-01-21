@@ -80,12 +80,12 @@ is
          end if;
 
          Tkmrpc.Contexts.ae.authenticate
-           (Id              => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
-            ca_context      => 1,
-            ra_id           => 1,
-            remote_identity => 1,
-            not_before      => 1,
-            not_after       => 1);
+           (Id         => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
+            ca_context => 1,
+            authag_id  => 1,
+            ri_id      => 1,
+            not_before => 1,
+            not_after  => 1);
          L.Log (Message => "Authentication of ISA context" & Isa_Id'Img
                 & " successful");
       end;

@@ -514,12 +514,12 @@ package body Server_Ike_Isa_Tests is
         (Id    => 1,
          lc_id => 1);
       Contexts.ae.authenticate
-        (Id              => 1,
-         ca_context      => 1,
-         ra_id           => 1,
-         remote_identity => 1,
-         not_before      => 1,
-         not_after       => 1);
+        (Id         => 1,
+         ca_context => 1,
+         authag_id  => 1,
+         ri_id      => 1,
+         not_before => 1,
+         not_after  => 1);
       Contexts.isa.create (Id            => 1,
                            ae_id         => 1,
                            ia_id         => 1,
