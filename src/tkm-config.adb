@@ -11,7 +11,8 @@ is
    begin
       Current_Config.Policies     := (others => Null_Security_Policy);
       Policy_Count                := 0;
-      Current_Config.L_Identities := (others => Null_Local_Identity);
+      Current_Config.L_Identities
+        := (others => Identities.Null_Local_Identity);
       L_Ident_Count               := 0;
    end Clear;
 
@@ -19,7 +20,7 @@ is
 
    function Get_Local_Identity
      (Id : Tkmrpc.Types.Li_Id_Type)
-      return Local_Identity_Type
+      return Identities.Local_Identity_Type
    is
       use type Tkmrpc.Types.Li_Id_Type;
    begin

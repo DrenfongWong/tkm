@@ -104,11 +104,8 @@ is
 
    function To_Array
      (Data : Local_Ids_Pkg.Map)
-      return Local_Identities_Type;
+      return Identities.Local_Identities_Type;
    --  Convert given policy list to security policy array type.
-
-   function To_Identity (Str : String) return Tkmrpc.Types.Identity_Type;
-   --  Create identity type from given string.
 
    -------------------------------------------------------------------------
 
@@ -397,16 +394,16 @@ is
 
    function To_Array
      (Data : Local_Ids_Pkg.Map)
-      return Local_Identities_Type
+      return Identities.Local_Identities_Type
    is
       use type Local_Ids_Pkg.Cursor;
 
       subtype Index_Range is Natural range 0 .. Natural (Data.Length);
       subtype Idents_Range is Index_Range range 1 .. Index_Range'Last;
 
-      Identities : Local_Identities_Type (Idents_Range);
-      Pos        : Local_Ids_Pkg.Cursor := Data.First;
-      Idx        : Index_Range          := Index_Range'First;
+      Idents : Identities.Local_Identities_Type (Idents_Range);
+      Pos    : Local_Ids_Pkg.Cursor := Data.First;
+      Idx    : Index_Range          := Index_Range'First;
    begin
       while Pos /= Local_Ids_Pkg.No_Element loop
          Idx := Idx + 1;
@@ -414,32 +411,14 @@ is
             Elem : constant Local_Id_Type := Local_Ids_Pkg.Element
               (Position => Pos);
          begin
-            Identities (Idx) := (Id => Elem.Id,
-                                 Name => To_Identity (Str => S (Elem.Name)));
+            Idents (Idx) := (Id => Elem.Id,
+                             Name => Identities.To_Identity
+                               (Str => S (Elem.Name)));
          end;
          Local_Ids_Pkg.Next (Position => Pos);
       end loop;
-      return Identities;
+      return Idents;
    end To_Array;
-
-   -------------------------------------------------------------------------
-
-   function To_Identity (Str : String) return Tkmrpc.Types.Identity_Type
-   is
-
-      --  Initialize with IKE identity header.
-
-      Identity : Tkmrpc.Types.Identity_Type
-        := (Size => Str'Length + 4,
-            Data => (1      => 03,
-                     others => 0));
-   begin
-      for I in Str'Range loop
-         Identity.Data (I + 4) := Character'Pos (Str (I));
-      end loop;
-
-      return Identity;
-   end To_Identity;
 
    -------------------------------------------------------------------------
 
@@ -544,7 +523,8 @@ is
            (Local_Identity);
          Policy.Local_Addr      := Anet.To_IPv4_Addr (Str => Local_Addr);
          Policy.Local_Net       := Anet.To_IPv4_Addr (Str => Local_Net);
-         Policy.Remote_Identity := To_Identity (Str => Remote_Identity);
+         Policy.Remote_Identity := Identities.To_Identity
+           (Str => Remote_Identity);
          Policy.Remote_Addr     := Anet.To_IPv4_Addr (Str => Remote_Addr);
          Policy.Remote_Net      := Anet.To_IPv4_Addr (Str => Remote_Net);
          Policy.Lifetime_Soft   := Tkmrpc.Types.Abs_Time_Type'Value

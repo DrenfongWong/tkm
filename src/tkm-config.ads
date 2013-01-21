@@ -1,5 +1,7 @@
 with Anet;
 
+with Tkm.Identities;
+
 package Tkm.Config
 is
 
@@ -27,23 +29,12 @@ is
    type Security_Policies_Type is array (Positive range <>)
      of Security_Policy_Type;
 
-   type Local_Identity_Type is record
-      Id   : Tkmrpc.Types.Li_Id_Type;
-      Name : Tkmrpc.Types.Identity_Type;
-   end record;
-   --  Identity type connects identity id with a name.
-
-   Null_Local_Identity : constant Local_Identity_Type;
-
-   type Local_Identities_Type is array (Positive range <>)
-     of Local_Identity_Type;
-
    type Config_Type
      (Policy_Count    : Positive;
       Local_Ids_Count : Positive)
    is record
       Policies     : Security_Policies_Type (1 .. Policy_Count);
-      L_Identities : Local_Identities_Type (1 .. Local_Ids_Count);
+      L_Identities : Identities.Local_Identities_Type (1 .. Local_Ids_Count);
    end record;
    --  TKM Configuration.
 
@@ -77,7 +68,7 @@ is
 
    function Get_Local_Identity
      (Id : Tkmrpc.Types.Li_Id_Type)
-      return Local_Identity_Type
+      return Identities.Local_Identity_Type
    with
      Pre => not Is_Empty;
    --  Returns local identity with given id from the config. A config error is
@@ -103,10 +94,6 @@ private
          Remote_Net      => Anet.Any_Addr,
          Lifetime_Soft   => Tkmrpc.Types.Abs_Time_Type'First,
          Lifetime_Hard   => Tkmrpc.Types.Abs_Time_Type'First);
-
-   Null_Local_Identity : constant Local_Identity_Type
-     := (Id => Tkmrpc.Types.Li_Id_Type'First,
-         Name => Tkmrpc.Types.Null_Identity_Type);
 
    Policy_Count   : Natural := 0;
    L_Ident_Count  : Natural := 0;

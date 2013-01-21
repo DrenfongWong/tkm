@@ -24,7 +24,7 @@ is
    Lifetime_Soft : constant := 30;
    --  ESP SA lifetime in seconds (soft).
 
-   Ref_Local_Ids : constant Config.Local_Identities_Type (1 .. 1)
+   Ref_Local_Ids : constant Identities.Local_Identities_Type (1 .. 1)
      := (1 => (Id   => 1,
                Name => Alice_Id));
    --  Reference local identities.

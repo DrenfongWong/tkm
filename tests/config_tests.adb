@@ -5,6 +5,7 @@ with Anet.OS;
 
 with Tkm.Config.Xml;
 with Tkm.Config.Test;
+with Tkm.Identities;
 
 package body Config_Tests is
 
@@ -16,7 +17,7 @@ package body Config_Tests is
 
    procedure Get_Local_Identity
    is
-      use type Config.Local_Identity_Type;
+      use type Identities.Local_Identity_Type;
    begin
       Config.Clear;
       Config.Test.Load (Cfg => Ref_Config);
@@ -27,7 +28,7 @@ package body Config_Tests is
 
       begin
          declare
-            Dummy : constant Config.Local_Identity_Type
+            Dummy : constant Identities.Local_Identity_Type
               := Config.Get_Local_Identity (Id => 42);
             pragma Unreferenced (Dummy);
          begin
