@@ -1,8 +1,4 @@
-with "alog";
-with "gmpada";
 with "tkmrpc_server-ike";
-with "x509ada";
-with "xfrmada";
 
 project Tkm_Common is
 

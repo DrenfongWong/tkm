@@ -1,4 +1,9 @@
 with "ahven";
+with "alog";
+with "gmpada";
+with "tkmrpc_server-ike";
+with "x509ada";
+with "xfrmada";
 with "xmlada";
 with "tkm_common";
 

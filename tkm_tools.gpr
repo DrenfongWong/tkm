@@ -1,3 +1,8 @@
+with "alog";
+with "gmpada";
+with "tkmrpc_server-ike";
+with "x509ada";
+with "xfrmada";
 with "tkm_common";
 
 project Tkm_Tools is
