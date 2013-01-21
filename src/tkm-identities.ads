@@ -15,6 +15,9 @@ is
    function To_Identity (Str : String) return Tkmrpc.Types.Identity_Type;
    --  Create identity type from given string.
 
+   function To_String (Identity : Tkmrpc.Types.Identity_Type) return String;
+   --  Return string representation of given identity.
+
    function Encode
      (Identity : Tkmrpc.Types.Identity_Type)
       return Tkmrpc.Types.Identity_Type;

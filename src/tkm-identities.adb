@@ -35,4 +35,17 @@ is
       return Identity;
    end To_Identity;
 
+   -------------------------------------------------------------------------
+
+   function To_String (Identity : Tkmrpc.Types.Identity_Type) return String
+   is
+      Id_Str : String (1 .. Identity.Size);
+   begin
+      for I in Id_Str'Range loop
+         Id_Str (I) := Character'Val (Identity.Data (I));
+      end loop;
+
+      return Id_Str;
+   end To_String;
+
 end Tkm.Identities;

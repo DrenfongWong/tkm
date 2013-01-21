@@ -30,6 +30,17 @@ package body Identity_Tests is
 
    -------------------------------------------------------------------------
 
+   procedure Identity_To_String
+   is
+   begin
+      Assert (Condition => Identities.To_String
+              (Identity => Tkm.Config.Test.Alice_Id)
+              = "alice@strongswan.org",
+              Message   => "Identity string mismatch");
+   end Identity_To_String;
+
+   -------------------------------------------------------------------------
+
    procedure Initialize (T : in out Testcase)
    is
    begin
@@ -40,6 +51,9 @@ package body Identity_Tests is
       T.Add_Test_Routine
         (Routine => Encode_Identity'Access,
          Name    => "Encode identity");
+      T.Add_Test_Routine
+        (Routine => Identity_To_String'Access,
+         Name    => "Identity to string conversion");
    end Initialize;
 
    -------------------------------------------------------------------------

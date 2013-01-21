@@ -13,4 +13,7 @@ package Identity_Tests is
    procedure Encode_Identity;
    --  Verify identity encoding.
 
+   procedure Identity_To_String;
+   --  Verify identity to string conversion.
+
 end Identity_Tests;
