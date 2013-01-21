@@ -19,7 +19,7 @@ with Tkm.Callbacks;
 with Tkm.Ca_Cert;
 with Tkm.Private_Key;
 
-procedure Key_Manager
+procedure Tkm_Keymanager
 is
 
    use Ada.Strings.Unbounded;
@@ -138,4 +138,4 @@ exception
              Message => Ada.Exceptions.Exception_Information (X => E));
       L.Stop;
       Ada.Command_Line.Set_Exit_Status (Code => Ada.Command_Line.Failure);
-end Key_Manager;
+end Tkm_Keymanager;

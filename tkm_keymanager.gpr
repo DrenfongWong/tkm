@@ -5,13 +5,13 @@ with "x509ada";
 with "xfrmada";
 with "tkm_common";
 
-project Tkm_Tools is
+project Tkm_Keymanager is
 
    Compiler_Switches := Tkm_Common.Compiler_Switches & "-gnatwale";
    Linker_Switches   := ();
 
-   for Main use ("key_manager");
-   for Source_Dirs use ("src", "tools");
+   for Main use ("tkm_keymanager");
+   for Source_Dirs use ("src", "tools/keymanager");
    for Object_Dir use "obj";
 
    package Compiler is
@@ -26,4 +26,4 @@ project Tkm_Tools is
       for Default_Switches ("ada") use Tkm_Common.Binder_Switches;
    end Binder;
 
-end Tkm_Tools;
+end Tkm_Keymanager;
