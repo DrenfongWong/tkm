@@ -557,9 +557,6 @@ is
    begin
       Iterate (Data    => Data,
                Process => Process_Policy'Access);
-      if Policies.Length = 0 then
-         raise Config_Error with "No policies in XML config present";
-      end if;
 
       return Cfg : Config_Type
         (Policy_Count    => Positive (Policies.Length),
