@@ -92,6 +92,10 @@ package body Config_Tests is
       T.Add_Test_Routine
         (Routine => Get_Local_Identity'Access,
          Name    => "Get local identity from config");
+
+      --  Make sure XML grammar is parsed.
+
+      Config.Test.Init_Grammar (File => "schema/tkmconfig.xsd");
    end Initialize;
 
    -------------------------------------------------------------------------

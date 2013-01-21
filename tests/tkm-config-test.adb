@@ -1,5 +1,20 @@
+with Tkm.Config.Xml.Grammar;
+
+with Schema.Validators;
+
 package body Tkm.Config.Test
 is
+
+   -------------------------------------------------------------------------
+
+   procedure Init_Grammar (File : String)
+   is
+      G : constant Schema.Validators.XML_Grammar
+        := Xml.Grammar.Get_Grammar (File => File);
+      pragma Unreferenced (G);
+   begin
+      null;
+   end Init_Grammar;
 
    -------------------------------------------------------------------------
 

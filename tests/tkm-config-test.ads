@@ -70,4 +70,7 @@ is
    procedure Load (Cfg : Config_Type);
    --  Load given config.
 
+   procedure Init_Grammar (File : String);
+   --  Initialize grammar.
+
 end Tkm.Config.Test;
