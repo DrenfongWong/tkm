@@ -10,6 +10,7 @@ with Tkmrpc.Contexts.cc;
 with Tkm.Config;
 with Tkm.Utils;
 with Tkm.Logger;
+with Tkm.Identities;
 with Tkm.Key_Derivation;
 with Tkm.Private_Key;
 with Tkm.Crypto.Hmac_Sha512;
@@ -133,6 +134,8 @@ is
          Octets : Tkmrpc.Types.Byte_Sequence
            (1 .. Init_Message.Size + Nonce.Size +
               Crypto.Hmac_Sha512.Hash_Output_Length);
+         Encoded_Id : constant Tkmrpc.Types.Identity_Type
+           := Tkm.Identities.Encode (Identity => Idx);
       begin
 
          --  Octets = Init_Message | nonce | prf(Sk_p, Idx)
@@ -144,7 +147,8 @@ is
          Octets (Init_Message.Size + Nonce.Size + 1 .. Octets'Last)
            := Crypto.Hmac_Sha512.Generate
              (Ctx  => Prf,
-              Data => Idx.Data (Idx.Data'First .. Idx.Size));
+              Data => Encoded_Id.Data
+                (Encoded_Id.Data'First .. Encoded_Id.Size));
 
          L.Log (Message => "AUTH Octets " & Utils.To_Hex_String
                 (Input => Octets));
