@@ -94,7 +94,7 @@ is
            (Id         => Tkmrpc.Contexts.isa.get_ae_id (Id => Isa_Id),
             ca_context => 1,
             authag_id  => 1,
-            ri_id      => 1,
+            ri_id      => Ri_Id,
             not_before => 1,
             not_after  => 1);
          L.Log (Message => "Authentication of ISA context" & Isa_Id'Img
@@ -476,7 +476,7 @@ is
                 (Input => Sig));
          Tkmrpc.Contexts.ae.sign
            (Id    => Ae_Id,
-            lc_id => 1);
+            lc_id => Lc_Id);
       end;
    end Sign;
 
