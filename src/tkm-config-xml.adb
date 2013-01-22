@@ -601,7 +601,8 @@ is
                Process => Process_Policy'Access);
 
       return Cfg : Config_Type
-        (Policy_Count    => Positive (Policies.Length),
+        (Version         => Version,
+         Policy_Count    => Positive (Policies.Length),
          Local_Ids_Count => Positive (L_Identities.Length))
       do
          Cfg.Policies     := To_Array (List => Policies);

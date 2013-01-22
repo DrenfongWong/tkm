@@ -50,7 +50,8 @@ is
    --  Reference policies.
 
    Ref_Config   : constant Config.Config_Type
-     := (Policy_Count    => Ref_Policies'Length,
+     := (Version         => Config.Version,
+         Policy_Count    => Ref_Policies'Length,
          Policies        => Ref_Policies,
          Local_Ids_Count => Ref_Local_Ids'Length,
          L_Identities    => Ref_Local_Ids);

@@ -91,6 +91,7 @@ is
 
    function Read (Filename : String) return Config_Type
    is
+      use type Tkmrpc.Types.Version_Type;
       File : Ada.Text_IO.File_Type;
    begin
       Ada.Text_IO.Open (File => File,
@@ -102,6 +103,13 @@ is
               (Ada.Text_IO.Text_Streams.Stream (File => File));
          begin
             Ada.Text_IO.Close (File => File);
+
+            if Config.Version /= Version then
+               raise Config_Error with "Config version mismatch: '" &
+               Filename & "' has" & Config.Version'Img & " instead of" &
+               Version'Img;
+            end if;
+
             return Config;
          end;
 

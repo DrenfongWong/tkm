@@ -93,6 +93,9 @@ package body Config_Tests is
       T.Add_Test_Routine
         (Routine => Get_Local_Identity'Access,
          Name    => "Get local identity from config");
+      T.Add_Test_Routine
+        (Routine => Version_Check'Access,
+         Name    => "Load config with different version");
 
       --  Make sure XML grammar is parsed.
 
@@ -159,6 +162,17 @@ package body Config_Tests is
             Ignore_Missing => False);
          raise;
    end Load_Config;
+
+   -------------------------------------------------------------------------
+
+   procedure Version_Check
+   is
+   begin
+      Config.Load (Filename => "data/version0.cfg");
+
+   exception
+      when Config.Config_Error => null;
+   end Version_Check;
 
    -------------------------------------------------------------------------
 

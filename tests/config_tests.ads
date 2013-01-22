@@ -13,6 +13,9 @@ package Config_Tests is
    procedure Load_Config;
    --  Load config from file.
 
+   procedure Version_Check;
+   --  Load config with different version.
+
    procedure Xml_To_Tkm_Config;
    --  Read XML configuration file and convert to TKM config.
 

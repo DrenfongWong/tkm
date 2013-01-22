@@ -5,6 +5,10 @@ with Tkm.Identities;
 package Tkm.Config
 is
 
+   Version : constant Tkmrpc.Types.Version_Type := 1;
+   --  Config format version. Must be increased if structure of Config_Type
+   --  changes.
+
    Max_Policy_Count : constant := 32;
    --  Maximum number of policies.
 
@@ -30,7 +34,8 @@ is
      of Security_Policy_Type;
 
    type Config_Type
-     (Policy_Count    : Positive;
+     (Version         : Tkmrpc.Types.Version_Type;
+      Policy_Count    : Positive;
       Local_Ids_Count : Positive)
    is record
       Policies     : Security_Policies_Type (1 .. Policy_Count);
@@ -39,7 +44,9 @@ is
    --  TKM Configuration.
 
    function Read (Filename : String) return Config_Type;
-   --  Load config from file specified by filename.
+   --  Load config from file specified by filename. An exception is raised if
+   --  the version of the config read from the file differs from the one
+   --  specified by the 'Version' constant.
 
    procedure Write
      (Config   : Config_Type;
@@ -98,7 +105,8 @@ private
    Policy_Count   : Natural := 0;
    L_Ident_Count  : Natural := 0;
    Current_Config : Config_Type
-     (Policy_Count    => Max_Policy_Count,
+     (Version         => Version,
+      Policy_Count    => Max_Policy_Count,
       Local_Ids_Count => Max_Local_Identities_Count);
 
 end Tkm.Config;
