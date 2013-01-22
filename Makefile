@@ -57,12 +57,16 @@ cov: tkm_tests.gpr
 install: install_tools
 
 install_tools: build_tools
-	install -v -d $(DESTDIR)/bin
-	install -m 755 $(OBJDIR)/key_manager $(DESTDIR)/bin
+	mkdir -p $(DESTDIR)/bin
+	mkdir -p $(DESTDIR)/share/tkm
+	install -m 755 $(OBJDIR)/tkm_keymanager $(DESTDIR)/bin
+	install -m 755 $(OBJDIR)/tkm_cfgtool $(DESTDIR)/bin
+	cp schema/* $(DESTDIR)/share/tkm
 
 install_tests: build_tests
-	install -v -d $(DESTDIR)/tests
+	mkdir -p $(DESTDIR)/tests
 	install -m 755 $(OBJDIR)/tests/test_runner $(DESTDIR)/tests
+	cp -r data schema $(DESTDIR)/tests
 
 clean:
 	@rm -rf $(OBJDIR)
@@ -70,5 +74,4 @@ clean:
 
 FORCE:
 
-.PHONY: build_tools build_tests build_all tests cov install install_tools \
-	install_tests clean
+.PHONY: tests
