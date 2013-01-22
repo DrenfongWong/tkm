@@ -25,7 +25,7 @@ is
         (Item => "Usage: " & Command_Name & " -c <config> -i <ikefile> "
          & "-t <tkmfile> -s <schema>");
       Ada.Text_IO.Put_Line ("  -c config file");
-      Ada.Text_IO.Put_Line ("  -i filename of IKE script to be written");
+      Ada.Text_IO.Put_Line ("  -i filename of IKE config to be written");
       Ada.Text_IO.Put_Line ("  -t filename of TKM config to be written");
       Ada.Text_IO.Put_Line
         ("  -s XML schema file (optional, default: schema/tkmconfig.xsd)");
@@ -39,12 +39,12 @@ is
    Tkm_File : Unbounded_String;
    Config   : Tkm.Config.Xml.XML_Config;
 
-   Script_Header : constant String
-     := "#!/bin/sh" & ASCII.LF & ASCII.LF
-       & "# This script was generated with TKM config tool ("
-     & Tkm.Version.Version_String & ")"  & ASCII.LF & ASCII.LF
-     & "# Make sure all certificates have been properly read" & ASCII.LF
-     & "stroke rereadall" & ASCII.LF & ASCII.LF;
+   Header : constant String
+     := "# strongSwan IPsec configuration file" & ASCII.LF &
+   "# This file was generated using TKM config tool (" &
+   Tkm.Version.Version_String & ")"  & ASCII.LF & ASCII.LF &
+   "conn %default" & ASCII.LF &
+   "    keyexchange=ikev2" & ASCII.LF;
 begin
    begin
       loop
@@ -108,7 +108,7 @@ begin
             Mode => Ada.Text_IO.Out_File,
             Name => To_String (Ike_File));
          Ada.Text_IO.Put (File => File,
-                          Item => Script_Header);
+                          Item => Header);
          Ada.Text_IO.Put
            (File => File,
             Item => Tkm.Config.Xml.To_Ike_Config (Data => Config));

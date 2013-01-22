@@ -1,4 +1,5 @@
 with Ada.Exceptions;
+with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Ordered_Maps;
@@ -427,7 +428,7 @@ is
       L_Identities : constant Local_Ids_Pkg.Map
         := Get_Local_Identities (Data => Data);
 
-      Script : Ada.Strings.Unbounded.Unbounded_String;
+      Conf_File : Ada.Strings.Unbounded.Unbounded_String;
 
       procedure Process_Policy
         (Id              : String;
@@ -454,32 +455,93 @@ is
          Lifetime_Soft   : String;
          Lifetime_Hard   : String)
       is
-         pragma Unreferenced (Lifetime_Soft, Lifetime_Hard);
+         pragma Unreferenced (Local_Net, Remote_Net);
 
-         L_Id : constant Tkmrpc.Types.Li_Id_Type
+         L_Id    : constant Tkmrpc.Types.Li_Id_Type
            := Tkmrpc.Types.Li_Id_Type'Value (Local_Identity);
          L_Ident : constant Local_Id_Type
            := L_Identities.Element (Key => L_Id);
+
+         procedure Add_Entry
+           (Source : in out Ada.Strings.Unbounded.Unbounded_String;
+            Key    :        String;
+            Value  :        String);
+         --  Add specified key/value entry to source string. If value is empty
+         --  nothing is added.
+
+         procedure Add_Entry
+           (Source : in out Ada.Strings.Unbounded.Unbounded_String;
+            Key    :        String;
+            Value  :        String)
+         is
+            Space : constant String := "    ";
+         begin
+            if Value'Length > 0 then
+               Ada.Strings.Unbounded.Append
+                 (Source   => Conf_File,
+                  New_Item => Space & Key & "=" & Value & ASCII.LF);
+            end if;
+         end Add_Entry;
       begin
          Ada.Strings.Unbounded.Append
-           (Source   => Script,
-            New_Item => "stroke add " & Id & " "
-            & S (L_Ident.Name)& " " & Remote_Identity & " "
-            & Local_Addr & " " & Remote_Addr & " "
-            & Local_Net & " " & Remote_Net & " "
-            & Id & " "
-            & "aes256-sha512-modp4096! "
-            &  S (L_Ident.Cert)
-            & ASCII.LF);
-         Ada.Strings.Unbounded.Append
-           (Source   => Script,
-            New_Item => "stroke route " & Id & ASCII.LF);
+           (Source   => Conf_File,
+            New_Item => ASCII.LF & "conn " & Id & ASCII.LF);
+         Add_Entry (Source => Conf_File,
+                    Key    => "reqid",
+                    Value  => Id);
+         Add_Entry (Source => Conf_File,
+                    Key    => "left",
+                    Value  => Local_Addr);
+         Add_Entry (Source => Conf_File,
+                    Key    => "leftid",
+                    Value  => S (L_Ident.Name));
+         Add_Entry (Source => Conf_File,
+                    Key    => "leftcert",
+                    Value  => S (L_Ident.Cert));
+         Add_Entry (Source => Conf_File,
+                    Key    => "right",
+                    Value  => Remote_Addr);
+         Add_Entry (Source => Conf_File,
+                    Key    => "rightid",
+                    Value  => Remote_Identity);
+         Add_Entry (Source => Conf_File,
+                    Key    => "lifetime",
+                    Value  => Lifetime_Hard);
+
+         declare
+            use Tkmrpc.Types;
+
+            Margin : constant Rel_Time_Type
+              := Rel_Time_Type'Value
+                (Lifetime_Hard) - Rel_Time_Type'Value (Lifetime_Soft);
+         begin
+            Add_Entry (Source => Conf_File,
+                       Key    => "margintime",
+                       Value  => Ada.Strings.Fixed.Trim
+                         (Source => Margin'Img,
+                          Side   => Ada.Strings.Left));
+         end;
+
+         --  Add fixed entries
+
+         Add_Entry (Source => Conf_File,
+                    Key    => "ike",
+                    Value  => "aes256-sha512-modp4096!");
+         Add_Entry (Source => Conf_File,
+                    Key    => "esp",
+                    Value  => "aes256-sha512-modp4096!");
+         Add_Entry (Source => Conf_File,
+                    Key    => "type",
+                    Value  => "transport");
+         Add_Entry (Source => Conf_File,
+                    Key    => "auto",
+                    Value  => "route");
       end Process_Policy;
    begin
       Iterate (Data    => Data,
                Process => Process_Policy'Access);
 
-      return S (Script);
+      return S (Conf_File);
    end To_Ike_Config;
 
    -------------------------------------------------------------------------

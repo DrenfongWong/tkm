@@ -16,7 +16,8 @@ is
    --  Create TKM config instance from given XML document.
 
    function To_Ike_Config (Data : XML_Config) return String;
-   --  Create IKE config script from given XML document.
+   --  Create config file in strongSwan's ipsec.conf format from given XML
+   --  document.
 
 private
 
