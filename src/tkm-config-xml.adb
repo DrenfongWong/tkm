@@ -485,7 +485,7 @@ is
       begin
          Ada.Strings.Unbounded.Append
            (Source   => Conf_File,
-            New_Item => ASCII.LF & "conn " & Id & ASCII.LF);
+            New_Item => ASCII.LF & "conn conn" & Id & ASCII.LF);
          Add_Entry (Source => Conf_File,
                     Key    => "reqid",
                     Value  => Id);

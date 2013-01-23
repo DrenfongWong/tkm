@@ -58,7 +58,7 @@ is
    --  Reference config.
 
    Ref_Ike_Cfg : constant String
-     := ASCII.LF & "conn 1" & ASCII.LF &
+     := ASCII.LF & "conn conn1" & ASCII.LF &
    "    reqid=1" & ASCII.LF &
    "    left=192.168.0.2" & ASCII.LF &
    "    leftid=alice@strongswan.org" & ASCII.LF &
@@ -71,7 +71,7 @@ is
    "    esp=aes256-sha512-modp4096!" & ASCII.LF &
    "    type=transport" & ASCII.LF &
    "    auto=route" & ASCII.LF &
-   ASCII.LF & "conn 2" & ASCII.LF &
+   ASCII.LF & "conn conn2" & ASCII.LF &
    "    reqid=2" & ASCII.LF &
    "    left=192.168.0.2" & ASCII.LF &
    "    leftid=alice@strongswan.org" & ASCII.LF &
