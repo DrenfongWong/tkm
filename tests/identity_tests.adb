@@ -39,11 +39,24 @@ package body Identity_Tests is
                16#65#, 16#40#, 16#73#, 16#74#, 16#72#, 16#6F#, 16#6E#, 16#67#,
                16#73#, 16#77#, 16#61#, 16#6E#, 16#2E#, 16#6F#, 16#72#, 16#67#,
                others => 0));
+      Encoded_Fqdn : constant Tkmrpc.Types.Identity_Type
+        := (Size => 23,
+            Data =>
+              (16#02#, 16#00#, 16#00#, 16#00#, 16#6D#, 16#6F#, 16#6F#, 16#6E#,
+               16#2E#, 16#73#, 16#74#, 16#72#, 16#6F#, 16#6E#, 16#67#, 16#73#,
+               16#77#, 16#61#, 16#6E#, 16#2E#, 16#6F#, 16#72#, 16#67#,
+               others => 0));
+   --  moon.strongswan.org (FQDN).
    begin
       Assert
         (Condition => Identities.Encode (Identity => Tkm.Config.Test.Alice_Id)
          = Encoded_Id,
          Message   => "Encoded identity mismatch");
+
+      Assert
+        (Condition => Identities.Encode (Identity => Tkm.Config.Test.Moon_Id)
+         = Encoded_Fqdn,
+         Message   => "Encoded identity mismatch (FQDN)");
    end Encode_Identity;
 
    -------------------------------------------------------------------------

@@ -19,8 +19,11 @@
 package body Tkm.Identities
 is
 
-   ID_Payload_Hdr : constant Tkmrpc.Types.Byte_Sequence := (3, 0, 0, 0);
-   --  IKE ID payload header, see RFC 5996, section 3.5.
+   ID_Payload_Hdr_Length : constant := 4;
+   --  IKE ID payload header length in bytes, see RFC5996, section 3.5.
+
+   function Is_Email (Id : Tkmrpc.Types.Identity_Type) return Boolean;
+   --  Returns True if given id is an email address.
 
    -------------------------------------------------------------------------
 
@@ -29,14 +32,36 @@ is
       return Tkmrpc.Types.Identity_Type
    is
       Ident : Tkmrpc.Types.Identity_Type
-        := (Size => Identity.Size + ID_Payload_Hdr'Length,
+        := (Size => Identity.Size + ID_Payload_Hdr_Length,
             Data => (others => 0));
    begin
-      Ident.Data (Ident.Data'First .. ID_Payload_Hdr'Length) := ID_Payload_Hdr;
-      Ident.Data (Ident.Data'First + ID_Payload_Hdr'Length .. Ident.Size)
+      if Is_Email (Id => Identity) then
+         Ident.Data (Ident.Data'First) := 3;
+      else
+         Ident.Data (Ident.Data'First) := 2;
+      end if;
+      Ident.Data (Ident.Data'First + ID_Payload_Hdr_Length .. Ident.Size)
         := Identity.Data (Identity.Data'First .. Identity.Size);
       return Ident;
    end Encode;
+
+   -------------------------------------------------------------------------
+
+   function Is_Email (Id : Tkmrpc.Types.Identity_Type) return Boolean
+   is
+      use type Tkmrpc.Types.Byte;
+   begin
+      for I in Id.Data'First ..  Id.Size loop
+         if Id.Data (I) = 16#40# then
+
+            --  The current byte is a '@'
+
+            return True;
+         end if;
+      end loop;
+
+      return False;
+   end Is_Email;
 
    -------------------------------------------------------------------------
 

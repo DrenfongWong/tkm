@@ -35,6 +35,14 @@ is
             16#72#, 16#67#, others => 0));
    --  bob@strongswan.org.
 
+   Moon_Id : constant Tkmrpc.Types.Identity_Type
+     := (Size => 19,
+         Data =>
+           (16#6D#, 16#6F#, 16#6F#, 16#6E#, 16#2E#, 16#73#, 16#74#, 16#72#,
+            16#6F#, 16#6E#, 16#67#, 16#73#, 16#77#, 16#61#, 16#6E#, 16#2E#,
+            16#6F#, 16#72#, 16#67#, others => 0));
+   --  moon.strongswan.org (FQDN).
+
    Lifetime_Hard : constant := 60;
    --  ESP SA lifetime in seconds (hard).
 
