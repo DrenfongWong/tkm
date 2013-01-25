@@ -33,5 +33,6 @@ is
    Cert_Tag        : constant String := "certificate";
    Net_Tag         : constant String := "net";
    Mask_Tag        : constant String := "mask";
+   Mode_Tag        : constant String := "mode";
 
 end Tkm.Config.Xml.Tags;

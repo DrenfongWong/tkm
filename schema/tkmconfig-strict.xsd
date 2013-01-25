@@ -44,6 +44,16 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="connectionModeType">
+        <xs:annotation>
+            <xs:documentation>Mode of connection</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="tunnel"/>
+            <xs:enumeration value="transport"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="ipAddressType">
         <xs:annotation>
             <xs:documentation>IPv4 address</xs:documentation>
@@ -94,6 +104,7 @@
 
     <xs:complexType name="policyType">
         <xs:sequence>
+            <xs:element name="mode" type="connectionModeType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="local" type="localParametersType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="remote" type="remoteParametersType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="lifetime" type="lifetimeType" minOccurs="1" maxOccurs="1"/>

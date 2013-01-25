@@ -84,7 +84,8 @@ is
          Remote_Net      : String;
          Remote_Netmask  : String;
          Lifetime_Soft   : String;
-         Lifetime_Hard   : String));
+         Lifetime_Hard   : String;
+         Mode            : String));
    --  Invokes given process procedure for each policy tag found in given xml
    --  config.
 
@@ -195,7 +196,8 @@ is
          Remote_Net      : String;
          Remote_Netmask  : String;
          Lifetime_Soft   : String;
-         Lifetime_Hard   : String))
+         Lifetime_Hard   : String;
+         Mode            : String))
    is
       package DC renames DOM.Core;
 
@@ -218,6 +220,7 @@ is
          Remote_Netmask  : Ada.Strings.Unbounded.Unbounded_String;
          Lifetime_Soft   : Ada.Strings.Unbounded.Unbounded_String;
          Lifetime_Hard   : Ada.Strings.Unbounded.Unbounded_String;
+         Mode            : Ada.Strings.Unbounded.Unbounded_String;
 
          Node : DC.Node;
       begin
@@ -266,6 +269,10 @@ is
            (Node     => Node,
             Tag_Name => Hard_Tag));
 
+         Mode := U (Util.Get_Element_Value_By_Tag_Name
+           (Node     => Policy_Node,
+            Tag_Name => Mode_Tag));
+
          Process (Id              => Id,
                   Local_Identity  => S (Local_Identity),
                   Local_Addr      => S (Local_Addr),
@@ -276,7 +283,8 @@ is
                   Remote_Net      => S (Remote_Net),
                   Remote_Netmask  => S (Remote_Netmask),
                   Lifetime_Soft   => S (Lifetime_Soft),
-                  Lifetime_Hard   => S (Lifetime_Hard));
+                  Lifetime_Hard   => S (Lifetime_Hard),
+                  Mode            => S (Mode));
       end Process_Policy_Node;
    begin
       Util.For_Each_Node (Data     => Data,
@@ -385,7 +393,8 @@ is
          Remote_Net      : String;
          Remote_Netmask  : String;
          Lifetime_Soft   : String;
-         Lifetime_Hard   : String);
+         Lifetime_Hard   : String;
+         Mode            : String);
       --  Add new connection entry for given policy to script.
 
       ----------------------------------------------------------------------
@@ -401,7 +410,8 @@ is
          Remote_Net      : String;
          Remote_Netmask  : String;
          Lifetime_Soft   : String;
-         Lifetime_Hard   : String)
+         Lifetime_Hard   : String;
+         Mode            : String)
       is
          L_Id    : constant Tkmrpc.Types.Li_Id_Type
            := Tkmrpc.Types.Li_Id_Type'Value (Local_Identity);
@@ -428,6 +438,9 @@ is
                   New_Item => Space & Key & "=" & Value & ASCII.LF);
             end if;
          end Add_Entry;
+
+         C_Mode : constant Connection_Mode_Type
+           := Connection_Mode_Type'Value (Mode);
       begin
          Ada.Strings.Unbounded.Append
            (Source   => Conf_File,
@@ -444,7 +457,7 @@ is
          Add_Entry (Source => Conf_File,
                     Key    => "leftcert",
                     Value  => S (L_Ident.Cert));
-         if Local_Net'Length > 0 then
+         if C_Mode = Tunnel and then Local_Net'Length > 0 then
             Add_Entry (Source => Conf_File,
                        Key    => "leftsubnet",
                        Value  => Local_Net & "/" & Local_Netmask);
@@ -456,7 +469,7 @@ is
          Add_Entry (Source => Conf_File,
                     Key    => "rightid",
                     Value  => Remote_Identity);
-         if Remote_Net'Length > 0 then
+         if C_Mode = Tunnel and then Remote_Net'Length > 0 then
             Add_Entry (Source => Conf_File,
                        Key    => "rightsubnet",
                        Value  => Remote_Net & "/" & Remote_Netmask);
@@ -479,6 +492,10 @@ is
                           Side   => Ada.Strings.Left));
          end;
 
+         Add_Entry (Source => Conf_File,
+                    Key    => "type",
+                    Value  => Mode);
+
          --  Add fixed entries
 
          Add_Entry (Source => Conf_File,
@@ -487,9 +504,6 @@ is
          Add_Entry (Source => Conf_File,
                     Key    => "esp",
                     Value  => "aes256-sha512-modp4096!");
-         Add_Entry (Source => Conf_File,
-                    Key    => "type",
-                    Value  => "transport");
          Add_Entry (Source => Conf_File,
                     Key    => "auto",
                     Value  => "route");
@@ -521,7 +535,8 @@ is
          Remote_Net      : String;
          Remote_Netmask  : String;
          Lifetime_Soft   : String;
-         Lifetime_Hard   : String);
+         Lifetime_Hard   : String;
+         Mode            : String);
       --  Add new policy with given values to policy list.
 
       ----------------------------------------------------------------------
@@ -537,31 +552,38 @@ is
          Remote_Net      : String;
          Remote_Netmask  : String;
          Lifetime_Soft   : String;
-         Lifetime_Hard   : String)
+         Lifetime_Hard   : String;
+         Mode            : String)
       is
          Policy : Security_Policy_Type := (others => <>);
       begin
-         Policy.Id               := Tkmrpc.Types.Sp_Id_Type'Value (Id);
-         Policy.Local_Identity   := Tkmrpc.Types.Li_Id_Type'Value
+         Policy.Id             := Tkmrpc.Types.Sp_Id_Type'Value (Id);
+         Policy.Local_Identity := Tkmrpc.Types.Li_Id_Type'Value
            (Local_Identity);
-         Policy.Local_Addr       := Anet.To_IPv4_Addr (Str => Local_Addr);
-         if Local_Net'Length > 0 then
-            Policy.Local_Net     := Anet.To_IPv4_Addr (Str => Local_Net);
-            Policy.Local_Netmask := Tkmrpc.Types.Byte'Value (Local_Netmask);
-         end if;
+         Policy.Local_Addr     := Anet.To_IPv4_Addr (Str => Local_Addr);
 
-         Policy.Remote_Identity   := Identities.To_Identity
+         Policy.Remote_Identity := Identities.To_Identity
            (Str => Remote_Identity);
-         Policy.Remote_Addr       := Anet.To_IPv4_Addr (Str => Remote_Addr);
-         if Remote_Net'Length > 0 then
-            Policy.Remote_Net     := Anet.To_IPv4_Addr (Str => Remote_Net);
-            Policy.Remote_Netmask := Tkmrpc.Types.Byte'Value (Remote_Netmask);
-         end if;
+         Policy.Remote_Addr     := Anet.To_IPv4_Addr (Str => Remote_Addr);
 
          Policy.Lifetime_Soft := Tkmrpc.Types.Abs_Time_Type'Value
            (Lifetime_Soft);
          Policy.Lifetime_Hard := Tkmrpc.Types.Abs_Time_Type'Value
            (Lifetime_Hard);
+
+         Policy.Mode := Connection_Mode_Type'Value (Mode);
+         if Policy.Mode = Tunnel then
+            if Local_Net'Length > 0 then
+               Policy.Local_Net     := Anet.To_IPv4_Addr (Str => Local_Net);
+               Policy.Local_Netmask := Tkmrpc.Types.Byte'Value (Local_Netmask);
+
+            end if;
+            if Remote_Net'Length > 0 then
+               Policy.Remote_Net     := Anet.To_IPv4_Addr (Str => Remote_Net);
+               Policy.Remote_Netmask := Tkmrpc.Types.Byte'Value
+                 (Remote_Netmask);
+            end if;
+         end if;
 
          Policies.Append (New_Item => Policy);
       end Process_Policy;

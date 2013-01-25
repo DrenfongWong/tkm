@@ -4,6 +4,7 @@
         <certificate>aliceCert.pem</certificate>
     </local_identity>
     <policy id="1">
+        <mode>transport</mode>
         <local>
             <identity_id>1</identity_id>
             <ip>192.168.0.2</ip>
@@ -18,6 +19,7 @@
         </lifetime>
     </policy>
     <policy id="2">
+        <mode>tunnel</mode>
         <local>
             <identity_id>1</identity_id>
             <ip>192.168.0.2</ip>

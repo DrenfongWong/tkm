@@ -65,7 +65,8 @@ is
                Remote_Net      => Anet.Any_Addr,
                Remote_Netmask  => 0,
                Lifetime_Soft   => Lifetime_Soft,
-               Lifetime_Hard   => Lifetime_Hard),
+               Lifetime_Hard   => Lifetime_Hard,
+               Mode            => Transport),
          2 => (Id            => 2,
                Local_Identity  => 1,
                Local_Addr      => (192, 168, 0, 2),
@@ -75,8 +76,9 @@ is
                Remote_Addr     => (192, 168, 0, 4),
                Remote_Net      => (192, 168, 200, 0),
                Remote_Netmask  => 24,
-               Lifetime_Soft => Lifetime_Soft,
-               Lifetime_Hard => Lifetime_Hard));
+               Lifetime_Soft   => Lifetime_Soft,
+               Lifetime_Hard   => Lifetime_Hard,
+               Mode            => Tunnel));
    --  Reference policies.
 
    Ref_Config   : constant Config.Config_Type
@@ -97,9 +99,9 @@ is
    "    rightid=bob@strongswan.org" & ASCII.LF &
    "    lifetime=60" & ASCII.LF &
    "    margintime=30" & ASCII.LF &
+   "    type=transport" & ASCII.LF &
    "    ike=aes256-sha512-modp4096!" & ASCII.LF &
    "    esp=aes256-sha512-modp4096!" & ASCII.LF &
-   "    type=transport" & ASCII.LF &
    "    auto=route" & ASCII.LF &
    ASCII.LF & "conn conn2" & ASCII.LF &
    "    reqid=2" & ASCII.LF &
@@ -112,9 +114,9 @@ is
    "    rightsubnet=192.168.200.0/24" & ASCII.LF &
    "    lifetime=60" & ASCII.LF &
    "    margintime=30" & ASCII.LF &
+   "    type=tunnel" & ASCII.LF &
    "    ike=aes256-sha512-modp4096!" & ASCII.LF &
    "    esp=aes256-sha512-modp4096!" & ASCII.LF &
-   "    type=transport" & ASCII.LF &
    "    auto=route" & ASCII.LF;
 
    procedure Load (Cfg : Config_Type);

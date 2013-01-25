@@ -23,7 +23,7 @@ with Tkm.Identities;
 package Tkm.Config
 is
 
-   Version : constant Tkmrpc.Types.Version_Type := 1;
+   Version : constant Tkmrpc.Types.Version_Type := 2;
    --  Config format version. Must be increased if structure of Config_Type
    --  changes.
 
@@ -32,6 +32,9 @@ is
 
    Max_Local_Identities_Count : constant := 32;
    --  Maximum number of local identities.
+
+   type Connection_Mode_Type is (Tunnel, Transport);
+   --  Connection mode of IPsec SA.
 
    type Security_Policy_Type is record
       Id              : Tkmrpc.Types.Sp_Id_Type;
@@ -45,6 +48,7 @@ is
       Remote_Netmask  : Tkmrpc.Types.Byte;
       Lifetime_Soft   : Tkmrpc.Types.Abs_Time_Type;
       Lifetime_Hard   : Tkmrpc.Types.Abs_Time_Type;
+      Mode            : Connection_Mode_Type;
    end record;
    --  Security policy describing a connection.
 
@@ -122,7 +126,8 @@ private
          Remote_Net      => Anet.Any_Addr,
          Remote_Netmask  => 0,
          Lifetime_Soft   => Tkmrpc.Types.Abs_Time_Type'First,
-         Lifetime_Hard   => Tkmrpc.Types.Abs_Time_Type'First);
+         Lifetime_Hard   => Tkmrpc.Types.Abs_Time_Type'First,
+         Mode            => Tunnel);
 
    Policy_Count   : Natural := 0;
    L_Ident_Count  : Natural := 0;
