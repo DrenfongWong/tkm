@@ -36,6 +36,7 @@ with Tkm.Config;
 with Tkm.Callbacks;
 with Tkm.Ca_Cert;
 with Tkm.Private_Key;
+with Tkm.Exceptions;
 
 procedure Tkm_Keymanager
 is
@@ -50,7 +51,7 @@ is
 
    procedure Dispatch is new Tkmrpc.Process_Stream
      (Dispatch          => Tkmrpc.Dispatchers.Ike.Dispatch,
-      Exception_Handler => L.Log);
+      Exception_Handler => Tkm.Exceptions.Handle_Exception);
 
    procedure Print_Usage (Msg : String);
    --  Print usage information, set exit status to failure and stop logger.
