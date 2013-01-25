@@ -23,8 +23,6 @@ with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Ordered_Maps;
 
 with DOM.Core.Nodes;
-with DOM.Core.Elements;
-with DOM.Core.Documents;
 
 with Input_Sources.File;
 
@@ -34,6 +32,7 @@ with Schema.Dom_Readers;
 
 with Tkm.Config.Xml.Tags;
 with Tkm.Config.Xml.Grammar;
+with Tkm.Config.Xml.Util;
 
 package body Tkm.Config.Xml
 is
@@ -69,28 +68,8 @@ is
       return Ada.Strings.Unbounded.Unbounded_String
       renames Ada.Strings.Unbounded.To_Unbounded_String;
 
-   function Get_Element_By_Tag_Name
-     (Node     : DOM.Core.Element;
-      Tag_Name : String)
-      return DOM.Core.Node;
-   --  Return child element of given E with specified tag name.
-
-   function Get_Element_Value_By_Tag_Name
-     (Node     : DOM.Core.Element;
-      Tag_Name : String)
-      return String;
-   --  Return value of child element of given E with specified tag name. If the
-   --  element does not exist an empty string is returned.
-
    function Get_Local_Identities (Data : XML_Config) return Local_Ids_Pkg.Map;
    --  Returns a map of all local identities in the given XML config.
-
-   procedure For_Each_Node
-     (Data     : XML_Config;
-      Tag_Name : String;
-      Process : not null access procedure (Node : DOM.Core.Node));
-   --  Invoke the given process procedure for each tag with specified name in
-   --  the given XML config.
 
    procedure Iterate
      (Data    : XML_Config;
@@ -149,10 +128,10 @@ is
          Name : Ada.Strings.Unbounded.Unbounded_String;
          Cert : Ada.Strings.Unbounded.Unbounded_String;
       begin
-         Name := U (Get_Element_Value_By_Tag_Name
+         Name := U (Util.Get_Element_Value_By_Tag_Name
            (Node     => L_Id_Node,
             Tag_Name => Identity_Tag));
-         Cert := U (Get_Element_Value_By_Tag_Name
+         Cert := U (Util.Get_Element_Value_By_Tag_Name
            (Node     => L_Id_Node,
             Tag_Name => Cert_Tag));
 
@@ -161,83 +140,10 @@ is
                   Certificate => S (Cert));
       end Process_L_Identity_Node;
    begin
-      For_Each_Node (Data     => Data,
-                     Tag_Name => L_Identity_Tag,
-                     Process  => Process_L_Identity_Node'Access);
+      Util.For_Each_Node (Data     => Data,
+                          Tag_Name => L_Identity_Tag,
+                          Process  => Process_L_Identity_Node'Access);
    end For_Each_L_Identity;
-
-   -------------------------------------------------------------------------
-
-   procedure For_Each_Node
-     (Data     : XML_Config;
-      Tag_Name : String;
-      Process : not null access procedure (Node : DOM.Core.Node))
-   is
-      package DC renames DOM.Core;
-
-      List : DC.Node_List;
-   begin
-      List := DC.Documents.Get_Elements_By_Tag_Name
-        (Doc      => DC.Document (Data),
-         Tag_Name => Tag_Name);
-
-      for Index in 1 .. DC.Nodes.Length (List => List) loop
-         Process (Node => DC.Nodes.Item
-                  (List  => List,
-                   Index => Index - 1));
-      end loop;
-      DOM.Core.Free (List => List);
-   end For_Each_Node;
-
-   -------------------------------------------------------------------------
-
-   function Get_Element_By_Tag_Name
-     (Node     : DOM.Core.Element;
-      Tag_Name : String)
-      return DOM.Core.Node
-   is
-      List : DOM.Core.Node_List;
-   begin
-      List := DOM.Core.Elements.Get_Elements_By_Tag_Name
-        (Elem => Node,
-         Name => Tag_Name);
-
-      if DOM.Core.Nodes.Length (List => List) = 0 then
-         DOM.Core.Free (List => List);
-         raise Config_Error with "Config element '" & Tag_Name & "' missing";
-      end if;
-
-      return Node : DOM.Core.Node do
-         Node := DOM.Core.Nodes.Item (List  => List,
-                                      Index => 0);
-         DOM.Core.Free (List => List);
-      end return;
-   end Get_Element_By_Tag_Name;
-
-   -------------------------------------------------------------------------
-
-   function Get_Element_Value_By_Tag_Name
-     (Node     : DOM.Core.Element;
-      Tag_Name : String)
-      return String
-   is
-      use type DOM.Core.Node;
-
-      Val_Node : constant DOM.Core.Node
-        := Get_Element_By_Tag_Name (Node     => Node,
-                                    Tag_Name => Tag_Name);
-   begin
-      if Val_Node /= null
-        and then DOM.Core.Nodes.Has_Child_Nodes (N => Val_Node)
-      then
-         return DOM.Core.Nodes.Node_Value
-           (N => DOM.Core.Nodes.First_Child
-              (N => Val_Node));
-      else
-         raise Config_Error with "Config element '" & Tag_Name
-           & "' has no value";
-      end if;
-   end Get_Element_Value_By_Tag_Name;
 
    -------------------------------------------------------------------------
 
@@ -309,36 +215,36 @@ is
 
          Node : DC.Node;
       begin
-         Node := Get_Element_By_Tag_Name (Node     => Policy_Node,
-                                          Tag_Name => Local_Tag);
-         Local_Identity := U (Get_Element_Value_By_Tag_Name
+         Node := Util.Get_Element_By_Tag_Name (Node     => Policy_Node,
+                                               Tag_Name => Local_Tag);
+         Local_Identity := U (Util.Get_Element_Value_By_Tag_Name
            (Node     => Node,
             Tag_Name => Identity_Id_Tag));
-         Local_Addr := U (Get_Element_Value_By_Tag_Name
+         Local_Addr := U (Util.Get_Element_Value_By_Tag_Name
            (Node     => Node,
             Tag_Name => Ip_Addr_Tag));
-         Local_Net := U (Get_Element_Value_By_Tag_Name
+         Local_Net := U (Util.Get_Element_Value_By_Tag_Name
            (Node     => Node,
             Tag_Name => Net_Tag));
 
-         Node := Get_Element_By_Tag_Name (Node     => Policy_Node,
-                                           Tag_Name => Remote_Tag);
-         Remote_Identity := U (Get_Element_Value_By_Tag_Name
+         Node := Util.Get_Element_By_Tag_Name (Node     => Policy_Node,
+                                               Tag_Name => Remote_Tag);
+         Remote_Identity := U (Util.Get_Element_Value_By_Tag_Name
            (Node     => Node,
             Tag_Name => Identity_Tag));
-         Remote_Addr := U (Get_Element_Value_By_Tag_Name
+         Remote_Addr := U (Util.Get_Element_Value_By_Tag_Name
            (Node     => Node,
             Tag_Name => Ip_Addr_Tag));
-         Remote_Net := U (Get_Element_Value_By_Tag_Name
+         Remote_Net := U (Util.Get_Element_Value_By_Tag_Name
            (Node     => Node,
             Tag_Name => Net_Tag));
 
-         Node := Get_Element_By_Tag_Name (Node     => Policy_Node,
-                                           Tag_Name => Lifetime_Tag);
-         Lifetime_Soft := U (Get_Element_Value_By_Tag_Name
+         Node := Util.Get_Element_By_Tag_Name (Node     => Policy_Node,
+                                               Tag_Name => Lifetime_Tag);
+         Lifetime_Soft := U (Util.Get_Element_Value_By_Tag_Name
            (Node     => Node,
             Tag_Name => Soft_Tag));
-         Lifetime_Hard := U (Get_Element_Value_By_Tag_Name
+         Lifetime_Hard := U (Util.Get_Element_Value_By_Tag_Name
            (Node     => Node,
             Tag_Name => Hard_Tag));
 
@@ -353,9 +259,9 @@ is
                   Lifetime_Hard   => S (Lifetime_Hard));
       end Process_Policy_Node;
    begin
-      For_Each_Node (Data     => Data,
-                     Tag_Name => Policy_Tag,
-                     Process  => Process_Policy_Node'Access);
+      Util.For_Each_Node (Data     => Data,
+                          Tag_Name => Policy_Tag,
+                          Process  => Process_Policy_Node'Access);
    end Iterate;
 
    -------------------------------------------------------------------------
