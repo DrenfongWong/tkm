@@ -225,7 +225,8 @@ is
             Tag_Name => Ip_Addr_Tag));
          Local_Net := U (Util.Get_Element_Value_By_Tag_Name
            (Node     => Node,
-            Tag_Name => Net_Tag));
+            Tag_Name => Net_Tag,
+            Required => False));
 
          Node := Util.Get_Element_By_Tag_Name (Node     => Policy_Node,
                                                Tag_Name => Remote_Tag);
@@ -237,7 +238,8 @@ is
             Tag_Name => Ip_Addr_Tag));
          Remote_Net := U (Util.Get_Element_Value_By_Tag_Name
            (Node     => Node,
-            Tag_Name => Net_Tag));
+            Tag_Name => Net_Tag,
+            Required => False));
 
          Node := Util.Get_Element_By_Tag_Name (Node     => Policy_Node,
                                                Tag_Name => Lifetime_Tag);
@@ -502,17 +504,21 @@ is
          Lifetime_Soft   : String;
          Lifetime_Hard   : String)
       is
-         Policy : Security_Policy_Type;
+         Policy : Security_Policy_Type := (others => <>);
       begin
          Policy.Id              := Tkmrpc.Types.Sp_Id_Type'Value (Id);
          Policy.Local_Identity  := Tkmrpc.Types.Li_Id_Type'Value
            (Local_Identity);
          Policy.Local_Addr      := Anet.To_IPv4_Addr (Str => Local_Addr);
-         Policy.Local_Net       := Anet.To_IPv4_Addr (Str => Local_Net);
+         if Local_Net'Length > 0 then
+            Policy.Local_Net    := Anet.To_IPv4_Addr (Str => Local_Net);
+         end if;
          Policy.Remote_Identity := Identities.To_Identity
            (Str => Remote_Identity);
          Policy.Remote_Addr     := Anet.To_IPv4_Addr (Str => Remote_Addr);
-         Policy.Remote_Net      := Anet.To_IPv4_Addr (Str => Remote_Net);
+         if Remote_Net'Length > 0 then
+            Policy.Remote_Net   := Anet.To_IPv4_Addr (Str => Remote_Net);
+         end if;
          Policy.Lifetime_Soft   := Tkmrpc.Types.Abs_Time_Type'Value
            (Lifetime_Soft);
          Policy.Lifetime_Hard   := Tkmrpc.Types.Abs_Time_Type'Value

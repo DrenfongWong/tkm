@@ -7,12 +7,10 @@
         <local>
             <identity_id>1</identity_id>
             <ip>192.168.0.2</ip>
-            <net>192.168.0.2</net>
         </local>
         <remote>
             <identity>bob@strongswan.org</identity>
             <ip>192.168.0.3</ip>
-            <net>192.168.0.3</net>
         </remote>
         <lifetime>
             <soft>30</soft>
