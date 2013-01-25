@@ -59,18 +59,22 @@ is
                Local_Identity  => 1,
                Local_Addr      => (192, 168, 0, 2),
                Local_Net       => Anet.Any_Addr,
+               Local_Netmask   => 0,
                Remote_Identity => Bob_Id,
                Remote_Addr     => (192, 168, 0, 3),
                Remote_Net      => Anet.Any_Addr,
+               Remote_Netmask  => 0,
                Lifetime_Soft   => Lifetime_Soft,
                Lifetime_Hard   => Lifetime_Hard),
          2 => (Id            => 2,
                Local_Identity  => 1,
                Local_Addr      => (192, 168, 0, 2),
                Local_Net       => (192, 168, 100, 0),
+               Local_Netmask   => 24,
                Remote_Identity => Bob_Id,
                Remote_Addr     => (192, 168, 0, 4),
                Remote_Net      => (192, 168, 200, 0),
+               Remote_Netmask  => 24,
                Lifetime_Soft => Lifetime_Soft,
                Lifetime_Hard => Lifetime_Hard));
    --  Reference policies.
@@ -102,8 +106,10 @@ is
    "    left=192.168.0.2" & ASCII.LF &
    "    leftid=alice@strongswan.org" & ASCII.LF &
    "    leftcert=aliceCert.pem" & ASCII.LF &
+   "    leftsubnet=192.168.100.0/24" & ASCII.LF &
    "    right=192.168.0.4" & ASCII.LF &
    "    rightid=bob@strongswan.org" & ASCII.LF &
+   "    rightsubnet=192.168.200.0/24" & ASCII.LF &
    "    lifetime=60" & ASCII.LF &
    "    margintime=30" & ASCII.LF &
    "    ike=aes256-sha512-modp4096!" & ASCII.LF &

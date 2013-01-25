@@ -21,6 +21,13 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="netmaskType">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="32"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="identityStringType">
         <xs:annotation>
             <xs:documentation>Restrict string length to match size of identity type</xs:documentation>
@@ -54,11 +61,19 @@
         <xs:attribute name="id" type="identityIdType" use="required"/>
     </xs:complexType>
 
+    <xs:complexType name="netType">
+        <xs:simpleContent>
+            <xs:extension base="ipAddressType">
+                <xs:attribute name="mask" type="netmaskType" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
     <xs:complexType name="localParametersType">
         <xs:sequence>
             <xs:element name="identity_id" type="identityIdType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="ip" type="ipAddressType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="net" type="ipAddressType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="net" type="netType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -66,7 +81,7 @@
         <xs:sequence>
             <xs:element name="identity" type="identityStringType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="ip" type="ipAddressType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="net" type="ipAddressType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="net" type="netType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 

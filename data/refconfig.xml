@@ -21,12 +21,12 @@
         <local>
             <identity_id>1</identity_id>
             <ip>192.168.0.2</ip>
-            <net>192.168.100.0</net>
+            <net mask="24">192.168.100.0</net>
         </local>
         <remote>
             <identity>bob@strongswan.org</identity>
             <ip>192.168.0.4</ip>
-            <net>192.168.200.0</net>
+            <net mask="24">192.168.200.0</net>
         </remote>
         <lifetime>
             <soft>30</soft>

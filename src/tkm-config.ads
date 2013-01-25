@@ -38,9 +38,11 @@ is
       Local_Identity  : Tkmrpc.Types.Li_Id_Type;
       Local_Addr      : Anet.IPv4_Addr_Type;
       Local_Net       : Anet.IPv4_Addr_Type;
+      Local_Netmask   : Tkmrpc.Types.Byte;
       Remote_Identity : Tkmrpc.Types.Identity_Type;
       Remote_Addr     : Anet.IPv4_Addr_Type;
       Remote_Net      : Anet.IPv4_Addr_Type;
+      Remote_Netmask  : Tkmrpc.Types.Byte;
       Lifetime_Soft   : Tkmrpc.Types.Abs_Time_Type;
       Lifetime_Hard   : Tkmrpc.Types.Abs_Time_Type;
    end record;
@@ -114,9 +116,11 @@ private
          Local_Identity  => Tkmrpc.Types.Li_Id_Type'First,
          Local_Addr      => Anet.Any_Addr,
          Local_Net       => Anet.Any_Addr,
+         Local_Netmask   => 0,
          Remote_Identity => Tkmrpc.Types.Null_Identity_Type,
          Remote_Addr     => Anet.Any_Addr,
          Remote_Net      => Anet.Any_Addr,
+         Remote_Netmask  => 0,
          Lifetime_Soft   => Tkmrpc.Types.Abs_Time_Type'First,
          Lifetime_Hard   => Tkmrpc.Types.Abs_Time_Type'First);
 

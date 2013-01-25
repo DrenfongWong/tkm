@@ -78,9 +78,11 @@ is
          Local_Identity  : String;
          Local_Addr      : String;
          Local_Net       : String;
+         Local_Netmask   : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Remote_Net      : String;
+         Remote_Netmask  : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String));
    --  Invokes given process procedure for each policy tag found in given xml
@@ -187,9 +189,11 @@ is
          Local_Identity  : String;
          Local_Addr      : String;
          Local_Net       : String;
+         Local_Netmask   : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Remote_Net      : String;
+         Remote_Netmask  : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String))
    is
@@ -207,9 +211,11 @@ is
          Local_Identity  : Ada.Strings.Unbounded.Unbounded_String;
          Local_Addr      : Ada.Strings.Unbounded.Unbounded_String;
          Local_Net       : Ada.Strings.Unbounded.Unbounded_String;
+         Local_Netmask   : Ada.Strings.Unbounded.Unbounded_String;
          Remote_Identity : Ada.Strings.Unbounded.Unbounded_String;
          Remote_Addr     : Ada.Strings.Unbounded.Unbounded_String;
          Remote_Net      : Ada.Strings.Unbounded.Unbounded_String;
+         Remote_Netmask  : Ada.Strings.Unbounded.Unbounded_String;
          Lifetime_Soft   : Ada.Strings.Unbounded.Unbounded_String;
          Lifetime_Hard   : Ada.Strings.Unbounded.Unbounded_String;
 
@@ -227,6 +233,11 @@ is
            (Node     => Node,
             Tag_Name => Net_Tag,
             Required => False));
+         Local_Netmask := U (Util.Get_Element_Attr_By_Tag_Name
+           (Node      => Node,
+            Tag_Name  => Net_Tag,
+            Attr_Name => Mask_Tag,
+            Required  => False));
 
          Node := Util.Get_Element_By_Tag_Name (Node     => Policy_Node,
                                                Tag_Name => Remote_Tag);
@@ -240,6 +251,11 @@ is
            (Node     => Node,
             Tag_Name => Net_Tag,
             Required => False));
+         Remote_Netmask := U (Util.Get_Element_Attr_By_Tag_Name
+           (Node      => Node,
+            Tag_Name  => Net_Tag,
+            Attr_Name => Mask_Tag,
+            Required  => False));
 
          Node := Util.Get_Element_By_Tag_Name (Node     => Policy_Node,
                                                Tag_Name => Lifetime_Tag);
@@ -254,9 +270,11 @@ is
                   Local_Identity  => S (Local_Identity),
                   Local_Addr      => S (Local_Addr),
                   Local_Net       => S (Local_Net),
+                  Local_Netmask   => S (Local_Netmask),
                   Remote_Identity => S (Remote_Identity),
                   Remote_Addr     => S (Remote_Addr),
                   Remote_Net      => S (Remote_Net),
+                  Remote_Netmask  => S (Remote_Netmask),
                   Lifetime_Soft   => S (Lifetime_Soft),
                   Lifetime_Hard   => S (Lifetime_Hard));
       end Process_Policy_Node;
@@ -361,9 +379,11 @@ is
          Local_Identity  : String;
          Local_Addr      : String;
          Local_Net       : String;
+         Local_Netmask   : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Remote_Net      : String;
+         Remote_Netmask  : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String);
       --  Add new connection entry for given policy to script.
@@ -375,14 +395,14 @@ is
          Local_Identity  : String;
          Local_Addr      : String;
          Local_Net       : String;
+         Local_Netmask   : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Remote_Net      : String;
+         Remote_Netmask  : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String)
       is
-         pragma Unreferenced (Local_Net, Remote_Net);
-
          L_Id    : constant Tkmrpc.Types.Li_Id_Type
            := Tkmrpc.Types.Li_Id_Type'Value (Local_Identity);
          L_Ident : constant Local_Id_Type
@@ -424,12 +444,23 @@ is
          Add_Entry (Source => Conf_File,
                     Key    => "leftcert",
                     Value  => S (L_Ident.Cert));
+         if Local_Net'Length > 0 then
+            Add_Entry (Source => Conf_File,
+                       Key    => "leftsubnet",
+                       Value  => Local_Net & "/" & Local_Netmask);
+         end if;
+
          Add_Entry (Source => Conf_File,
                     Key    => "right",
                     Value  => Remote_Addr);
          Add_Entry (Source => Conf_File,
                     Key    => "rightid",
                     Value  => Remote_Identity);
+         if Remote_Net'Length > 0 then
+            Add_Entry (Source => Conf_File,
+                       Key    => "rightsubnet",
+                       Value  => Remote_Net & "/" & Remote_Netmask);
+         end if;
          Add_Entry (Source => Conf_File,
                     Key    => "lifetime",
                     Value  => Lifetime_Hard);
@@ -484,9 +515,11 @@ is
          Local_Identity  : String;
          Local_Addr      : String;
          Local_Net       : String;
+         Local_Netmask   : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Remote_Net      : String;
+         Remote_Netmask  : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String);
       --  Add new policy with given values to policy list.
@@ -498,30 +531,36 @@ is
          Local_Identity  : String;
          Local_Addr      : String;
          Local_Net       : String;
+         Local_Netmask   : String;
          Remote_Identity : String;
          Remote_Addr     : String;
          Remote_Net      : String;
+         Remote_Netmask  : String;
          Lifetime_Soft   : String;
          Lifetime_Hard   : String)
       is
          Policy : Security_Policy_Type := (others => <>);
       begin
-         Policy.Id              := Tkmrpc.Types.Sp_Id_Type'Value (Id);
-         Policy.Local_Identity  := Tkmrpc.Types.Li_Id_Type'Value
+         Policy.Id               := Tkmrpc.Types.Sp_Id_Type'Value (Id);
+         Policy.Local_Identity   := Tkmrpc.Types.Li_Id_Type'Value
            (Local_Identity);
-         Policy.Local_Addr      := Anet.To_IPv4_Addr (Str => Local_Addr);
+         Policy.Local_Addr       := Anet.To_IPv4_Addr (Str => Local_Addr);
          if Local_Net'Length > 0 then
-            Policy.Local_Net    := Anet.To_IPv4_Addr (Str => Local_Net);
+            Policy.Local_Net     := Anet.To_IPv4_Addr (Str => Local_Net);
+            Policy.Local_Netmask := Tkmrpc.Types.Byte'Value (Local_Netmask);
          end if;
-         Policy.Remote_Identity := Identities.To_Identity
+
+         Policy.Remote_Identity   := Identities.To_Identity
            (Str => Remote_Identity);
-         Policy.Remote_Addr     := Anet.To_IPv4_Addr (Str => Remote_Addr);
+         Policy.Remote_Addr       := Anet.To_IPv4_Addr (Str => Remote_Addr);
          if Remote_Net'Length > 0 then
-            Policy.Remote_Net   := Anet.To_IPv4_Addr (Str => Remote_Net);
+            Policy.Remote_Net     := Anet.To_IPv4_Addr (Str => Remote_Net);
+            Policy.Remote_Netmask := Tkmrpc.Types.Byte'Value (Remote_Netmask);
          end if;
-         Policy.Lifetime_Soft   := Tkmrpc.Types.Abs_Time_Type'Value
+
+         Policy.Lifetime_Soft := Tkmrpc.Types.Abs_Time_Type'Value
            (Lifetime_Soft);
-         Policy.Lifetime_Hard   := Tkmrpc.Types.Abs_Time_Type'Value
+         Policy.Lifetime_Hard := Tkmrpc.Types.Abs_Time_Type'Value
            (Lifetime_Hard);
 
          Policies.Append (New_Item => Policy);

@@ -32,5 +32,6 @@ is
    L_Identity_Tag  : constant String := "local_identity";
    Cert_Tag        : constant String := "certificate";
    Net_Tag         : constant String := "net";
+   Mask_Tag        : constant String := "mask";
 
 end Tkm.Config.Xml.Tags;
