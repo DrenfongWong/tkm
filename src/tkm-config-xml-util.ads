@@ -39,6 +39,17 @@ is
    --  element does not exist and the Required parameter is True an exception
    --  is raised. Otherwise, if Required is False, an empty string is returned.
 
+   function Get_Element_Attr_By_Tag_Name
+     (Node      : DOM.Core.Element;
+      Tag_Name  : String;
+      Attr_Name : String;
+      Required  : Boolean := True)
+      return String;
+   --  Return attribute with given name of child element of node with specified
+   --  tag name. If the attribute does not exist and the Required parameter is
+   --  True an exception is raised. Otherwise, if Required is False, an empty
+   --  string is returned.
+
    procedure For_Each_Node
      (Data     : XML_Config;
       Tag_Name : String;
