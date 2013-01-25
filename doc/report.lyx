@@ -565,15 +565,6 @@ reference "sub:IKEv2-protocol-analysis"
  explains the message exchanges of the IKEv2 protocol in detail.
  The service implementing the IKE protocol is normally provided by an user
  space application.
- The following section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:strongSwan"
-
-\end_inset
-
- introduces the strongSwan project, which provides an implementation for
- both IKEv1 and IKEv2.
 \end_layout
 
 \begin_layout Subsection
@@ -611,7 +602,19 @@ charon
 \end_inset
 
  daemon, which is a feature-rich implementation of the Internet Key Exchange
- protocol version 2 (IKEv2
+ protocol version 2
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The project also implements IKE version 1 (IKEv1) but this project is only
+ concerned with IKEv2.
+ 
+\end_layout
+
+\end_inset
+
+ (IKEv2
 \begin_inset Index idx
 status open
 
@@ -628,8 +631,7 @@ key "rfc5996"
 
 \end_inset
 
-.
- The software is implemented using the C
+.The software is implemented using the C
 \begin_inset Index idx
 status open
 
@@ -827,7 +829,7 @@ Ada compilers, before used in practice, have to pass a standardized test
  Since Ada provides many features which aid in the development of safety
  and security critical applications, it is nowadays mostly used in areas
  where such aspects are important.
- The primary industries making use of Ada are namely avionics, railway systems,
+ The primary industries making use of Ada are avionics, railway systems,
  banking, military and space technology.
 \end_layout
 
@@ -1221,13 +1223,6 @@ reference "fig:Trusted-Computing-Base"
 
 \end_inset
 
- on page 
-\begin_inset CommandInset ref
-LatexCommand pageref
-reference "fig:Trusted-Computing-Base"
-
-\end_inset
-
 .
  This section describes the threat model used during the development of
  this project.
@@ -1533,7 +1528,8 @@ key "rfc5996"
 
 ), focusing on the security relevance of the transmitted data.
  All communication using IKE consists of a request / response pair.
- 
+ The analysis of the message exchanges concentrates on the role of the initiator
+ since the responder case varies only slightly.
 \end_layout
 
 \begin_layout Standard
@@ -1981,7 +1977,6 @@ key "rfc5996"
 .
  The fixed header does not contain security-relevant information and is
  therefore omitted from the discussion.
- 
 \end_layout
 
 \begin_layout Standard
@@ -4203,7 +4198,8 @@ reference "sub:IKE-Exchanges"
 \begin_layout Standard
 In the illustrated negotiation of SAs with the peer, IKE is assuming the
  role of the initiator of the exchanges.
- The responder case varies only slightly and is thus not presented here.
+ As mentioned before the responder case varies only slightly and is thus
+ not presented here.
  Where necessary the exchanges provide a parameter called 
 \shape italic
 
@@ -7184,11 +7180,29 @@ reference "subsub:Exchanges-nc-create"
 \end_inset
 
  have a corresponding record field in the exchange-specific data type.
- The exact memory layout of the record is specified using an Ada record
- representation clause.
  All requests like all response types are of the same size.
  Requests that are smaller than the required length are padded with zeros.
  Responses are constructed following the same idiom.
+\end_layout
+
+\begin_layout Standard
+The exact memory layout of the record is specified using an Ada record represent
+ation clause (lines 6-9).
+ The clause specifies that the 
+\emph on
+Nc_Id
+\emph default
+ record field starts at byte offset 0.
+ Starting at that offset the range occupied is from 0 up to bit 63.
+ For a more detailed explanation of the representation clause, the reader
+ is directed to 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ada2012"
+
+\end_inset
+
+, section 13.5.1.
 \end_layout
 
 \begin_layout Subsection
