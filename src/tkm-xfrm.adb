@@ -69,6 +69,16 @@ is
                 & Ada.Strings.Fixed.Trim (Source => Sel_Rem_Prefix'Img,
                                           Side   => Ada.Strings.Left)
                 & " ]");
+         Sock.Add_Policy
+           (Mode           => Mode_Map (Policy.Mode),
+            Sel_Src        => Sel_Rem,
+            Sel_Src_Prefix => Sel_Rem_Prefix,
+            Sel_Dst        => Sel_Loc,
+            Sel_Dst_Prefix => Sel_Loc_Prefix,
+            Tmpl_Src       => Tmpl_Rem,
+            Tmpl_Dst       => Tmpl_Loc,
+            Reqid          => Policy.Id,
+            Direction      => X.Direction_Fwd);
       else
          Sel_Loc        := Policy.Local_Addr;
          Sel_Loc_Prefix := 32;
