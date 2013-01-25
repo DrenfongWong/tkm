@@ -16,7 +16,7 @@
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-with Interfaces;
+with Ada.Strings.Fixed;
 
 with Anet;
 
@@ -30,6 +30,11 @@ is
    package L renames Tkm.Logger;
    package X renames Standard.Xfrm.Sockets;
 
+   Mode_Map : constant array (Config.Connection_Mode_Type) of X.Mode_Type
+     := (Config.Tunnel    => X.Mode_Tunnel,
+         Config.Transport => X.Mode_Transport);
+   --  Connection mode mapping.
+
    Sock : X.Xfrm_Socket_Type;
    --  Netlink/XFRM socket.
 
@@ -37,20 +42,65 @@ is
 
    procedure Add_Policy (Policy : Config.Security_Policy_Type)
    is
+      use type Tkm.Config.Connection_Mode_Type;
+
+      Sel_Loc        : Anet.IPv4_Addr_Type;
+      Sel_Loc_Prefix : X.Prefix_Type;
+      Sel_Rem        : Anet.IPv4_Addr_Type;
+      Sel_Rem_Prefix : X.Prefix_Type;
+      Tmpl_Loc       : Anet.IPv4_Addr_Type;
+      Tmpl_Rem       : Anet.IPv4_Addr_Type;
    begin
-      L.Log (Message => "Adding policy [" & Policy.Id'Img & ", "
-             & Anet.To_String (Address => Policy.Local_Addr) & " => "
-             & Anet.To_String (Address => Policy.Remote_Addr) & " ]");
+      if Policy.Mode = Config.Tunnel then
+         Sel_Loc        := Policy.Local_Net;
+         Sel_Loc_Prefix := X.Prefix_Type (Policy.Local_Netmask);
+         Sel_Rem        := Policy.Remote_Net;
+         Sel_Rem_Prefix := X.Prefix_Type (Policy.Remote_Netmask);
+         Tmpl_Loc       := Policy.Local_Addr;
+         Tmpl_Rem       := Policy.Remote_Addr;
+         L.Log (Message => "Adding policy [" & Policy.Id'Img & ", "
+                & Anet.To_String (Address => Sel_Loc) & "/"
+                & Ada.Strings.Fixed.Trim (Source => Sel_Loc_Prefix'Img,
+                                          Side   => Ada.Strings.Left)
+                & " > " & Anet.To_String (Address => Policy.Local_Addr)
+                & " <=> "
+                & Anet.To_String (Address => Policy.Remote_Addr) & " < "
+                & Anet.To_String (Address => Sel_Rem) & "/"
+                & Ada.Strings.Fixed.Trim (Source => Sel_Rem_Prefix'Img,
+                                          Side   => Ada.Strings.Left)
+                & " ]");
+      else
+         Sel_Loc        := Policy.Local_Addr;
+         Sel_Loc_Prefix := 32;
+         Sel_Rem        := Policy.Remote_Addr;
+         Sel_Rem_Prefix := 32;
+         Tmpl_Loc       := Anet.Any_Addr;
+         Tmpl_Rem       := Anet.Any_Addr;
+         L.Log (Message => "Adding policy [" & Policy.Id'Img & ", "
+                & Anet.To_String (Address => Policy.Local_Addr) & " <-> "
+                & Anet.To_String (Address => Policy.Remote_Addr) & " ]");
+      end if;
+
       Sock.Add_Policy
-        (Src       => Policy.Local_Addr,
-         Dst       => Policy.Remote_Addr,
-         Reqid     => Interfaces.Unsigned_32 (Policy.Id),
-         Direction => X.Direction_Out);
+        (Mode           => Mode_Map (Policy.Mode),
+         Sel_Src        => Sel_Loc,
+         Sel_Src_Prefix => Sel_Loc_Prefix,
+         Sel_Dst        => Sel_Rem,
+         Sel_Dst_Prefix => Sel_Rem_Prefix,
+         Tmpl_Src       => Tmpl_Loc,
+         Tmpl_Dst       => Tmpl_Rem,
+         Reqid          => Policy.Id,
+         Direction      => X.Direction_Out);
       Sock.Add_Policy
-        (Src       => Policy.Remote_Addr,
-         Dst       => Policy.Local_Addr,
-         Reqid     => Interfaces.Unsigned_32 (Policy.Id),
-         Direction => X.Direction_In);
+        (Mode           => Mode_Map (Policy.Mode),
+         Sel_Src        => Sel_Rem,
+         Sel_Src_Prefix => Sel_Rem_Prefix,
+         Sel_Dst        => Sel_Loc,
+         Sel_Dst_Prefix => Sel_Loc_Prefix,
+         Tmpl_Src       => Tmpl_Rem,
+         Tmpl_Dst       => Tmpl_Loc,
+         Reqid          => Policy.Id,
+         Direction      => X.Direction_In);
    end Add_Policy;
 
    -------------------------------------------------------------------------
@@ -64,6 +114,8 @@ is
       Auth_Key_In  : Tkmrpc.Types.Byte_Sequence;
       Auth_Key_Out : Tkmrpc.Types.Byte_Sequence)
    is
+      use type Tkm.Config.Connection_Mode_Type;
+
       function To_Anet_Bytes
         (Item : Tkmrpc.Types.Byte_Sequence)
          return Anet.Byte_Array;
@@ -84,19 +136,53 @@ is
 
       Policy : constant Config.Security_Policy_Type
         := Config.Get_Policy (Id => Policy_Id);
+
+      Sel_Loc        : Anet.IPv4_Addr_Type;
+      Sel_Loc_Prefix : X.Prefix_Type;
+      Sel_Rem        : Anet.IPv4_Addr_Type;
+      Sel_Rem_Prefix : X.Prefix_Type;
    begin
-      L.Log (Message => "Adding SA [" & Policy.Id'Img & ", "
-             & Anet.To_String (Address => Policy.Local_Addr) & " <=> "
-             & Anet.To_String (Address => Policy.Remote_Addr)
-             & ", SPI_in" & SPI_In'Img & ", SPI_out" & SPI_Out'Img
-             & ", soft" & Policy.Lifetime_Soft'Img
-             & ", hard" & Policy.Lifetime_Hard'Img & " ]");
+      if Policy.Mode = Config.Tunnel then
+         Sel_Loc        := Policy.Local_Net;
+         Sel_Loc_Prefix := X.Prefix_Type (Policy.Local_Netmask);
+         Sel_Rem        := Policy.Remote_Net;
+         Sel_Rem_Prefix := X.Prefix_Type (Policy.Remote_Netmask);
+         L.Log (Message => "Adding SA [" & Policy.Id'Img & ", "
+                & Anet.To_String (Address => Sel_Loc) & "/"
+                & Ada.Strings.Fixed.Trim (Source => Sel_Loc_Prefix'Img,
+                                          Side   => Ada.Strings.Left)
+                & " > " & Anet.To_String (Address => Policy.Local_Addr)
+                & " <=> "
+                & Anet.To_String (Address => Policy.Remote_Addr) & " < "
+                & Anet.To_String (Address => Sel_Rem) & "/"
+                & Ada.Strings.Fixed.Trim (Source => Sel_Rem_Prefix'Img,
+                                          Side   => Ada.Strings.Left)
+                & ", SPI_in" & SPI_In'Img & ", SPI_out" & SPI_Out'Img
+                & ", soft" & Policy.Lifetime_Soft'Img
+                & ", hard" & Policy.Lifetime_Hard'Img & " ]");
+      else
+         Sel_Loc        := Policy.Local_Addr;
+         Sel_Loc_Prefix := 32;
+         Sel_Rem        := Policy.Remote_Addr;
+         Sel_Rem_Prefix := 32;
+         L.Log (Message => "Adding SA [" & Policy.Id'Img & ", "
+                & Anet.To_String (Address => Policy.Local_Addr) & " <-> "
+                & Anet.To_String (Address => Policy.Remote_Addr)
+                & ", SPI_in" & SPI_In'Img & ", SPI_out" & SPI_Out'Img
+                & ", soft" & Policy.Lifetime_Soft'Img
+                & ", hard" & Policy.Lifetime_Hard'Img & " ]");
+      end if;
 
       --  Add outbound state
 
       Sock.Add_State
-        (Src           => Policy.Local_Addr,
-         Dst           => Policy.Remote_Addr,
+        (Mode           => Mode_Map (Policy.Mode),
+         Src            => Policy.Local_Addr,
+         Dst            => Policy.Remote_Addr,
+         Sel_Src        => Sel_Loc,
+         Sel_Src_Prefix => Sel_Loc_Prefix,
+         Sel_Dst        => Sel_Rem,
+         Sel_Dst_Prefix => Sel_Rem_Prefix,
          Reqid         => Policy.Id,
          Spi           => SPI_Out,
          Enc_Key       => To_Anet_Bytes (Item => Enc_Key_Out),
@@ -109,8 +195,13 @@ is
       --  Add inbound state
 
       Sock.Add_State
-        (Src           => Policy.Remote_Addr,
-         Dst           => Policy.Local_Addr,
+        (Mode           => Mode_Map (Policy.Mode),
+         Src            => Policy.Remote_Addr,
+         Dst            => Policy.Local_Addr,
+         Sel_Src        => Sel_Rem,
+         Sel_Src_Prefix => Sel_Rem_Prefix,
+         Sel_Dst        => Sel_Loc,
+         Sel_Dst_Prefix => Sel_Loc_Prefix,
          Reqid         => Policy.Id,
          Spi           => SPI_In,
          Enc_Key       => To_Anet_Bytes (Item => Enc_Key_In),
