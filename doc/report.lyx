@@ -8488,27 +8488,151 @@ name "sub:Chunk-map"
 \end_layout
 
 \begin_layout Standard
-The chunk map can be used to store mappings of context IDs to chunks
+The chunk map can be used to store mappings of chunks
 \begin_inset Foot
 status open
 
 \begin_layout Plain Layout
-Chunks are strongSwans notion of binary data containing e.g.
+Chunks are strongSwan's notion of binary data containing e.g.
  nonces or cryptographic keys
 \end_layout
 
 \end_inset
 
+ to context IDs.
+\end_layout
+
+\begin_layout Standard
+The mapping mechanism is illustrated using the nonce allocation process.
+ The nonce plugin allocates a fresh nonce in a new context and stores this
+ relation in the chunk map.
+ This is necessary since such IDs cannot be passed along using the existing
+ strongSwan interfaces and are only used inside the TKM code.
+ Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:Nonce-ID-insertion"
+
+\end_inset
+
+ shows how the described functionality is implemented in the nonce plugin.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "float=h,language=C"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+*chunk = chunk_alloc(size);
+\end_layout
+
+\begin_layout Plain Layout
+
+if (get_nonce(this, chunk->len, chunk->ptr))
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	tkm->chunk_map->insert(tkm->chunk_map, chunk,
+\end_layout
+
+\begin_layout Plain Layout
+
+						   this->context_id);
+\end_layout
+
+\begin_layout Plain Layout
+
+...
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Nonce ID insertion
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:Nonce-ID-insertion"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The keymat plugin receives the nonce chunk as function parameter.
+ It needs the corresponding nonce context ID to tell the TKM which nonce
+ to use for processing.
+ The associated context ID is retrieved from the chunk map, as shown by
+ listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:Nonce-ID-retrieval"
+
+\end_inset
+
 .
- This is required to preserve context ID information over plugin borders.
- If for example the nonce plugin allocates a fresh nonce in a new context,
- this relation has to be stored because the strongSwan interfaces have no
- notion of context IDs since such IDs are only used inside the TKM code.
- Therefore, the nonce plugin stores the chunk to context ID relation in
- the chunk map.
- Another plugin which receives the nonce chunk, which is by definition random
- and unique, is able to retrieve the associated context ID by consulting
- the chunk map.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "float=h,language=C"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+/* Acquire nonce context id */
+\end_layout
+
+\begin_layout Plain Layout
+
+uint64_t id = tkm->chunk_map->get_id(tkm->chunk_map, nonce);
+\end_layout
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Nonce ID retrieval
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:Nonce-ID-retrieval"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -8549,7 +8673,7 @@ isa_info_t
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "float,language=C"
+lstparams "float=h,language=C"
 inline false
 status open
 
@@ -8661,7 +8785,7 @@ reference "lis:Piggybacking"
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "float,language=C"
+lstparams "float=h,language=C"
 inline false
 status open
 
