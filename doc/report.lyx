@@ -6285,7 +6285,12 @@ reference "chap:Design"
 \end_inset
 
 .
- The first section briefly presents how the interface is described in XML,
+ The first section gives a high-level overview of the system and introduces
+ the different components, what their purpose is and how they interact.
+\end_layout
+
+\begin_layout Standard
+The next section briefly presents how the interface is described in XML,
  how that specification is transformed into various formats and what parts
  of the system are generated based on that specification.
  The next section then describes the remote procedure call (RPC
@@ -6351,6 +6356,90 @@ reference "sec:Requirements"
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Section
+System Overview
+\end_layout
+
+\begin_layout Standard
+The system is comprised of three distinct components:
+\end_layout
+
+\begin_layout Enumerate
+charon
+\end_layout
+
+\begin_layout Enumerate
+key_manager
+\end_layout
+
+\begin_layout Enumerate
+xfrm-proxy
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/system-overview.svg
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+System overview
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Charon provides the non-critical IKE protocol handling and is implemented
+ by leveraging the existing strongSwan IKEv2 implementation.
+ IKE messages with a remote peer are exchanged using a network socket.
+ It uses the Trusted Key Manager to perform sensitive operations, such as
+ generating key material or authenticating a remote peer.
+ The two components communicate via the TKM interface presented in the previous
+ chapter.
+ The interface messages are exchanged via Unix sockets, which are abstracted
+ by the tkm-rpc library.
+\end_layout
+
+\begin_layout Standard
+The TKM uses a Netlink/XFRM socket to install security policies and key
+ material of an IPsec SA in the kernel.
+\end_layout
+
+\begin_layout Standard
+Similarly to the communication between the charon and TKM, the trusted xfrm-prox
+y communicates with the charon daemon using an Unix domain socket.
+ The xfrm-proxy handles acquire and expire events for IPsec SAs, sent by
+ the kernel via a Netlink/XFRM socket.
+ These events are then propagated to the charon daemon for processing.
+\end_layout
+
+\begin_layout Standard
+All components and their implementation are described in detail in the rest
+ of this chapter.
 \end_layout
 
 \begin_layout Section
