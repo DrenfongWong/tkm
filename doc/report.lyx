@@ -174,10 +174,42 @@ The IPsec protocol relies on the correct operation of the IKE key exchange
 \end_layout
 
 \begin_layout Abstract
-The security and robustness of the IKE implementation strongSwan has been
- augmented, by identifying and separating security critical from non-critical
- components and extracting them into a minimal TCB.
- The TCB has been implemented using the Ada programming language.
+We propose a component-based approach by disaggregating the IKE key management
+ system into trusted and untrusted components to attain a higher level of
+ security.
+ By formulating desired security properties and identifying the critical
+ components of the IKE protocol, a concept to split the key management system
+ into an untrusted and trusted part is presented.
+ The security-critical part respresents a trusted computing base (TCB) and
+ is termed 
+\begin_inset Quotes eld
+\end_inset
+
+Trusted Key Manager
+\begin_inset Quotes erd
+\end_inset
+
+ (TKM).
+ Care was taken to only extract the functionality that is absolutely necessary
+ to ensure the desired security properties.
+ Thus, the presented interface between the untrusted IKE processing component
+ and TKM allows for a small and robust implementation of the TCB.
+ The splitting of the protocol guarantees that even if the untrusted side
+ is completely subverted by an attacker, the trusted components uphold the
+ proposed security goals.
+\end_layout
+
+\begin_layout Abstract
+The viability of the design has been validated through a prototypical implementa
+tion of the presented system.
+ The untrusted parts of the IKE daemon have been implemented by extending
+ the existing strongSwan IKE implementation.
+ The trusted components have been implemented from scratch using the Ada
+ programming language, which is well suited for the development of robust
+ software.
+ The new Design-by-Contract feature of Ada 2012 has been used for the implementa
+tion of state machines, to augment the confidence of operation according
+ to the specification.
 \end_layout
 
 \begin_layout Abstract
@@ -1199,259 +1231,8 @@ key "secunet:01"
 \end_inset
 
 .
- The document is the result of preceding collaboration with secunet Security
- Network AG.
-\end_layout
-
-\begin_layout Section
-Threat model
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Threat-model"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-An example system separated in a trusted and untrusted component is shown
- in figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Trusted-Computing-Base"
-
-\end_inset
-
-.
- This section describes the threat model used during the development of
- this project.
-\end_layout
-
-\begin_layout Standard
-It is assumed that the strongSwan charon IKEv2 daemon, which is considered
- an untrusted software component in the envisioned architecture, is under
- total control of the attacker
-\begin_inset Index idx
-status open
-
-\begin_layout Plain Layout
-Attacker
-\end_layout
-
-\end_inset
-
-.
- This means the attacker has complete access to all data available to the
- IKEv2 daemon and is able to execute arbitrary code with the privileges
- of charon
-\begin_inset Index idx
-status open
-
-\begin_layout Plain Layout
-charon
-\end_layout
-
-\end_inset
-
-.
- As a result of this assumption, charon is not allowed to have access to
- any sensitive data.
- Also, intermediate computation results which are needed to create sensitive
- values must be protected from access by untrusted components.
- The following list summarizes the capabilities of an attacker:
-\end_layout
-
-\begin_layout Enumerate
-The attacker is able to analyze all network traffic of the system.
- 
-\end_layout
-
-\begin_layout Enumerate
-\begin_inset CommandInset label
-LatexCommand label
-name "enu:thread-model-2"
-
-\end_inset
-
-The attacker is able to compromise the untrusted IKE daemon and read all
- its memory.
-\end_layout
-
-\begin_layout Enumerate
-The attacker can execute arbitrary code in the untrusted component with
- the privileges of the IKE daemon.
-\end_layout
-
-\begin_layout Enumerate
-\begin_inset CommandInset label
-LatexCommand label
-name "enu:thread-model-4"
-
-\end_inset
-
-As a result of point 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "enu:thread-model-2"
-
-\end_inset
-
-, the attacker is in possession of all data known to the IKE daemon.
-\end_layout
-
-\begin_layout Enumerate
-\begin_inset CommandInset label
-LatexCommand label
-name "enu:thread-model-5"
-
-\end_inset
-
-The attacker can send arbitrary commands to the TCB (deduced from point
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "enu:thread-model-4"
-
-\end_inset
-
-).
-\end_layout
-
-\begin_layout Section
-TCB security properties
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:TCB-security-properties"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Even if an attacker manages to take complete control of the untrusted part
- of the system as described by the threat model in the previous section
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Threat-model"
-
-\end_inset
-
-, the TCB must still guarantee the following properties:
-\end_layout
-
-\begin_layout Enumerate
-The attacker has no access to the IPsec SA keying material.
-\end_layout
-
-\begin_layout Enumerate
-The attacker has no means to draw conclusions about the IPsec SA keying
- material from sensitive intermediate values.
-\end_layout
-
-\begin_layout Enumerate
-The attacker is therefore unable to decrypt recorded ESP
-\begin_inset Index idx
-status open
-
-\begin_layout Plain Layout
-ESP
-\end_layout
-
-\end_inset
-
- traffic of a communication session.
-\end_layout
-
-\begin_layout Enumerate
-\begin_inset CommandInset label
-LatexCommand label
-name "enu:tcb-props-4"
-
-\end_inset
-
-The attacker is not able to forge authentication exchanges with unauthorized
- peers.
- 
-\end_layout
-
-\begin_layout Enumerate
-As a conclusion from point
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "enu:tcb-props-4"
-
-\end_inset
-
-, the attacker is not able to derive child keying material for an unauthorized
- connection.
-\end_layout
-
-\begin_layout Section
-Assumptions
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Assumptions"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-The TCB security properties stated in the previous section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:TCB-security-properties"
-
-\end_inset
-
- can only be guaranteed if the separation of the components itself withstands
- an attack, i.e.
- an attacker is unable to subvert the TCB in any way.
- In this project it is assumed that the separation mechanism in use is designed
- as such that this requirement holds.
- Possible solutions to this problem are elaborated in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Platform-integration"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Itemize
-The untrusted IKE daemon and the trusted component can only exchange messages
- via the well defined interface and are otherwise completely isolated from
- each other.
- In a real system this is very difficult to achieve since there are many
- possibilities for side channels, which have been demonstrated to work,
- see for example 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Aciicmez:2007:PSB:1229285.1266999,cryptoeprint:2010:594,Zhang:2012:CSC:2382196.2382230"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Itemize
-Denial-of-Service attacks (DoS
-\begin_inset Index idx
-status open
-
-\begin_layout Plain Layout
-DoS
-\end_layout
-
-\end_inset
-
-) are not considered security critical because an attacker taking over the
- untrusted part and making all communication with the TCB impossible is
- still unable to access sensitive material.
+ The project further refines the separation and implements the improved
+ concepts.
 \end_layout
 
 \begin_layout Chapter
@@ -3263,14 +3044,6 @@ PA
 \begin_layout Standard
 After the IKE SA is established, both peers normally install the first child
  SA.
- This step is explained in detail in the next section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:flow-CHILD_CREATE_SA"
-
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Subsection
@@ -3522,22 +3295,8 @@ reference "fig:IKE-SA-payload-enc"
  schematically shows the code involved in the encryption of payloads in
  the IKE message exchanges.
  If a new connection is initiated by calling the initiate function of the
- IKE SA, all tasks (see previous sections 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:flow-IKE_SA_INIT"
-
-\end_inset
-
- to 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:flow-CHILD_CREATE_SA"
-
-\end_inset
-
-) required to establish an IKE SA and the associated child SA are created
- and run by the task manager.
+ IKE SA, all tasks required to establish an IKE SA and the associated child
+ SA are created and run by the task manager.
  The tasks then call back the IKE SA 
 \family typewriter
 generate_message
@@ -3559,14 +3318,7 @@ generate
  If encryption is enabled, an encrypted payload is created by accessing
  the key material of the IKE SA's keymat object.
  The actual encryption is done by a crypter plugin which in turn uses a
- RNG plugin outlined in the previous section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:flow-Source-of-randomness"
-
-\end_inset
-
- to retrieve random bytes needed for the IV
+ RNG plugin to retrieve random bytes needed for the IV
 \begin_inset Foot
 status open
 
@@ -3665,7 +3417,7 @@ reference "fig:IKE-SA-payload-dec"
 \end_inset
 
  shows the process of payload decryption which reverses the process of payload
- encryption explained in the previous chapter 
+ encryption presented in chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:flow-Payload-encryption"
@@ -3768,6 +3520,256 @@ reference "sec:Requirements"
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Section
+Threat model
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Threat-model"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+An example system separated in a trusted and untrusted component is shown
+ in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Trusted-Computing-Base"
+
+\end_inset
+
+.
+ This section describes the threat model used during the development of
+ this project.
+\end_layout
+
+\begin_layout Standard
+It is assumed that the strongSwan charon IKEv2 daemon, which is considered
+ an untrusted software component in the envisioned architecture, is potentially
+ under total control of the attacker
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Attacker
+\end_layout
+
+\end_inset
+
+.
+ This means the attacker has complete access to all data available to the
+ IKEv2 daemon and is able to execute arbitrary code with the privileges
+ of charon
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+charon
+\end_layout
+
+\end_inset
+
+.
+ As a result of this assumption, charon is must not have access to any sensitive
+ data.
+ Also, intermediate computation results which are needed to create sensitive
+ values must be protected from access by untrusted components.
+ The following list summarizes the capabilities of an attacker:
+\end_layout
+
+\begin_layout Enumerate
+The attacker is able to analyze all network traffic of the system.
+ 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:thread-model-2"
+
+\end_inset
+
+The attacker is able to compromise the untrusted IKE daemon and read all
+ its memory.
+\end_layout
+
+\begin_layout Enumerate
+The attacker can execute arbitrary code in the untrusted component with
+ the privileges of the IKE daemon.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:thread-model-4"
+
+\end_inset
+
+As a result of point 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:thread-model-2"
+
+\end_inset
+
+, the attacker is in possession of all data known to the IKE daemon.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:thread-model-5"
+
+\end_inset
+
+The attacker can send arbitrary commands to the TCB (deduced from point
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:thread-model-4"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Section
+TCB security properties
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:TCB-security-properties"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Even if an attacker manages to take complete control of the untrusted part
+ of the system as described by the threat model, the TCB must guarantee
+ the following properties:
+\end_layout
+
+\begin_layout Enumerate
+The attacker has no access to the IPsec SA keying material.
+\end_layout
+
+\begin_layout Enumerate
+The attacker has no means to draw conclusions about the IPsec SA keying
+ material from sensitive intermediate values.
+\end_layout
+
+\begin_layout Enumerate
+The attacker is therefore unable to decrypt recorded ESP
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ESP
+\end_layout
+
+\end_inset
+
+ traffic of a communication session.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:tcb-props-4"
+
+\end_inset
+
+The attacker is not able to forge authentication exchanges with unauthorized
+ peers.
+ 
+\end_layout
+
+\begin_layout Enumerate
+As a conclusion from point
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:tcb-props-4"
+
+\end_inset
+
+, the attacker is not able to derive child keying material for an unauthorized
+ connection.
+\end_layout
+
+\begin_layout Enumerate
+The attack can only install IPsec connections, which conform to the security
+ policy.
+\end_layout
+
+\begin_layout Section
+Assumptions
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Assumptions"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+The TCB security properties stated in the previous section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:TCB-security-properties"
+
+\end_inset
+
+ can only be guaranteed if the separation of the components itself withstands
+ an attack, i.e.
+ an attacker is unable to subvert the TCB in any way.
+ In this project it is assumed that the separation mechanism in use is designed
+ as such that this requirement holds.
+ Possible solutions to this problem are elaborated in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Platform-integration"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+The untrusted IKE daemon and the trusted component can only exchange messages
+ via the well defined interface and are otherwise completely isolated from
+ each other.
+ In a real system this is very difficult to achieve since there are many
+ possibilities for side channels, which have been demonstrated to work,
+ see for example 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Aciicmez:2007:PSB:1229285.1266999,cryptoeprint:2010:594,Zhang:2012:CSC:2382196.2382230"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+Denial-of-Service attacks (DoS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+DoS
+\end_layout
+
+\end_inset
+
+) are not considered security critical because an attacker taking over the
+ untrusted part and making all communication with the TCB impossible is
+ still unable to access sensitive material.
 \end_layout
 
 \begin_layout Section
@@ -3995,15 +3997,8 @@ The untrusted part of the IKEv2 component must not have access to generated
 
 \begin_layout Standard
 Excluded from the critical material are keys used to protect the IKE SA.
- As defined by the threat model in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Threat-model"
-
-\end_inset
-
-, an attacker might be able to compromise the untrusted IKE daemon and read
- all its memory (point 
+ As defined by the threat model, an attacker might be able to compromise
+ the untrusted IKE daemon and read all its memory (point 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "enu:thread-model-2"
@@ -4366,15 +4361,7 @@ end{messages}
 \end_layout
 
 \begin_layout Standard
-The IKE daemon then initiates an IKE SA exchange with the remote peer, which
- is described in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:proto-IKE_SA_INIT"
-
-\end_inset
-
-.
+The IKE daemon then initiates an IKE SA exchange with the remote peer.
  Upon receipt of the peer's response the Diffie-Hellman shared secret can
  be calculated.
  Thus IKE issues the 
@@ -4567,15 +4554,8 @@ end{messages}
 \end_layout
 
 \begin_layout Standard
-In possession of the necessary data and keys, the IKE_AUTH protocol step,
- described in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:proto-IKE_AUTH"
-
-\end_inset
-
-, is performed with the remote peer.
+In possession of the necessary data and keys, the IKE_AUTH protocol step
+ is performed with the remote peer.
 \end_layout
 
 \begin_layout Standard
@@ -7988,14 +7968,6 @@ To instantiate the generic, a Dispatch procedure matching the given signature
  objects and passes them on to the given dispatch procedure.
  The exception handler is called when the specified dispatching procedure
  raises an exception.
- How exceptions are handled is subject of the following section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Error-handling"
-
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Subsubsection
@@ -8385,14 +8357,8 @@ The TKM code uses two main techniques to pass on information from one plugin
 \end_layout
 
 \begin_layout Standard
-One of these mechanisms use the chunk map explained in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Chunk-map"
-
-\end_inset
-
-, the other is explained in section 
+One of these mechanisms use the chunk map explained in the next section
+ and the other is explained in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Piggybacking"
@@ -8662,7 +8628,7 @@ name "sub:plugin-Nonce-generation"
 Nonce generation plugins are a new feature of strongSwan introduced during
  this project.
  A nonce generation plugin is responsible to create new nonces needed in
- the IKE_SA_INIT and CHILD_CREATE_SA exchanges (see section 
+ the IKE_SA_INIT and CHILD_CREATE_SA exchanges (see sections 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:proto-IKE_SA_INIT"
@@ -8717,35 +8683,21 @@ ike_dh_generate_key
 \family typewriter
 set_other_public_value
 \family default
- function is called, as illustrated by figures 
+ function is called, as illustrated by figure 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:IKE-SA-establishment"
-
-\end_inset
-
-, 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Child-SA-establishment"
-
-\end_inset
-
- on page 
-\begin_inset CommandInset ref
-LatexCommand pageref
 reference "fig:IKE-SA-establishment"
 
 \end_inset
 
  and 
 \begin_inset CommandInset ref
-LatexCommand pageref
+LatexCommand ref
 reference "fig:Child-SA-establishment"
 
 \end_inset
 
- respectively.
+.
  No secret values leave the TCB at any time but the DH context stored in
  the TKM can be referenced later for key derivation by using the correct
  DH context ID.
@@ -8822,15 +8774,7 @@ reference "sub:Piggybacking"
 derive_child_keys
 \family default
  function does nothing more than use the encryption key chunks to store
- information needed by the kernel IPsec plugin explained in the next section
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:pluginKernel-IPsec"
-
-\end_inset
-
-.
+ information needed by the kernel IPsec plugin.
  The actual child key derivation is postponed until the registered kernel
  plugin's 
 \family typewriter
@@ -9048,14 +8992,7 @@ build_cert_chain
 ike_cc_add_certificate
 \family default
  RPC.
- The TKM verifies the trust chain as explained in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Certificate-chain-validation"
-
-\end_inset
-
-.
+ The TKM verifies the trust chain.
  At the end the CA certificate of the chain in question is passed on to
  the TKM.
  This certificate must be bit-wise identical to the one the TKM trusts
@@ -9720,14 +9657,7 @@ The actual keying material for the child SA is derived using the
 \begin_inset Formula $prf+$
 \end_inset
 
- function described in the previous section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:IKE-SA-keys"
-
-\end_inset
-
-.
+ function.
  Currently the TKM only supports PRF_HMAC_SHA512 as base for the 
 \begin_inset Formula $prf+$
 \end_inset
@@ -10549,14 +10479,7 @@ A
 B
 \emph default
 .
- The signature is checked using a RSA verifier as explained in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Signature-verification"
-
-\end_inset
-
-.
+ The signature is checked using a RSA verifier.
  If the signature verifies, the intermediate certificate 
 \emph on
 B
@@ -10576,14 +10499,7 @@ The
  procedure must be called multiple times for all intermediate CAs in the
  trust chain and also for the final root CA.
  The ordering of certificates delivered to the TKM is performed by the charon-tk
-m bus listener plugin described in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:plugin-Bus-listener"
-
-\end_inset
-
-.
+m bus listener plugin.
  If the ordering is incorrect, the verification of the chain fails and the
  IKE SA can not be authenticated.
 \end_layout
@@ -10634,15 +10550,7 @@ Cc_Add_Certificate
 \family default
  must be bit-wise identical to the CA trusted by the TKM.
  If this check succeeds, the CC context is set into the 'checked' state
- and the context can be used to verify signatures as explained in section
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Signature-verification"
-
-\end_inset
-
-.
+ and the context can be used to verify signatures.
 \end_layout
 
 \begin_layout Standard
