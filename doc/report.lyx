@@ -4275,6 +4275,18 @@ reference "sub:Contexts-and-identifiers"
 .
 \end_layout
 
+\begin_layout Standard
+To distinguish local and remote values, 
+\emph on
+_loc
+\emph default
+ and 
+\emph on
+_rem
+\emph default
+ suffixes are used.
+\end_layout
+
 \begin_layout Subsection
 Creation of an IKE SA
 \begin_inset CommandInset label
@@ -4450,9 +4462,9 @@ _id, nc
 \backslash
 _id, Nr, init, spi
 \backslash
-subscript{local}, spi
+_loc, spi
 \backslash
-subscript{rem}}
+_rem}
 \end_layout
 
 \begin_layout Plain Layout
@@ -4538,7 +4550,7 @@ _message}
 \backslash
 msg{}{TKM}{IKE}{AUTH
 \backslash
-subscript{local}}
+_loc}
 \end_layout
 
 \begin_layout Plain Layout
@@ -4733,7 +4745,7 @@ _id, init
 \backslash
 _message, AUTH
 \backslash
-subscript{remote}}
+_rem}
 \end_layout
 
 \begin_layout Plain Layout
@@ -4787,11 +4799,11 @@ _id, esp
 \backslash
 _spi
 \backslash
-subscript{local}, esp
+_loc, esp
 \backslash
 _spi
 \backslash
-subscript{remote}}
+_rem}
 \end_layout
 
 \begin_layout Plain Layout
@@ -4999,11 +5011,11 @@ _id, Nr, initiator, esp
 \backslash
 _spi
 \backslash
-subscript{local}, esp
+_loc, esp
 \backslash
 _spi
 \backslash
-subscript{rem}}
+_rem}
 \end_layout
 
 \begin_layout Plain Layout
@@ -5181,9 +5193,9 @@ _id, nc
 \backslash
 _id, Nr, initiator, spi
 \backslash
-subscript{local}, spi
+_loc, spi
 \backslash
-subscript{rem}}
+_rem}
 \end_layout
 
 \begin_layout Plain Layout
