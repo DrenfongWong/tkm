@@ -345,7 +345,7 @@ reference "fig:Trusted-Computing-Base"
 placement h
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -1222,17 +1222,15 @@ key "Cremers:2011:KEI:2041225.2041249,DBLP:conf/sp/Meadows99"
 \end_layout
 
 \begin_layout Standard
-The project is based on the concept of IKEv2 disaggregation described in
- 
+The presented project is based on the concept of IKEv2 disaggregation described
+ in 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "secunet:01"
 
 \end_inset
 
-.
- The project further refines the separation and implements the improved
- concepts.
+, which is the result of preliminary research on the same topic.
 \end_layout
 
 \begin_layout Chapter
@@ -3870,9 +3868,13 @@ By using a well-defined interface, the internal functionality of the TCB’s
  key manager is completely hidden from the charon plugins.
  The plugins reference the data (and their associated state) needed for
  processing via context identifiers (IDs).
- They have no direct access to the objects referenced by the identifiers
- but can instruct the key manager to perform certain, allowed operations
- with the specified context(s).
+ These identifiers are positive integers and can be interpreted as index
+ values into an array of contexts stored in the TCB.
+\end_layout
+
+\begin_layout Standard
+This mechanism enables plugins to instruct the key manager to perform actions
+ on specific contexts without needing access to the actual data.
  Only uncritical results of operations are returned to the caller plugin
  (e.g.
  the public value of a DH exchange).
@@ -3884,7 +3886,7 @@ By using a well-defined interface, the internal functionality of the TCB’s
 \begin_layout Standard
 To simplify the implementation of the TCB, the management of context IDs
  is done in the untrusted part since it is not security-critical.
- The trusted part only supports a limited number of contexts.
+ The trusted part supports a limited number of contexts.
  These limits can be inquired from the TCB by the untrusted components by
  using a dedicated exchange.
  Usage of context IDs outside the supported numeric range is refused by
