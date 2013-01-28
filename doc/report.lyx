@@ -4242,7 +4242,7 @@ Notation
 
 \begin_layout Standard
 The protocol is presented as an exchange of messages between the untrusted
- component IKE and the trusted key manager TKM.
+ component IKE and the Trusted Key Manager TKM.
  The name of the operation is displayed on the left while the communicating
  entities are separated by an arrow which is directed from the source to
  the destination.
@@ -5485,6 +5485,13 @@ filename "tex/types-constants.tex"
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage clearpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Exchanges
 \begin_inset CommandInset label
@@ -6317,7 +6324,7 @@ reference "sec:charon-tkm"
  gives an in-depth characterization of the changes to the strongSwan project,
  the newly implemented plugins and how the integration of Ada code into
  the existing project is realized.
- Following that the trusted key manager TKM implementation is presented.
+ Following that the Trusted Key Manager implementation is presented.
 \end_layout
 
 \begin_layout Standard
@@ -8142,7 +8149,7 @@ name "sec:charon-tkm"
 \end_layout
 
 \begin_layout Standard
-The untrusted IKEv2 component used in conjunction with the trusted key manager
+The untrusted IKEv2 component used in conjunction with the Trusted Key Manager
  infrastructure is implemented as a separate charon 
 \begin_inset Quotes eld
 \end_inset
@@ -9229,7 +9236,7 @@ name "sec:TKM"
 \end_layout
 
 \begin_layout Standard
-The TKM component implements a minimal trusted key manager as depicted in
+The TKM component implements a minimal Trusted Key Manager as depicted in
  figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -10852,7 +10859,7 @@ name "sub:Anet"
 
 \begin_layout Standard
 Anet is a networking library for the Ada programming language.
- It is used by the trusted key manager and xfrm-proxy to open or connect
+ It is used by the Trusted Key Manager and xfrm-proxy to open or connect
  to Unix sockets and communicate with charon-tkm.
 \end_layout
 
