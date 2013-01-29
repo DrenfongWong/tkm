@@ -6,6 +6,7 @@ General
 - Add Get_Data getter to variable-length data types
 - Add util function to concatenate byte sequences
 - Additional sanity checks of RSA keys
+  - Verify key size is acceptable according to policy
 - Lock and wipe private key memory
 
 DH
