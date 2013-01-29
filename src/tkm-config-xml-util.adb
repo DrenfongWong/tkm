@@ -35,7 +35,7 @@ is
       List : DC.Node_List;
    begin
       List := DC.Documents.Get_Elements_By_Tag_Name
-        (Doc      => DC.Document (Data),
+        (Doc      => Data.Doc,
          Tag_Name => Tag_Name);
 
       for Index in 1 .. DC.Nodes.Length (List => List) loop

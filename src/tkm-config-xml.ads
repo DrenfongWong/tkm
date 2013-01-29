@@ -17,6 +17,7 @@
 --
 
 private with DOM.Core;
+private with Ada.Finalization;
 
 package Tkm.Config.Xml
 is
@@ -39,6 +40,12 @@ is
 
 private
 
-   type XML_Config is new DOM.Core.Document;
+   type XML_Config is new Ada.Finalization.Controlled with record
+      Doc : DOM.Core.Document;
+   end record;
+
+   overriding
+   procedure Finalize (Object : in out XML_Config);
+   --  Free XML document.
 
 end Tkm.Config.Xml;

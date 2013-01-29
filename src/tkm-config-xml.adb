@@ -110,6 +110,14 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Finalize (Object : in out XML_Config)
+   is
+   begin
+      DOM.Core.Nodes.Free (N => Object.Doc);
+   end Finalize;
+
+   -------------------------------------------------------------------------
+
    procedure For_Each_L_Identity
      (Data    : XML_Config;
       Process : not null access procedure
@@ -311,7 +319,7 @@ is
                                   Input    => File_Input);
          Reader.Parse (Input => File_Input);
          Input_Sources.File.Close (Input => File_Input);
-         Data := XML_Config (Reader.Get_Tree);
+         Data.Doc := Reader.Get_Tree;
 
       exception
          when E : others =>
