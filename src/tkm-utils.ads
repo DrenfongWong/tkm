@@ -70,6 +70,9 @@ is
    function To_Hex_String (Input : Interfaces.Unsigned_32) return String;
    --  Return hex string represenation of unsigned 32-bit number.
 
+   function To_Hex_String (Input : Interfaces.Unsigned_64) return String;
+   --  Return hex string represenation of unsigned 64-bit number.
+
    Conversion_Error : exception;
 
 end Tkm.Utils;

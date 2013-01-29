@@ -46,4 +46,7 @@ package Util_Tests is
    procedure Convert_U32_To_Hex;
    --  Convert unsigned 32 to hex string.
 
+   procedure Convert_U64_To_Hex;
+   --  Convert unsigned 64 to hex string.
+
 end Util_Tests;

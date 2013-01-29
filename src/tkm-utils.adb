@@ -244,6 +244,27 @@ is
 
    -------------------------------------------------------------------------
 
+   function To_Hex_String (Input : Interfaces.Unsigned_64) return String
+   is
+      package M_IO is new Ada.Text_IO.Modular_IO
+        (Num => Interfaces.Unsigned_64);
+
+      Str : String (1 .. 24);
+      Left_Idx : Natural;
+   begin
+      M_IO.Put (To   => Str,
+                Item => Input,
+                Base => 16);
+
+      --  Strip leading '16#' and trailing '#'
+
+      Left_Idx := Ada.Strings.Fixed.Index (Source  => Str,
+                                           Pattern => "#");
+      return Str (Left_Idx + 1 .. 23);
+   end To_Hex_String;
+
+   -------------------------------------------------------------------------
+
    function To_Sequence
      (Item : X509.Byte_Array)
       return Tkmrpc.Types.Byte_Sequence

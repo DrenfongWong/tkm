@@ -200,9 +200,11 @@ package body Util_Tests is
       Assert (Condition => Utils.To_Hex_String
               (Input => Interfaces.Unsigned_32'Last) = Ref_2,
               Message   => "Hex string mismatch (2)");
-      Assert (Condition => Utils.To_Hex_String (Input => 42) = Ref_3,
+      Assert (Condition => Utils.To_Hex_String
+              (Input => Interfaces.Unsigned_32'(42)) = Ref_3,
               Message   => "Hex string mismatch (3)");
-      Assert (Condition => Utils.To_Hex_String (Input => 3735928559) = Ref_4,
+      Assert (Condition => Utils.To_Hex_String
+              (Input => Interfaces.Unsigned_32'(3735928559)) = Ref_4,
               Message   => "Hex string mismatch (4)");
    end Convert_U32_To_Hex;
 
@@ -236,6 +238,29 @@ package body Util_Tests is
 
    -------------------------------------------------------------------------
 
+   procedure Convert_U64_To_Hex
+   is
+      Ref_1 : constant String := "0";
+      Ref_2 : constant String := "FFFFFFFFFFFFFFFF";
+      Ref_3 : constant String := "2A";
+      Ref_4 : constant String := "DEADBEEFDEADBEEF";
+   begin
+      Assert (Condition => Utils.To_Hex_String
+              (Input => Interfaces.Unsigned_64'First) = Ref_1,
+              Message   => "Hex string mismatch (1)");
+      Assert (Condition => Utils.To_Hex_String
+              (Input => Interfaces.Unsigned_64'Last) = Ref_2,
+              Message   => "Hex string mismatch (2)");
+      Assert (Condition => Utils.To_Hex_String
+              (Input => Interfaces.Unsigned_64'(42)) = Ref_3,
+              Message   => "Hex string mismatch (3)");
+      Assert (Condition => Utils.To_Hex_String
+              (Input => Interfaces.Unsigned_64'(16045690984833335023)) = Ref_4,
+              Message   => "Hex string mismatch (4)");
+   end Convert_U64_To_Hex;
+
+   -------------------------------------------------------------------------
+
    procedure Initialize (T : in out Testcase)
    is
    begin
@@ -261,6 +286,9 @@ package body Util_Tests is
       T.Add_Test_Routine
         (Routine => Convert_U32_To_Hex'Access,
          Name    => "Convert unsigned 32 to hex string");
+      T.Add_Test_Routine
+        (Routine => Convert_U64_To_Hex'Access,
+         Name    => "Convert unsigned 64 to hex string");
    end Initialize;
 
 end Util_Tests;
