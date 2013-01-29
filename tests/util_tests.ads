@@ -43,4 +43,7 @@ package Util_Tests is
    procedure Convert_String_To_Bytes;
    --  Convert string to byte sequence.
 
+   procedure Convert_U32_To_Hex;
+   --  Convert unsigned 32 to hex string.
+
 end Util_Tests;

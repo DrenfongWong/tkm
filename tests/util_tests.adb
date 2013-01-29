@@ -187,6 +187,27 @@ package body Util_Tests is
 
    -------------------------------------------------------------------------
 
+   procedure Convert_U32_To_Hex
+   is
+      Ref_1 : constant String := "0";
+      Ref_2 : constant String := "FFFFFFFF";
+      Ref_3 : constant String := "2A";
+      Ref_4 : constant String := "DEADBEEF";
+   begin
+      Assert (Condition => Utils.To_Hex_String
+              (Input => Interfaces.Unsigned_32'First) = Ref_1,
+              Message   => "Hex string mismatch (1)");
+      Assert (Condition => Utils.To_Hex_String
+              (Input => Interfaces.Unsigned_32'Last) = Ref_2,
+              Message   => "Hex string mismatch (2)");
+      Assert (Condition => Utils.To_Hex_String (Input => 42) = Ref_3,
+              Message   => "Hex string mismatch (3)");
+      Assert (Condition => Utils.To_Hex_String (Input => 3735928559) = Ref_4,
+              Message   => "Hex string mismatch (4)");
+   end Convert_U32_To_Hex;
+
+   -------------------------------------------------------------------------
+
    procedure Convert_U64_To_Bytes
    is
       use type Tkmrpc.Types.Byte_Sequence;
@@ -237,6 +258,9 @@ package body Util_Tests is
       T.Add_Test_Routine
         (Routine => Convert_String_To_Bytes'Access,
          Name    => "Convert string to byte sequences");
+      T.Add_Test_Routine
+        (Routine => Convert_U32_To_Hex'Access,
+         Name    => "Convert unsigned 32 to hex string");
    end Initialize;
 
 end Util_Tests;

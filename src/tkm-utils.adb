@@ -17,6 +17,8 @@
 --
 
 with Ada.Unchecked_Conversion;
+with Ada.Text_IO;
+with Ada.Strings.Fixed;
 
 with System;
 
@@ -217,6 +219,27 @@ is
 
          return Result;
       end;
+   end To_Hex_String;
+
+   -------------------------------------------------------------------------
+
+   function To_Hex_String (Input : Interfaces.Unsigned_32) return String
+   is
+      package M_IO is new Ada.Text_IO.Modular_IO
+        (Num => Interfaces.Unsigned_32);
+
+      Str : String (1 .. 12);
+      Left_Idx : Natural;
+   begin
+      M_IO.Put (To   => Str,
+                Item => Input,
+                Base => 16);
+
+      --  Strip leading '16#' and trailing '#'
+
+      Left_Idx := Ada.Strings.Fixed.Index (Source  => Str,
+                                           Pattern => "#");
+      return Str (Left_Idx + 1 .. 11);
    end To_Hex_String;
 
    -------------------------------------------------------------------------

@@ -67,6 +67,9 @@ is
       return Tkmrpc.Types.Byte_Sequence;
    --  Convert given X509 byte array to byte sequence.
 
+   function To_Hex_String (Input : Interfaces.Unsigned_32) return String;
+   --  Return hex string represenation of unsigned 32-bit number.
+
    Conversion_Error : exception;
 
 end Tkm.Utils;
