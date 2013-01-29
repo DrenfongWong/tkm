@@ -208,8 +208,9 @@ is
                 Data => (others => 0));
 
       L.Log (Message => "Creating new ISA context with ID" & Isa_Id'Img
-             & " (DH" & Dh_Id'Img & ", nonce" & Nc_Loc_Id'Img & ", spi_loc"
-             & Spi_Loc'Img & ", spi_rem" & Spi_Rem'Img & ")");
+             & " (DH" & Dh_Id'Img & ", nonce" & Nc_Loc_Id'Img
+             & ", spi_loc " & Utils.To_Hex_String (Input => Spi_Loc)
+             & ", spi_rem " & Utils.To_Hex_String (Input => Spi_Rem) & ")");
 
       Tkmrpc.Contexts.dh.consume (Id     => Dh_Id,
                                   dh_key => Secret);
@@ -344,8 +345,9 @@ is
 
       L.Log (Message => "Creating new child ISA context with ID" & Isa_Id'Img
              & " (Parent Isa" & Parent_Isa_Id'Img & ", DH" & Dh_Id'Img
-             & ", nonce" & Nc_Loc_Id'Img & ", spi_loc" & Spi_Loc'Img
-             & ", spi_rem" & Spi_Rem'Img & ")");
+             & ", nonce" & Nc_Loc_Id'Img
+             & ", spi_loc " & Utils.To_Hex_String (Input => Spi_Loc)
+             & ", spi_rem " & Utils.To_Hex_String (Input => Spi_Rem) & ")");
 
       Tkmrpc.Contexts.dh.consume (Id     => Dh_Id,
                                   dh_key => Dh_Secret);
