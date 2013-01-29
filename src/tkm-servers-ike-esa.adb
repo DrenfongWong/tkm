@@ -98,7 +98,8 @@ is
              & ", Ea" & Ea_Id'Img  & ", Dh_Id" & Dh_Id'Img
              & ", Nc_Loc_Id" & Nc_Loc_Id'Img & ", Initiator "
              & Boolean'Image (Initiator = 1)
-             & ", spi_loc" & Esp_Spi_Loc'Img & ", spi_rem" & Esp_Spi_Rem'Img
+             & ", spi_loc " & Utils.To_Hex_String (Input => Esp_Spi_Loc)
+             & ", spi_rem " & Utils.To_Hex_String (Input => Esp_Spi_Rem)
              & ")");
       Create_Esa
         (Esa_Id      => Esa_Id,
@@ -236,7 +237,8 @@ is
       L.Log (Message => "Creating first new ESA context with ID" & Esa_Id'Img
              & " (Isa" & Isa_Id'Img & ", Sp" & Sp_Id'Img & ", Ea" & Ea_Id'Img
              & ", Initiator " & Initiator'Img
-             & ", spi_loc" & Esp_Spi_Loc'Img & ", spi_rem" & Esp_Spi_Rem'Img
+             & ", spi_loc " & Utils.To_Hex_String (Input => Esp_Spi_Loc)
+             & ", spi_rem " & Utils.To_Hex_String (Input => Esp_Spi_Rem)
              & ")");
       Create_Esa (Esa_Id      => Esa_Id,
                   Isa_Id      => Isa_Id,
@@ -277,7 +279,8 @@ is
              & Esa_Id'Img & " (Isa" & Isa_Id'Img & ", Sp" & Sp_Id'Img
              & ", Ea" & Ea_Id'Img  & ", Nc_Loc_Id" & Nc_Loc_Id'Img
              & ", Initiator " & Boolean'Image (Initiator = 1)
-             & ", spi_loc" & Esp_Spi_Loc'Img & ", spi_rem" & Esp_Spi_Rem'Img
+             & ", spi_loc " & Utils.To_Hex_String (Input => Esp_Spi_Loc)
+             & ", spi_rem " & Utils.To_Hex_String (Input => Esp_Spi_Rem)
              & ")");
       Create_Esa (Esa_Id      => Esa_Id,
                   Isa_Id      => Isa_Id,
