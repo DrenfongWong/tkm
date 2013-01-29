@@ -1,0 +1,418 @@
+TKM - Trusted Key Manager
+=========================
+
+The Trusted Key Manager (TKM) is a minimal Trusted Computing Base which
+implements security-critical functions of the IKEv2 protocol. It is implemented
+using the Ada programming language. The TKM works in conjunction with the
+strongSwan IKEv2 daemon `charon-tkm` to provide key management services for
+IPsec.
+
+NOTE: IPsec can be used to protect data flows between hosts or security gateways
+      (see http://en.wikipedia.org/wiki/IPsec for further information on IPsec).
+
+The underlying concept of IKE disaggregation and the design of TKM and all
+related components is presented in detail in the project report, see
+<<anchor-doc,documentation>>.
+
+To support automatic setup and rekeying of IPsec connections the `xfrm-proxy`
+component is used. It forwards XFRM Acquire and Expire events from the Linux
+kernel to the IKE daemon. The following diagram illustrates the main components
+of the system and how they communicate:
+
+image:system-overview.svg[alt="System overview"]
+
+The trusted key manager uses the tkm-rpc library to communicate with the
+augmented strongSwan charon daemon (`charon-tkm`) in the untrusted part. The
+tkm-rpc library is also written in Ada.
+
+For x509 certificate processing, the x509/Ada library is used and for
+communication with the Linux kernel's XFRM subsystem the XFRM/Ada library is
+employed.
+
+Diffie-Hellman key agreement and RSA signature generation and validation are
+implemented using the big number arithmetic provided by the GMPAda binding.
+
+NOTE: TKM is considered a prototype implementation and a technology demonstrator
+      of the IKE disaggregation concept. We do not consider it to be fit for
+      production use in its current form.
+
+Features
+--------
+
+The following features are implemented by TKM:
+
+* 'PKCS#1' (RSA) key and 'X.509' certificate processing
+* Public key authentication using 'RSA-PKCS1-SHA1'
+* Certificate trustchain validation using 'RSA-PKCS1-SHA256'
+* Diffie-Hellman key exchange using groups 'DH-MODP-3072' and 'DH-MODP-4096'
+* IKE and ESP key derivation using 'HMAC-SHA512'
+
+The following table lists the supported transforms with their IANA identifiers:
+
+.Supported IKEv2 transforms
+[options="header",width="25%"]
+|===========================
+|Transform Type         | Id
+|Encryption algorithm   | 12
+|Pseudo-random Function |  7
+|Integrity Algorithm    | 14
+|Diffie-Hellman Group   | 15
+|Diffie-Hellman Group   | 16
+|Authentication method  |  1
+|===========================
+
+A complete list of all IKEv2 IANA identifiers can be found here:
+http://www.iana.org/assignments/ikev2-parameters/.
+
+
+Licence
+-------
+--------------------------------------------------------------------------------
+Copyright (C) 2012, 2013 Reto Buerki <reet@codelabs.ch>
+Copyright (C) 2012, 2013 Adrian-Ken Rueegsegger <ken@codelabs.ch>
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+--------------------------------------------------------------------------------
+
+
+[[anchor-doc]]
+Documentation
+-------------
+To give a brief overview of the project, its abstract is reproduced here:
+____
+The IPsec protocol relies on the correct operation of the IKE key exchange to
+meet its security goals. The implementation of the IKE protocol is a non-trivial
+task and results in a large and complex code base. This makes it hard to gain
+a high degree of confidence in the correct operation of the code.
+
+We propose a component-based approach by disaggregating the IKE key management
+system into trusted and untrusted components to attain a higher level of
+security. By formulating desired security properties and identifying the
+critical components of the IKE protocol, a concept to split the key management
+system into an untrusted and trusted part is presented. The security-critical
+part represents a trusted computing base (TCB) and is termed Trusted Key Manager
+(TKM). Care was taken to only extract the functionality that is absolutely
+necessary to ensure the desired security properties. Thus, the presented
+interface between the untrusted IKE processing component and TKM allows for a
+small and robust implementation of the TCB. The splitting of the protocol
+guarantees that even if the untrusted side is completely subverted by an
+attacker, the trusted components uphold the proposed security goals.
+
+The viability of the design has been validated through a prototypical
+implementation of the presented system. The untrusted parts of the IKE daemon
+have been implemented by extending the existing strongSwan IKE implementation.
+The trusted components have been implemented from scratch using the Ada
+programming language, which is well suited for the development of robust
+software. The new Design-by-Contract feature of Ada 2012 has been used for the
+implementation of state machines, to augment the confidence of operation
+according to the specification.
+____
+
+The full report about IKEv2 Separation can be found here:
+http://www.codelabs.ch/tkm/ike-separation.pdf.
+
+Information about the strongSwan project can be found on the project's website:
+http://wiki.strongswan.org/projects/strongswan/wiki.
+
+Unfortunately the Linux kernel's XFRM subsystem is not well documented. A brief
+overview is given on the following website:
+http://www.linuxfoundation.org/collaborate/workgroups/networking/ipsec-overview.
+
+
+Development version
+~~~~~~~~~~~~~~~~~~~
+The current development version of TKM is available through its git
+repository:
+
+  $ git clone http://git.codelabs.ch/git/tkm.git
+
+A browsable version of the repository is also available here:
+http://git.codelabs.ch/?p=tkm.git
+
+
+Build
+-----
+To compile TKM on your system, you need to have the following software
+installed:
+
+* GNAT compiler:
+  http://www.gnu.org/software/gnat/gnat.html
+
+* gprbuild (part of AdaCore's GNAT GPL Edition):
+  http://libre.adacore.com/tools/
+
+* Anet: (Version 0.2 or above)
+  http://www.codelabs.ch/anet
+
+* Alog: (Version 0.4 or above)
+  http://www.codelabs.ch/alog
+
+* GMPAda (Ada GMP binding):
+  http://mtn-host.prjek.net/projects/libgmpada/
+
+* XML/Ada: (Version 0.4 or above)
+  http://libre.adacore.com/tools/xmlada/
+
+If you want to run the unit tests before installation of TKM (which is
+recommended) you furthermore need to have the following installed:
+
+* Ahven (Test-Framework):
+  http://ahven.stronglytyped.org/
+
+
+Testing
+-------
+Before you install the Trusted Key Manager on your system, you might want to
+test if everything works as expected. TKM (as well as XFRM/Ada and X509/Ada)
+contains a unit test suite which can be run by entering the following command:
+
+  $ make tests
+
+All tests should be marked with *PASS* behind the test name.
+
+
+Installation
+------------
+This section describes the steps needed to install and use the Trusted Key
+Manager in conjunction with strongSwan to provide IKEv2 key management services
+on a Linux host.
+
+Preparatory steps
+~~~~~~~~~~~~~~~~~
+We assume that Alog, Anet, Ahven, GMPAda, XML/Ada as well as the GNAT
+compiler are already installed on the system. Furthermore the `gprbuild` utility
+is needed to drive the build process. Naturally the git version control tool is
+also needed since all necessary files are retrieved directly from the project's
+source code repository.
+
+It is expected that the GNAT project files of the installed Ada libraries are
+accessible on the system by exporting the ADA_PROJECT_PATH environment
+variable. If you have installed the libraries under `$HOME/libraries/` the
+following command will allow their use:
+
+  $ export ADA_PROJECT_PATH=$HOME/libraries/lib/gnat
+
+NOTE: If you expect to compile Ada code more frequently you can append the
+      previous line to your `$HOME/.profile` file so it is set automatically.
+
+XFRM/Ada library
+~~~~~~~~~~~~~~~~
+The first step is to compile and install the needed libraries. Compile and
+install XFRM/Ada:
+
+  $ git clone http://git.codelabs.ch/git/xfrm-ada.git
+  $ cd xfrm-ada
+  $ make install
+
+X509/Ada library
+~~~~~~~~~~~~~~~~
+Compile and install X509/Ada:
+
+  $ git clone http://git.codelabs.ch/git/x509-ada.git
+  $ cd x509-ada
+  $ make tests
+  $ make install
+
+TKM-RPC library
+~~~~~~~~~~~~~~~
+After these dependencies have been met, the TKM-RPC library is next:
+
+  $ git clone http://git.codelabs.ch/git/tkm-rpc.git
+  $ cd tkm-rpc
+  $ make tests
+  $ make install
+
+strongSwan
+~~~~~~~~~~
+Next up is the charon-tkm daemon, which is part of the strongSwan project:
+
+  $ git clone git://git.strongswan.org/strongswan.git
+  $ cd strongswan
+
+Since the TKM-related code has not yet been merged, we must checkout the
+TKM-specific branch named 'tkm':
+
+  $ git checkout tkm
+
+To reduce the OpenSSL plugin functionality to the essential minimum export the
+following `CFLAGS` environment variable:
+
+  $ export CFLAGS="-DOPENSSL_NO_CAMELLIA \
+                   -DOPENSSL_NO_RC5      \
+                   -DOPENSSL_NO_CAST     \
+                   -DOPENSSL_NO_BLOWFISH \
+                   -DOPENSSL_NO_IDEA     \
+                   -DOPENSSL_NO_DES      \
+                   -DOPENSSL_NO_MD2      \
+                   -DOPENSSL_NO_MD4      \
+                   -DOPENSSL_NO_MD5      \
+                   -DOPENSSL_NO_DH       \
+                   -DOPENSSL_NO_RSA      \
+                   -DOPENSSL_NO_CMS      \
+                   -DOPENSSL_NO_ECDH     \
+                   -DOPENSSL_NO_ECDSA"
+
+After that the daemon can be compiled and installed. A different installation
+location than the default `/usr/local/` can be specified using the --prefix
+option:
+
+  $ ./autogen.sh
+  $ ./configure [--prefix=/path/to/install] \
+      --enable-tkm            \
+      --enable-openssl        \
+      --disable-aes           \
+      --disable-attr          \
+      --disable-cmac          \
+      --disable-constraints   \
+      --disable-des           \
+      --disable-dnskey        \
+      --disable-fips-prf      \
+      --disable-gmp           \
+      --disable-hmac          \
+      --disable-ikev1         \
+      --disable-load-warning  \
+      --disable-md5           \
+      --disable-nonce         \
+      --disable-pgp           \
+      --disable-pkcs1         \
+      --disable-pkcs7         \
+      --disable-pkcs8         \
+      --disable-pubkey        \
+      --disable-random        \
+      --disable-resolve       \
+      --disable-revocation    \
+      --disable-sha1          \
+      --disable-sha2          \
+      --disable-tools         \
+      --disable-updown        \
+      --disable-x509          \
+      --disable-xauth-generic \
+      --disable-xcbc
+  $ make install
+
+For additional build instructions for strongSwan, the reader is directed to the
+project's documentation at
+http://wiki.strongswan.org/projects/strongswan/wiki/InstallationDocumentation.
+
+NOTE: strongSwan requires specific kernel modules to be enabled, see
+      http://wiki.strongswan.org/projects/strongswan/wiki/KernelModules
+
+TKM
+~~~
+Once the IKEv2 daemon is ready the TKM component can be compiled:
+
+  $ git clone http://git.codelabs.ch/git/tkm.git
+  $ cd tkm
+  $ make tests
+  $ make install
+
+xfrm-proxy
+~~~~~~~~~~
+For XFRM Acquire and Expire processing, the xfrm-proxy component must be
+compiled and installed:
+
+  $ git clone http://git.codelabs.ch/git/xfrm-proxy.git
+  $ cd xfrm-proxy
+  $ make install
+
+Certificates
+~~~~~~~~~~~~
+X509 certificates are needed for mutual authentication. The strongSwan PKI tool
+can be used to setup a simple CA with user certificates, see
+http://wiki.strongswan.org/projects/strongswan/wiki/SimpleCA. The generated CA
+certificate must be placed in strongSwan's certificate directory, which is
+`/usr/local/etc/ipsec.d/cacerts/` by default. Likewise the user certificate
+containing the public key of the local identity used for authentication, must be
+copied to `/usr/local/etc/ipsec.d/certs/`.
+
+Configuration
+~~~~~~~~~~~~~
+Now a suitable configuration must be generated using the `tkm_cfgtool`. The tool
+takes an XML file as input and creates an IKE and a TKM configuration file:
+
+  $ tkm_cfgtool -c config.xml -i ipsec.conf -t tkm.conf -s /path/to/schema
+
+The XML config file format is quite simple and an example configuration file is
+available in the TKM source code, see `data/refconfig.xml`.
+
+The ipsec.conf file must be copied to strongSwan's configuration directory. By
+default this is located at `/usr/local/etc`.
+
+  $ cp ipsec.conf /usr/local/etc
+
+Putting it all together
+~~~~~~~~~~~~~~~~~~~~~~~
+Now that everything is in place the TKM can be started:
+
+  $ sudo tkm_keymanager -c tkm.conf -k privKey.der -r ca.der
+
+The TKM binary `tkm_keymanager` opens a netlink socket to the XFRM subsystem of
+the Linux kernel to install XFRM policies and XFRM state (IPsec keys etc), which
+require root rights.
+
+The private key and CA certificate in ASN.1/DER format should have already been
+generated. TKM uses the given private key to assert the local identity to the
+peer(s) and the CA certificate to verify the trust chain of peer certificates.
+
+Once the Trusted Key Manager has been started successfully the IKE daemon can be
+started. The easiest way to control the `charon-tkm` IKE daemon is using the
+`ipsec` tool:
+
+  $ DAEMON_NAME=charon-tkm ipsec start
+
+NOTE: Since the TKM-specific daemon is used, the DAEMON_NAME environment
+      variable must be specified accordingly.
+
+The syslog log file can be checked to verify that the IKE daemon is up and
+running. Additionally all configured connections are shown when displaying IKE's
+status information:
+
+  $ DAEMON_NAME=charon-tkm ipsec statusall
+
+For automated setup and rekeying of connections the xfrm-proxy must be started.
+Since it opens a netlink socket to the kernel's XFRM subsystem it must run as
+root:
+
+  $ sudo xfrm_proxy
+
+If all components have been started successfully, an IPsec connection should be
+setup automatically when trying to ping the peer. To inquire information about
+active connections of the IKE daemon issue the following command:
+
+  $ DAEMON_NAME=charon-tkm ipsec status
+
+The status of the kernel's XFRM subsystem can be inquired using the `ip` tool.
+To display all installed XFRM policies issue the following command:
+
+  $ sudo ip xfrm policy show
+
+To display all installed XFRM states including the keys used for encryption and
+integrity protection of the IPsec connection, issue the following command:
+
+  $ sudo ip xfrm state show
+
+
+Limitations
+-----------
+Since the TKM was developed as a prototype, it's still missing some
+functionality. Currently the following limitations exist:
+
+* Trustchain verification is restricted to a single CA certificate
+* Only basic certificate validation is performed during trustchain validation.
+  Additional checks, such as mandated by RFC 5280, are currently missing.
+* Authentication of the local identity is restricted to a single private key.
+* Cryptographic algorithms to protect and IPsec SA are restricted to
+  'AES256-HMAC-SHA512'.
+* `/dev/urandom` is used as random source and is non-configurable.
+* Not all memory containing security critical data, such as Diffie-Hellman
+  shared secrets are scrubbed after use.
+* The implementation of the cryptographic algorithms may be susceptible to
+  timing side channel attacks.
+* The IKE splitting and the designed protocol between IKE and TKM has not (yet)
+  been formally proven.
+
+More detailed information is available in the project report in chapter 6.2, see
+<<anchor-doc,documentation>>.
