@@ -71,7 +71,11 @@ install_tests: build_tests
 clean:
 	@rm -rf $(OBJDIR)
 	@rm -f git-rev $(VERSION_SPEC)
+	@$(MAKE) -C doc clean
+
+doc:
+	@$(MAKE) -C doc
 
 FORCE:
 
-.PHONY: tests
+.PHONY: doc tests
