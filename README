@@ -397,7 +397,7 @@ integrity protection of the IPsec connection, issue the following command:
 
 Limitations
 -----------
-Since the TKM was developed as a prototype, it's still missing some
+Since the TKM was developed as a prototype, it is still missing some
 functionality. Currently the following limitations exist:
 
 * Trustchain verification is restricted to a single CA certificate
