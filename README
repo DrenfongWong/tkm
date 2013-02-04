@@ -261,36 +261,16 @@ option:
 
   $ ./autogen.sh
   $ ./configure [--prefix=/path/to/install] \
-      --enable-tkm            \
+      --disable-defaults      \
+      --enable-charon         \
+      --enable-ikev2          \
+      --enable-kernel-netlink \
       --enable-openssl        \
-      --disable-aes           \
-      --disable-attr          \
-      --disable-cmac          \
-      --disable-constraints   \
-      --disable-des           \
-      --disable-dnskey        \
-      --disable-fips-prf      \
-      --disable-gmp           \
-      --disable-hmac          \
-      --disable-ikev1         \
-      --disable-load-warning  \
-      --disable-md5           \
-      --disable-nonce         \
-      --disable-pgp           \
-      --disable-pkcs1         \
-      --disable-pkcs7         \
-      --disable-pkcs8         \
-      --disable-pubkey        \
-      --disable-random        \
-      --disable-resolve       \
-      --disable-revocation    \
-      --disable-sha1          \
-      --disable-sha2          \
-      --disable-tools         \
-      --disable-updown        \
-      --disable-x509          \
-      --disable-xauth-generic \
-      --disable-xcbc
+      --enable-pem            \
+      --enable-scripts        \
+      --enable-socket-default \
+      --enable-stroke         \
+      --enable-tkm
   $ make install
 
 For additional build instructions for strongSwan, the reader is directed to the
@@ -400,7 +380,7 @@ Limitations
 Since the TKM was developed as a prototype, it is still missing some
 functionality. Currently the following limitations exist:
 
-* Trustchain verification is restricted to a single CA certificate
+* Trustchain verification is restricted to a single CA certificate.
 * Only basic certificate validation is performed during trustchain validation.
   Additional checks, such as mandated by RFC 5280, are currently missing.
 * Authentication of the local identity is restricted to a single private key.
