@@ -180,7 +180,7 @@ We propose a component-based approach by disaggregating the IKE key management
  By formulating desired security properties and identifying the critical
  components of the IKE protocol, a concept to split the key management system
  into an untrusted and trusted part is presented.
- The security-critical part respresents a trusted computing base (TCB) and
+ The security-critical part represents a trusted computing base (TCB) and
  is termed 
 \begin_inset Quotes eld
 \end_inset
@@ -941,8 +941,8 @@ tkm-rpc
 
 \end_inset
 
- library to communicate with the modified strongSwan charon daemon in the
- untrusted part.
+ library to communicate with the strongSwan charon daemon in the untrusted
+ part.
  This library is also written in Ada and explained in section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1759,7 +1759,15 @@ key "rfc5996"
 \end_layout
 
 \begin_layout Standard
-A value declared as 'critical' or 'sensitive
+A value declared as 
+\emph on
+critical
+\emph default
+ or 
+\emph on
+sensitive
+\emph default
+
 \begin_inset Index idx
 status open
 
@@ -1769,7 +1777,7 @@ sensitive values
 
 \end_inset
 
-' in the following sections must not be accessible by the untrusted part,
+ in the following sections must not be accessible by the untrusted part,
  i.e.
  it must not be present in memory or storage accessible from within the
  untrusted part.
@@ -2586,8 +2594,8 @@ reference "fig:IKE-SA-establishment"
 \emph on
 (CD
 \emph default
-), are references to subgraphs which illustrate a continuative process in
- detail.
+), are references to sub-graphs which illustrate a continuative process
+ in detail.
 \end_layout
 
 \begin_layout Standard
@@ -2841,7 +2849,11 @@ reference "fig:IKE-Certificate-trustchain"
 \begin_layout Standard
 The initiator begins the exchange by building its own AUTH payload used
  to prove its identity to the responder.
- This is done by creating a so called 'authenticator' plugin (see the
+ This is done by creating a so called 
+\emph on
+authenticator
+\emph default
+ plugin (see the
 \emph on
  CB
 \emph default
@@ -2852,9 +2864,9 @@ build
 \family default
  function illustrated by the
 \emph on
- BA
+ BA 
 \emph default
--subgraph shown in figure 
+sub-graph shown in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:IKE-public-key-auth"
@@ -2925,8 +2937,11 @@ The initiator then sends a message containing the constructed payloads to
 \end_layout
 
 \begin_layout Standard
-The responder creates a 'verifier' plugin to check the AUTH payload extracted
- from the initiator's message.
+The responder creates a 
+\emph on
+verifier
+\emph default
+ plugin to check the AUTH payload extracted from the initiator's message.
  The creation of a verifier plugin is depicted in the 
 \emph on
 CV
@@ -3056,11 +3071,29 @@ name "sub:flow-CHILD_CREATE_SA"
 \end_layout
 
 \begin_layout Standard
-The CHILD_CREATE_SA exchange is implemented as a task in the 
+The CHILD_CREATE_SA exchange is implemented as a task in the
 \family typewriter
+
+\begin_inset Newline linebreak
+\end_inset
+
 child_create.c
 \family default
- file.
+ file and depicted in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Child-SA-establishment"
+
+\end_inset
+
+ on page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "fig:Child-SA-establishment"
+
+\end_inset
+
+.
  The initiator starts by collecting the traffic selectors and proposals
  from the configuration (not visible in the graph) and allocates a SPI by
  calling the 
@@ -3084,19 +3117,6 @@ kernel
  and builds all required payloads.
  After sending the message, the task changes its state to NEED_MORE and
  waits for an answer.
-\end_layout
-
-\begin_layout Standard
-The responder processes the received CHILD_CREATE_SA message and extracts
- the contained payloads.
- It conducts the DH exchange and then directly installs the derived child
- SA keying material in the kernel.
- The complete process of deriving keys for the new child SA is depicted
- in 
-\emph on
-(SI
-\emph default
-).
 \end_layout
 
 \begin_layout Standard
@@ -3141,6 +3161,19 @@ name "fig:Child-SA-establishment"
 \end_layout
 
 \begin_layout Standard
+The responder processes the received CHILD_CREATE_SA message and extracts
+ the contained payloads.
+ It conducts the DH exchange and then directly installs the derived child
+ SA keying material in the kernel.
+ The complete process of deriving keys for the new child SA is depicted
+ in 
+\emph on
+(SI
+\emph default
+).
+\end_layout
+
+\begin_layout Standard
 First the child SA data structure associated with the task is set into the
  CHILD_INSTALLING state.
  The 
@@ -3153,7 +3186,7 @@ derive_child_keys
 DC
 \emph default
 ).
- The kernel plugin's
+ The kernel plugin
 \family typewriter
  add_policy
 \family default
@@ -3184,6 +3217,13 @@ The responder then builds the payloads of the response message and sends
 \family default
  function to derive child keying material after extracting the payloads.
  It then installs the new policy and state in the kernel.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage clearpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -3240,7 +3280,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename images/nonce-generation.svg
-	width 80text%
+	width 68text%
 
 \end_inset
 
@@ -3460,7 +3500,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename images/payload-decryption.svg
-	width 100text%
+	width 80text%
 
 \end_inset
 
@@ -5295,7 +5335,11 @@ subscript{old}
 \shape italic
 parent_isa_id
 \shape default
- used in the 
+ used in the
+\begin_inset Newline linebreak
+\end_inset
+
+ 
 \family typewriter
 isa_create_child
 \family default
@@ -6335,9 +6379,12 @@ reference "sec:charon-tkm"
 
 \end_inset
 
- gives an in-depth characterization of the changes to the strongSwan project,
- the newly implemented plugins and how the integration of Ada code into
- the existing project is realized.
+ gives an in-depth characterization of the changes to the
+\begin_inset Newline linebreak
+\end_inset
+
+ strongSwan project, the newly implemented plugins and how the integration
+ of Ada code into the existing project is realized.
  Following that the Trusted Key Manager implementation is presented.
 \end_layout
 
@@ -6897,8 +6944,10 @@ reference "sub:Client-side-usage"
 \end_layout
 
 \begin_layout Standard
-Server-side components are expected to provide an implementation of interface-sp
-ecific procedures.
+Server-side components are expected to provide an implementation of inter\SpecialChar \-
+fa\SpecialChar \-
+ce
+ specific procedures.
  How the server processing is done is illustrated in section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -6910,7 +6959,11 @@ reference "sub:Server-side-processing"
 \end_layout
 
 \begin_layout Standard
-When appropriate, the concrete implementation is illustrated using the 
+When appropriate, the concrete implementation is illustrated using the
+\begin_inset Newline linebreak
+\end_inset
+
+ 
 \family typewriter
 nc_create
 \family default
@@ -7518,6 +7571,9 @@ Based on the XML exchange description Ada procedure definitions are generated.
  Since the exchanges are specified on a per-interface basis (e.g.
  IKE or EES), procedures belonging together are put in the same package,
  e.g.
+\begin_inset Newline linebreak
+\end_inset
+
  
 \family typewriter
 Tkmrpc.Clients.Ike
@@ -8173,7 +8229,10 @@ instance
 \end_inset
 
  located in its own directory below the strongSwan top-level source directory
- (
+\begin_inset Newline linebreak
+\end_inset
+
+(
 \family typewriter
 src/charon-tkm
 \family default
@@ -9118,8 +9177,8 @@ reference "fig:IKE-public-key-auth"
 \end_layout
 
 \begin_layout Standard
-In its current implementation, the TKM private key plugin is hardcoded to
- a specific keypair (
+In its current implementation, the TKM private key plugin is hard-coded
+ to a specific key pair (
 \emph on
 alice@strongswan.org
 \emph default
@@ -9282,7 +9341,7 @@ reference "sub:ESP-SA-Event"
 \family typewriter
 ees
 \family default
- subdirectory.
+ sub-directory.
  It uses the tkm-rpc library outlined in section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -9329,7 +9388,7 @@ The charon TKM code located in the
 \family typewriter
 ehandler
 \family default
- subdirectory provides a special exception handler which implements the
+ sub-directory provides a special exception handler which implements the
  functionality to log exception messages from within Ada code into the daemon's
  log file.
  This mechanism is implemented using the
@@ -9353,8 +9412,12 @@ As a side note, this also includes internal exceptions which are normally
 \end_layout
 
 \begin_layout Standard
-The registered exception handler calls the imported C function 
+The registered exception handler calls the imported C function
 \family typewriter
+
+\begin_inset Newline linebreak
+\end_inset
+
 Charon_Terminate
 \family default
  which logs the exception message into the daemon's log file and instructs
@@ -9436,7 +9499,11 @@ Client communication
 \begin_layout Standard
 Exchanges between charon-tkm and the TKM daemon are transferred using a
  Unix domain socket.
- The TKM implementation instantiates the 
+ The TKM implementation instantiates the
+\begin_inset Newline linebreak
+\end_inset
+
+
 \family typewriter
 Process_Stream
 \family default
@@ -9586,8 +9653,11 @@ reference "sec:State-machines"
  are allowed during an exchange.
  If the protocol specified by the DH FSM is violated, an assertion exception
  is raised and the requester is informed about the violation.
- DH contexts can only be consumed if they are in 'generated' state as shown
- by the corresponding state machine diagram in section 
+ DH contexts can only be consumed if they are in 
+\emph on
+generated
+\emph default
+ state as shown by the corresponding state machine diagram in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:State-machines"
@@ -9841,7 +9911,11 @@ key "rfc5996"
 
 , section 2.17.
  The TKM only allows the derivation of child keys if the associated authenticati
-on context (AE) is in the 'authenticated' state:
+on context (AE) is in the 
+\emph on
+authenticated
+\emph default
+ state:
 \end_layout
 
 \begin_layout Standard
@@ -10344,8 +10418,12 @@ reference "sub:Certificate-chain-validation"
 During the IKE_AUTH exchange, the identity of a remote peer must be asserted.
  This is done by verifying the signature of the authentication octets.
  If the signature validates, the authentication context (AE) of the IKE
- SA in question is set into the 'authenticated' state, meaning that it is
- now possible to establish child SAs (ESA) under this IKE SA (ISA).
+ SA in question is set into the 
+\emph on
+authenticated
+\emph default
+ state, meaning that it is now possible to establish child SAs (ESA) under
+ this IKE SA (ISA).
 \end_layout
 
 \begin_layout Subsubsection
@@ -10747,8 +10825,12 @@ B
 \emph on
 CA
 \emph default
-, which is also handed to the trusted part by charon-tkm using 
+, which is also handed to the trusted part by charon-tkm using
 \family typewriter
+
+\begin_inset Newline linebreak
+\end_inset
+
 Cc_Add_Certificate
 \family default
 .
@@ -10783,8 +10865,11 @@ reference "fig:TKM-trustchain-check-ca"
 Cc_Add_Certificate
 \family default
  must be bit-wise identical to the CA trusted by the TKM.
- If this check succeeds, the CC context is set into the 'checked' state
- and the context can be used to verify signatures.
+ If this check succeeds, the CC context is set into the 
+\emph on
+checked
+\emph default
+ state and the context can be used to verify signatures.
 \end_layout
 
 \begin_layout Standard
@@ -11542,7 +11627,7 @@ name "tab:Implemented-cryptographic-algori"
 There is no inherent limitation of usable cryptographic transforms, it is
  simply a question of implementing the desired methods.
  Algorithm agility is ensured by the design through the use of numeric algorithm
- identifiers and avoidance of hardcoded cryptographic mechanisms.
+ identifiers and avoidance of hard-coded cryptographic mechanisms.
 \end_layout
 
 \begin_layout Subsection
@@ -11550,7 +11635,7 @@ Identity handling
 \end_layout
 
 \begin_layout Standard
-The local and peer identities are currently limited to specific, hardcoded
+The local and peer identities are currently limited to specific, hard-coded
  identities.
  The peer subject name must be 
 \begin_inset Quotes eld
@@ -11680,7 +11765,7 @@ Use of the Ada programming language and avoidance of problematic language
 
 \begin_layout Itemize
 Use of agile development methods, i.e.
- test-driven development (TDD), pair programming and code reviews.
+ test-driven development, pair programming and code reviews.
 \end_layout
 
 \begin_layout Itemize
