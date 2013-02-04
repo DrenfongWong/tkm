@@ -24,4 +24,6 @@ $(DESTDIR)/index.html: index page.conf ../README
 	asciidoc $(ASCIIDOC_OPTS) $< > $@
 
 clean:
-	@rm -rf $(DESTDIR)
+	@rm -rf $(DESTDIR)/*.html
+	@rm -rf $(DESTDIR)/*.css
+	@rm -rf $(DESTDIR)/*.svg
