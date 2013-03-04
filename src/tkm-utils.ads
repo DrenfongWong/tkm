@@ -73,6 +73,11 @@ is
    function To_Hex_String (Input : Interfaces.Unsigned_64) return String;
    --  Return hex string represenation of unsigned 64-bit number.
 
+   function Network_To_Host
+     (Input : Interfaces.Unsigned_32)
+      return Interfaces.Unsigned_32;
+   --  Convert given input from network byte order to host byte order.
+
    Conversion_Error : exception;
 
 end Tkm.Utils;

@@ -24,6 +24,8 @@ with System;
 
 with Interfaces.C;
 
+with GNAT.Byte_Swapping;
+
 package body Tkm.Utils
 is
 
@@ -31,6 +33,9 @@ is
 
    Null_Byte_Sequence : constant Tkmrpc.Types.Byte_Sequence (1 .. 0)
      := (others => 0);
+
+   function Swapped is new
+     GNAT.Byte_Swapping.Swapped4 (Item => Interfaces.Unsigned_32);
 
    function Bignum_Size (Integer : GMP.Binding.Mpz_T) return Natural;
    --  Return size in bytes of given bignum.
@@ -85,6 +90,21 @@ is
          raise Conversion_Error with "'" & Input & "' is not a valid hex"
            & " string";
    end Hex_To_Bytes;
+
+   -------------------------------------------------------------------------
+
+   function Network_To_Host
+     (Input : Interfaces.Unsigned_32)
+      return Interfaces.Unsigned_32
+   is
+      use type System.Bit_Order;
+   begin
+      if System.Default_Bit_Order = System.Low_Order_First then
+         return Swapped (Input);
+      else
+         return Input;
+      end if;
+   end Network_To_Host;
 
    -------------------------------------------------------------------------
 
