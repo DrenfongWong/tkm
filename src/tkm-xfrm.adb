@@ -168,8 +168,10 @@ is
                 & Anet.To_String (Address => Sel_Rem) & "/"
                 & Ada.Strings.Fixed.Trim (Source => Sel_Rem_Prefix'Img,
                                           Side   => Ada.Strings.Left)
-                & ", SPI_in " & Utils.To_Hex_String (Input => SPI_In)
-                & ", SPI_out " & Utils.To_Hex_String (Input => SPI_Out)
+                & ", SPI_in " & Utils.To_Hex_String
+                  (Input => Utils.Network_To_Host (Input => SPI_In))
+                & ", SPI_out " & Utils.To_Hex_String
+                  (Input => Utils.Network_To_Host (Input => SPI_Out))
                 & ", soft" & Policy.Lifetime_Soft'Img
                 & ", hard" & Policy.Lifetime_Hard'Img & " ]");
       else
@@ -180,8 +182,10 @@ is
          L.Log (Message => "Adding SA [" & Policy.Id'Img & ", "
                 & Anet.To_String (Address => Policy.Local_Addr) & " <-> "
                 & Anet.To_String (Address => Policy.Remote_Addr)
-                & ", SPI_in " & Utils.To_Hex_String (Input => SPI_In)
-                & ", SPI_out " & Utils.To_Hex_String (Input => SPI_Out)
+                & ", SPI_in " & Utils.To_Hex_String
+                  (Input => Utils.Network_To_Host (Input => SPI_In))
+                & ", SPI_out " & Utils.To_Hex_String
+                  (Input => Utils.Network_To_Host (Input => SPI_Out))
                 & ", soft" & Policy.Lifetime_Soft'Img
                 & ", hard" & Policy.Lifetime_Hard'Img & " ]");
       end if;
@@ -238,8 +242,10 @@ is
       L.Log (Message => "Deleting SA [" & Policy.Id'Img & ", "
              & Anet.To_String (Address => Policy.Local_Addr) & " <=> "
              & Anet.To_String (Address => Policy.Remote_Addr)
-             & ", SPI_in " & Utils.To_Hex_String (Input => SPI_In)
-             & ", SPI_out " & Utils.To_Hex_String (Input => SPI_Out) & " ]");
+             & ", SPI_in " & Utils.To_Hex_String
+               (Input => Utils.Network_To_Host (Input => SPI_In))
+             & ", SPI_out " & Utils.To_Hex_String
+               (Input => Utils.Network_To_Host (Input => SPI_Out)) & " ]");
 
       --  Delete outbound state
 
