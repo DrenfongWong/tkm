@@ -232,11 +232,6 @@ Next up is the charon-tkm daemon, which is part of the strongSwan project:
   $ git clone git://git.strongswan.org/strongswan.git
   $ cd strongswan
 
-Since the TKM-related code has not yet been merged, we must checkout the
-TKM-specific branch named 'tkm':
-
-  $ git checkout tkm
-
 To reduce the OpenSSL plugin functionality to the essential minimum export the
 following `CFLAGS` environment variable:
 
