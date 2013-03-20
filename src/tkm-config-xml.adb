@@ -23,12 +23,10 @@ with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Ordered_Maps;
 
 with DOM.Core.Nodes;
-
 with Input_Sources.File;
-
 with Sax.Readers;
-
 with Schema.Dom_Readers;
+with Schema.Validators;
 
 with Tkm.Config.Xml.Tags;
 with Tkm.Config.Xml.Grammar;
@@ -38,6 +36,7 @@ package body Tkm.Config.Xml
 is
 
    package DR renames Schema.Dom_Readers;
+   package SV renames Schema.Validators;
 
    use Tkm.Config.Xml.Tags;
 
@@ -317,14 +316,27 @@ is
       begin
          Input_Sources.File.Open (Filename => File,
                                   Input    => File_Input);
-         Reader.Parse (Input => File_Input);
+
+         begin
+            Reader.Parse (Input => File_Input);
+
+         exception
+            when others =>
+               Input_Sources.File.Close (Input => File_Input);
+               Reader.Free;
+               raise;
+         end;
+
          Input_Sources.File.Close (Input => File_Input);
          Data.Doc := Reader.Get_Tree;
 
       exception
+         when SV.XML_Validation_Error =>
+            raise Config_Error with "XML validation error - "
+              & Reader.Get_Error_Message;
          when E : others =>
-            raise Config_Error with "Error parsing XML config '" & File & "': "
-              & Ada.Exceptions.Exception_Message (X => E);
+            raise Config_Error with "Error reading XML file '" & File
+              & "' - " & Ada.Exceptions.Exception_Message (X => E);
       end;
    end Parse;
 
