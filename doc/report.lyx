@@ -6038,7 +6038,7 @@ All states of an FSMs are listed by name and giving a short description
 
 \begin_layout Standard
 Transitions are given by their name, source and target states and a description
- explaining the actions performed during when transitioning.
+ explaining the actions performed when transitioning.
  If a transition can be performed from multiple states, all of them are
  listed in the source field.
  A * symbol as source means that the transition can be executed from any
@@ -6835,7 +6835,7 @@ name "lis:nc_create-ada"
 \end_layout
 
 \begin_layout Standard
-Another example of generated output are the state machine diagrams show
+Another example of generated output are the state machine diagrams shown
  in section 
 \begin_inset CommandInset ref
 LatexCommand ref
