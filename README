@@ -36,9 +36,9 @@ NOTE: TKM is considered a prototype implementation and a technology demonstrator
       of the IKE disaggregation concept. We do not consider it to be fit for
       production use in its current form.
 
+
 Features
 --------
-
 The following features are implemented by TKM:
 
 * 'PKCS#1' (RSA) key and 'X.509' certificate processing
@@ -63,19 +63,6 @@ The following table lists the supported transforms with their IANA identifiers:
 
 A complete list of all IKEv2 IANA identifiers can be found here:
 http://www.iana.org/assignments/ikev2-parameters/.
-
-
-Licence
--------
---------------------------------------------------------------------------------
-Copyright (C) 2012, 2013 Reto Buerki <reet@codelabs.ch>
-Copyright (C) 2012, 2013 Adrian-Ken Rueegsegger <ken@codelabs.ch>
-
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
---------------------------------------------------------------------------------
 
 
 [[anchor-doc]]
@@ -122,10 +109,9 @@ overview is given on the following website:
 http://www.linuxfoundation.org/collaborate/workgroups/networking/ipsec-overview.
 
 
-Development version
-~~~~~~~~~~~~~~~~~~~
-The current development version of TKM is available through its git
-repository:
+Download
+--------
+The TKM sources are available through its git repository:
 
   $ git clone http://git.codelabs.ch/git/tkm.git
 
@@ -133,10 +119,19 @@ A browsable version of the repository is also available here:
 http://git.codelabs.ch/?p=tkm.git
 
 
-Build
------
-To compile TKM on your system, you need to have the following software
-installed:
+Installation
+------------
+This section describes the steps needed to build, install and use the Trusted
+Key Manager in conjunction with strongSwan to provide IKEv2 key management
+services on a Linux host.
+
+Requirements
+~~~~~~~~~~~~
+To compile the TKM components on your system, you need to have the following
+software installed:
+
+* Git version control tool:
+  http://git-scm.com/
 
 * GNAT compiler:
   http://www.gnu.org/software/gnat/gnat.html
@@ -144,50 +139,26 @@ installed:
 * gprbuild (part of AdaCore's GNAT GPL Edition):
   http://libre.adacore.com/tools/
 
-* Anet: (Version 0.2 or above)
+* Anet (Version 0.2 or above):
   http://www.codelabs.ch/anet/
 
-* Alog: (Version 0.4 or above)
+* Alog (Version 0.4 or above):
   http://www.codelabs.ch/alog/
 
 * GMPAda (Ada GMP binding):
   http://mtn-host.prjek.net/projects/libgmpada/
 
-* XML/Ada: (Version 0.4 or above)
+* XML/Ada (Version 0.4 or above):
   http://libre.adacore.com/tools/xmlada/
 
-If you want to run the unit tests before installation of TKM (which is
-recommended) you furthermore need to have the following installed:
+If you want to run the unit tests before installation of a TKM component (which
+is recommended) you furthermore need to have the following installed:
 
 * Ahven (Test-Framework):
   http://ahven.stronglytyped.org/
 
-
-Testing
--------
-Before you install the Trusted Key Manager on your system, you might want to
-test if everything works as expected. TKM (as well as XFRM/Ada and X509/Ada)
-contains a unit test suite which can be run by entering the following command:
-
-  $ make tests
-
-All tests should be marked with *PASS* behind the test name.
-
-
-Installation
-------------
-This section describes the steps needed to install and use the Trusted Key
-Manager in conjunction with strongSwan to provide IKEv2 key management services
-on a Linux host.
-
 Preparatory steps
 ~~~~~~~~~~~~~~~~~
-We assume that Alog, Anet, Ahven, GMPAda, XML/Ada as well as the GNAT
-compiler are already installed on the system. Furthermore the `gprbuild` utility
-is needed to drive the build process. Naturally the git version control tool is
-also needed since all necessary files are retrieved directly from the project's
-source code repository.
-
 It is expected that the GNAT project files of the installed Ada libraries are
 accessible on the system by exporting the ADA_PROJECT_PATH environment
 variable. If you have installed the libraries under `$HOME/libraries/` the
@@ -324,9 +295,9 @@ Now that everything is in place the TKM can be started:
 
   $ sudo tkm_keymanager -c tkm.conf -k privKey.der -r ca.der
 
-The TKM binary `tkm_keymanager` opens a netlink socket to the XFRM subsystem of
+The TKM binary `tkm_keymanager` opens a Netlink socket to the XFRM subsystem of
 the Linux kernel to install XFRM policies and XFRM state (IPsec keys etc), which
-require root rights.
+requires root permissions.
 
 The private key and CA certificate in ASN.1/DER format should have already been
 generated. TKM uses the given private key to assert the local identity to the
@@ -348,7 +319,7 @@ status information:
   $ DAEMON_NAME=charon-tkm ipsec statusall
 
 For automated setup and rekeying of connections the xfrm-proxy must be started.
-Since it opens a netlink socket to the kernel's XFRM subsystem it must run as
+Since it opens a Netlink socket to the kernel's XFRM subsystem it must run as
 root:
 
   $ sudo xfrm_proxy
@@ -391,3 +362,16 @@ functionality. Currently the following limitations exist:
 
 More detailed information is available in the project report in chapter 6.2, see
 <<anchor-doc,documentation>>.
+
+
+Licence
+-------
+--------------------------------------------------------------------------------
+Copyright (C) 2012, 2013 Reto Buerki <reet@codelabs.ch>
+Copyright (C) 2012, 2013 Adrian-Ken Rueegsegger <ken@codelabs.ch>
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+--------------------------------------------------------------------------------
