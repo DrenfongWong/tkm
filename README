@@ -139,7 +139,7 @@ software installed:
 * gprbuild (part of AdaCore's GNAT GPL Edition):
   http://libre.adacore.com/tools/
 
-* Anet (Version 0.2 or above):
+* Anet (Version 0.2.2 or above):
   http://www.codelabs.ch/anet/
 
 * Alog (Version 0.4 or above):
@@ -148,7 +148,7 @@ software installed:
 * GMPAda (Ada GMP binding):
   http://mtn-host.prjek.net/projects/libgmpada/
 
-* XML/Ada (Version 0.4 or above):
+* XML/Ada (Version 4.1 or above):
   http://libre.adacore.com/tools/xmlada/
 
 If you want to run the unit tests before installation of a TKM component (which
