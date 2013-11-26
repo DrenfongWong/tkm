@@ -21,8 +21,12 @@ with Tkmrpc.Types;
 package Tkm.Diffie_Hellman
 is
 
+   --  Supported DH algorithms.
+   Dha_Modp_3072 : constant := 1;
+   Dha_Modp_4096 : constant := 2;
+
    procedure Compute_Xa_Ya
-     (Group_Id     :     Tkmrpc.Types.Dh_Algorithm_Type;
+     (Dha_Id       :     Tkmrpc.Types.Dh_Algorithm_Type;
       Random_Bytes :     Tkmrpc.Types.Byte_Sequence;
       Xa           : out Tkmrpc.Types.Byte_Sequence;
       Ya           : out Tkmrpc.Types.Byte_Sequence);
@@ -30,16 +34,16 @@ is
    --  given DH group. Currently, only DH group 'Modp_4096' is supported.
 
    procedure Compute_Zz
-     (Group_Id :     Tkmrpc.Types.Dh_Algorithm_Type;
-      Xa       :     Tkmrpc.Types.Byte_Sequence;
-      Yb       :     Tkmrpc.Types.Byte_Sequence;
-      Zz       : out Tkmrpc.Types.Byte_Sequence);
+     (Dha_Id :     Tkmrpc.Types.Dh_Algorithm_Type;
+      Xa     :     Tkmrpc.Types.Byte_Sequence;
+      Yb     :     Tkmrpc.Types.Byte_Sequence;
+      Zz     : out Tkmrpc.Types.Byte_Sequence);
    --  Compute DH zz (shared secret) using given xa (secret) and yb (other
    --  pubvalue) for given DH group. Currently, only DH group 'Modp_4096' is
    --  supported.
 
    function Get_Group_Size
-     (Group_Id : Tkmrpc.Types.Dh_Algorithm_Type)
+     (Dha_Id : Tkmrpc.Types.Dh_Algorithm_Type)
       return Tkmrpc.Types.Byte_Sequence_Range;
    --  Returns the byte sequence size for the Diffie-Hellman group specified by
    --  group id.

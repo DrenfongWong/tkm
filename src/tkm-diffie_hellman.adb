@@ -22,8 +22,6 @@ with Interfaces.C;
 
 with GMP.Binding;
 
-with Tkmrpc.Constants;
-
 with Tkm.Logger;
 with Tkm.Utils;
 
@@ -69,16 +67,14 @@ is
       return GMP.Binding.Mpz_T;
    --  Convert given byte sequence to GMP bignum.
 
-   function Get_Prime
-     (Group_Id : Tkmrpc.Types.Dh_Algorithm_Type)
-      return String;
-   --  Get hex-string representation for prime of given Diffie-Hellman group
-   --  specified by group id.
+   function Get_Prime (Dha_Id : Tkmrpc.Types.Dh_Algorithm_Type) return String;
+   --  Get hex-string representation for prime of given Diffie-Hellman
+   --  algorithm specified by id.
 
    -------------------------------------------------------------------------
 
    procedure Compute_Xa_Ya
-     (Group_Id     :     Tkmrpc.Types.Dh_Algorithm_Type;
+     (Dha_Id       :     Tkmrpc.Types.Dh_Algorithm_Type;
       Random_Bytes :     Tkmrpc.Types.Byte_Sequence;
       Xa           : out Tkmrpc.Types.Byte_Sequence;
       Ya           : out Tkmrpc.Types.Byte_Sequence)
@@ -93,7 +89,7 @@ is
       Mpz_Init_Set_Str
         (Result => Res,
          Rop    => Bn_P,
-         Str    => Interfaces.C.To_C (Get_Prime (Group_Id => Group_Id)),
+         Str    => Interfaces.C.To_C (Get_Prime (Dha_Id => Dha_Id)),
          Base   => 16);
       if Res /= 0 then
          raise DH_Error with "Could not initialize group prime";
@@ -135,10 +131,10 @@ is
    -------------------------------------------------------------------------
 
    procedure Compute_Zz
-     (Group_Id :     Tkmrpc.Types.Dh_Algorithm_Type;
-      Xa       :     Tkmrpc.Types.Byte_Sequence;
-      Yb       :     Tkmrpc.Types.Byte_Sequence;
-      Zz       : out Tkmrpc.Types.Byte_Sequence)
+     (Dha_Id :     Tkmrpc.Types.Dh_Algorithm_Type;
+      Xa     :     Tkmrpc.Types.Byte_Sequence;
+      Yb     :     Tkmrpc.Types.Byte_Sequence;
+      Zz     : out Tkmrpc.Types.Byte_Sequence)
    is
       use type Interfaces.C.int;
       use type Tkmrpc.Types.Dh_Algorithm_Type;
@@ -149,7 +145,7 @@ is
       Mpz_Init_Set_Str
         (Result => Res,
          Rop    => Bn_P,
-         Str    => Interfaces.C.To_C (Get_Prime (Group_Id => Group_Id)),
+         Str    => Interfaces.C.To_C (Get_Prime (Dha_Id => Dha_Id)),
          Base   => 16);
       if Res /= 0 then
          raise DH_Error with "Could not initialize group prime";
@@ -200,7 +196,7 @@ is
    -------------------------------------------------------------------------
 
    function Get_Group_Size
-     (Group_Id : Tkmrpc.Types.Dh_Algorithm_Type)
+     (Dha_Id : Tkmrpc.Types.Dh_Algorithm_Type)
       return Tkmrpc.Types.Byte_Sequence_Range
    is
    begin
@@ -208,23 +204,19 @@ is
       --  The group size is equal to the length of the hex-string prime divided
       --  by 2
 
-      return Get_Prime (Group_Id => Group_Id)'Length / 2;
+      return Get_Prime (Dha_Id => Dha_Id)'Length / 2;
    end Get_Group_Size;
 
    -------------------------------------------------------------------------
 
-   function Get_Prime
-     (Group_Id : Tkmrpc.Types.Dh_Algorithm_Type)
-      return String
+   function Get_Prime (Dha_Id : Tkmrpc.Types.Dh_Algorithm_Type) return String
    is
    begin
-      case Group_Id is
-         when Tkmrpc.Constants.Modp_4096 =>
-            return Modp_4096_Prime;
-         when Tkmrpc.Constants.Modp_3072 =>
-            return Modp_3072_Prime;
+      case Dha_Id is
+         when Dha_Modp_3072 => return Modp_3072_Prime;
+         when Dha_Modp_4096 => return Modp_4096_Prime;
          when others =>
-            raise DH_Error with "Unsupported DH group" & Group_Id'Img;
+            raise DH_Error with "Unsupported DH algorithm" & Dha_Id'Img;
       end case;
    end Get_Prime;
 

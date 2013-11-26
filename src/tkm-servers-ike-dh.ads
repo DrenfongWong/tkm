@@ -22,11 +22,11 @@ package Tkm.Servers.Ike.DH
 is
 
    function Create
-     (Id    : Tkmrpc.Types.Dh_Id_Type;
-      Group : Tkmrpc.Types.Dha_Id_Type)
+     (Id     : Tkmrpc.Types.Dh_Id_Type;
+      Dha_Id : Tkmrpc.Types.Dha_Id_Type)
       return Tkmrpc.Types.Dh_Pubvalue_Type;
    --  Create a new DH context with given id using parameters of specified DH
-   --  group. Returns the calculated pubvalue (ya).
+   --  algorithm. Returns the calculated pubvalue (ya).
 
    procedure Generate_Key
      (Id       : Tkmrpc.Types.Dh_Id_Type;

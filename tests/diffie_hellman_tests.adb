@@ -17,7 +17,6 @@
 --
 
 with Tkmrpc.Types;
-with Tkmrpc.Constants;
 
 with Tkm.Utils;
 with Tkm.Diffie_Hellman;
@@ -338,19 +337,20 @@ package body Diffie_Hellman_Tests is
    is
       Xa_Bytes, Ya_Bytes, Zz_Bytes : Tkmrpc.Types.Byte_Sequence (1 .. 512);
    begin
-      Diffie_Hellman.Compute_Xa_Ya (Group_Id     => Tkmrpc.Constants.Modp_4096,
-                                    Random_Bytes => Random_Chunk,
-                                    Xa           => Xa_Bytes,
-                                    Ya           => Ya_Bytes);
+      Diffie_Hellman.Compute_Xa_Ya
+        (Dha_Id       => Diffie_Hellman.Dha_Modp_4096,
+         Random_Bytes => Random_Chunk,
+         Xa           => Xa_Bytes,
+         Ya           => Ya_Bytes);
       Assert (Condition => Utils.To_Hex_String (Input => Xa_Bytes) = Xa_Ref,
               Message   => "Xa mismatch");
       Assert (Condition => Utils.To_Hex_String (Input => Ya_Bytes) = Ya_Ref,
               Message   => "Ya mismatch");
 
-      Diffie_Hellman.Compute_Zz (Group_Id => Tkmrpc.Constants.Modp_4096,
-                                 Xa       => Xa_Bytes,
-                                 Yb       => Yb_Chunk,
-                                 Zz       => Zz_Bytes);
+      Diffie_Hellman.Compute_Zz (Dha_Id => Diffie_Hellman.Dha_Modp_4096,
+                                 Xa     => Xa_Bytes,
+                                 Yb     => Yb_Chunk,
+                                 Zz     => Zz_Bytes);
       Assert (Condition => Utils.To_Hex_String (Input => Zz_Bytes) = Zz_Ref,
               Message   => "Zz mismatch");
    end Compute_Xa_Ya_Zz;
@@ -362,7 +362,7 @@ package body Diffie_Hellman_Tests is
       Xa_Bytes, Ya_Bytes, Zz_Bytes : Tkmrpc.Types.Byte_Sequence (1 .. 384);
    begin
       Diffie_Hellman.Compute_Xa_Ya
-        (Group_Id     => Tkmrpc.Constants.Modp_3072,
+        (Dha_Id       => Diffie_Hellman.Dha_Modp_3072,
          Random_Bytes => Random_3072_Chunk,
          Xa           => Xa_Bytes,
          Ya           => Ya_Bytes);
@@ -373,10 +373,10 @@ package body Diffie_Hellman_Tests is
         (Condition => Utils.To_Hex_String (Input => Ya_Bytes) = Ya_3072_Ref,
          Message   => "Ya mismatch (MODP-3072)");
 
-      Diffie_Hellman.Compute_Zz (Group_Id => Tkmrpc.Constants.Modp_3072,
-                                 Xa       => Xa_Bytes,
-                                 Yb       => Yb_3072_Chunk,
-                                 Zz       => Zz_Bytes);
+      Diffie_Hellman.Compute_Zz (Dha_Id => Diffie_Hellman.Dha_Modp_3072,
+                                 Xa     => Xa_Bytes,
+                                 Yb     => Yb_3072_Chunk,
+                                 Zz     => Zz_Bytes);
       Assert
         (Condition => Utils.To_Hex_String (Input => Zz_Bytes) = Zz_3072_Ref,
          Message   => "Zz mismatch");
@@ -388,10 +388,10 @@ package body Diffie_Hellman_Tests is
    is
    begin
       Assert (Condition => Diffie_Hellman.Get_Group_Size
-              (Group_Id => Tkmrpc.Constants.Modp_4096) = 512,
+              (Dha_Id => Diffie_Hellman.Dha_Modp_4096) = 512,
               Message   => "MODP-4096 group size mismatch");
       Assert (Condition => Diffie_Hellman.Get_Group_Size
-              (Group_Id => Tkmrpc.Constants.Modp_3072) = 384,
+              (Dha_Id => Diffie_Hellman.Dha_Modp_3072) = 384,
               Message   => "MODP-3072 group size mismatch");
    end Get_Group_Size;
 
@@ -426,10 +426,10 @@ package body Diffie_Hellman_Tests is
       Yb       : Tkmrpc.Types.Byte_Sequence (1 .. 512) := (others => 0);
    begin
       begin
-         Diffie_Hellman.Compute_Zz (Group_Id => Tkmrpc.Constants.Modp_4096,
-                                    Xa       => Random_Chunk,
-                                    Yb       => Yb,
-                                    Zz       => Zz_Bytes);
+         Diffie_Hellman.Compute_Zz (Dha_Id => Diffie_Hellman.Dha_Modp_4096,
+                                    Xa     => Random_Chunk,
+                                    Yb     => Yb,
+                                    Zz     => Zz_Bytes);
 
       exception
          when Diffie_Hellman.DH_Error => null;
@@ -437,10 +437,10 @@ package body Diffie_Hellman_Tests is
 
       Yb (Yb'Last) := 1;
       begin
-         Diffie_Hellman.Compute_Zz (Group_Id => Tkmrpc.Constants.Modp_4096,
-                                    Xa       => Random_Chunk,
-                                    Yb       => Yb,
-                                    Zz       => Zz_Bytes);
+         Diffie_Hellman.Compute_Zz (Dha_Id => Diffie_Hellman.Dha_Modp_4096,
+                                    Xa     => Random_Chunk,
+                                    Yb     => Yb,
+                                    Zz     => Zz_Bytes);
 
       exception
          when Diffie_Hellman.DH_Error => null;
@@ -448,10 +448,10 @@ package body Diffie_Hellman_Tests is
 
       Yb := (others => 16#ff#);
       begin
-         Diffie_Hellman.Compute_Zz (Group_Id => Tkmrpc.Constants.Modp_4096,
-                                    Xa       => Random_Chunk,
-                                    Yb       => Yb,
-                                    Zz       => Zz_Bytes);
+         Diffie_Hellman.Compute_Zz (Dha_Id => Diffie_Hellman.Dha_Modp_4096,
+                                    Xa     => Random_Chunk,
+                                    Yb     => Yb,
+                                    Zz     => Zz_Bytes);
 
       exception
          when Diffie_Hellman.DH_Error => null;
@@ -465,7 +465,7 @@ package body Diffie_Hellman_Tests is
       Xa_Bytes, Ya_Bytes, Zz_Bytes : Tkmrpc.Types.Byte_Sequence (1 .. 512);
    begin
       begin
-         Diffie_Hellman.Compute_Xa_Ya (Group_Id     => 0,
+         Diffie_Hellman.Compute_Xa_Ya (Dha_Id       => 0,
                                        Random_Bytes => Random_Chunk,
                                        Xa           => Xa_Bytes,
                                        Ya           => Ya_Bytes);
@@ -474,10 +474,10 @@ package body Diffie_Hellman_Tests is
       end;
 
       begin
-         Diffie_Hellman.Compute_Zz (Group_Id => 0,
-                                    Xa       => Xa_Bytes,
-                                    Yb       => Yb_Chunk,
-                                    Zz       => Zz_Bytes);
+         Diffie_Hellman.Compute_Zz (Dha_Id => 0,
+                                    Xa     => Xa_Bytes,
+                                    Yb     => Yb_Chunk,
+                                    Zz     => Zz_Bytes);
 
       exception
          when Diffie_Hellman.DH_Error => null;

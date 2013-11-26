@@ -20,7 +20,6 @@ with Interfaces;
 
 with Tkmrpc.Results;
 with Tkmrpc.Types;
-with Tkmrpc.Constants;
 with Tkmrpc.Servers.Ike;
 
 package body Server_Ike_DH_Tests is
@@ -46,7 +45,7 @@ package body Server_Ike_DH_Tests is
       Servers.Ike.Dh_Create
         (Result   => Res,
          Dh_Id    => Id,
-         Dha_Id   => Types.Dha_Id_Type (Constants.Modp_4096),
+         Dha_Id   => 2,
          Pubvalue => Pub);
       Assert (Condition => Res = Results.Ok,
               Message   => "Dh_Create failed");

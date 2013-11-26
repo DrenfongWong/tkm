@@ -119,8 +119,8 @@ is
    is
    begin
       Pubvalue := Tkm.Servers.Ike.DH.Create
-        (Id    => Dh_Id,
-         Group => Dha_Id);
+        (Id     => Dh_Id,
+         Dha_Id => Dha_Id);
       Result := Results.Ok;
    end Dh_Create;
 
