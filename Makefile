@@ -2,8 +2,8 @@ OBJDIR = obj
 COVDIR = $(OBJDIR)/cov
 
 VERSION_SPEC = src/tkm-version.ads
-VERSION      = $(GIT_REV)
-GIT_REV      = `git describe --always`
+VERSION      = $(subst v,,$(GIT_REV))
+GIT_REV      = $(shell git describe --always)
 
 DESTDIR = /usr/local
 
