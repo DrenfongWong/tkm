@@ -21,3 +21,8 @@ CC
 - Set trustchain certificate validity
 - Additional trustchain checks according to RFC 5280, section 6
   and RFC 2818,	section 3
+
+IKE
+---
+- Only derive and log SK_Pi, SK_Pr if they are not Tkmrpc.Types.Null_Key_Type
+  - ISA.Create_Child -> Derive_Ike_Keys
