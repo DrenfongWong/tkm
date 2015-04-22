@@ -454,7 +454,7 @@ is
          begin
             if Value'Length > 0 then
                Ada.Strings.Unbounded.Append
-                 (Source   => Conf_File,
+                 (Source   => Source,
                   New_Item => Space & Key & "=" & Value & ASCII.LF);
             end if;
          end Add_Entry;
