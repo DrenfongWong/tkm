@@ -30,10 +30,15 @@ is
 
    procedure Assertion_Policy
    is
-      procedure Dummy (X : Integer) is null
+      procedure Dummy (X : Integer)
       with
         Pre => X > 0;
 
+      procedure Dummy (X : Integer)
+      is
+      begin
+         null;
+      end Dummy;
    begin
       Dummy (X => -1);
       Fail (Message => "Exception expected");
