@@ -381,7 +381,7 @@ is
          --  SKEYSEED index of Ni start
          Sks_Idx2      : Tkmrpc.Types.Byte_Sequence_Range;
          --  SKEYSEED index of Nr start
-         Sk_P          : Tkmrpc.Types.Key_Type := Tkmrpc.Types.Null_Key_Type;
+         Sk_Pi, Sk_Pr  : Tkmrpc.Types.Key_Type := Tkmrpc.Types.Null_Key_Type;
       begin
 
          --  SKEYSEED    = prf (SK_d (old), Shared_Secret | Ni | Nr)
@@ -426,8 +426,8 @@ is
                                          Sk_Ar    => Sk_Ar,
                                          Sk_Ei    => Sk_Ei,
                                          Sk_Er    => Sk_Er,
-                                         Sk_Pi    => Sk_P,
-                                         Sk_Pr    => Sk_P);
+                                         Sk_Pi    => Sk_Pi,
+                                         Sk_Pr    => Sk_Pr);
 
          --  Create isa context
 
