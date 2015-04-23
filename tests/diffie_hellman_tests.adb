@@ -430,6 +430,7 @@ package body Diffie_Hellman_Tests is
                                     Xa     => Random_Chunk,
                                     Yb     => Yb,
                                     Zz     => Zz_Bytes);
+         Fail (Message => "Exception expected");
 
       exception
          when Diffie_Hellman.DH_Error => null;
@@ -441,6 +442,7 @@ package body Diffie_Hellman_Tests is
                                     Xa     => Random_Chunk,
                                     Yb     => Yb,
                                     Zz     => Zz_Bytes);
+         Fail (Message => "Exception expected");
 
       exception
          when Diffie_Hellman.DH_Error => null;
@@ -452,6 +454,7 @@ package body Diffie_Hellman_Tests is
                                     Xa     => Random_Chunk,
                                     Yb     => Yb,
                                     Zz     => Zz_Bytes);
+         Fail (Message => "Exception expected");
 
       exception
          when Diffie_Hellman.DH_Error => null;
@@ -469,6 +472,8 @@ package body Diffie_Hellman_Tests is
                                        Random_Bytes => Random_Chunk,
                                        Xa           => Xa_Bytes,
                                        Ya           => Ya_Bytes);
+         Fail (Message => "Exception expected");
+
       exception
          when Diffie_Hellman.DH_Error => null;
       end;
@@ -478,6 +483,7 @@ package body Diffie_Hellman_Tests is
                                     Xa     => Xa_Bytes,
                                     Yb     => Yb_Chunk,
                                     Zz     => Zz_Bytes);
+         Fail (Message => "Exception expected");
 
       exception
          when Diffie_Hellman.DH_Error => null;

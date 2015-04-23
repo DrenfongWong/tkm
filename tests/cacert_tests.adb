@@ -55,6 +55,7 @@ package body Cacert_Tests is
    begin
       begin
          Cert := Ca_Cert.Get;
+         Fail (Message => "Exception expected");
 
       exception
          when Ca_Cert.Ca_Uninitialized => null;
@@ -62,6 +63,7 @@ package body Cacert_Tests is
 
       begin
          Ca_Cert.Load (Path => "data/cert.der");
+         Fail (Message => "Exception expected");
 
       exception
          when Ca_Cert.Ca_Not_Valid => null;
@@ -69,6 +71,7 @@ package body Cacert_Tests is
 
       begin
          Ca_Cert.Load (Path => "data/ca_invalid.der");
+         Fail (Message => "Exception expected");
 
       exception
          when Ca_Cert.Ca_Not_Valid => null;

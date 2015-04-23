@@ -187,6 +187,7 @@ package body Config_Tests is
    is
    begin
       Config.Load (Filename => "data/version0.cfg");
+      Fail (Message => "Exception expected");
 
    exception
       when Config.Config_Error => null;
