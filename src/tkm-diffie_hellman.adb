@@ -108,7 +108,7 @@ is
       Mpz_Init_Set_Ui (Rop => Bn_G,
                        Op  => 2);
 
-      Mpz_Init (Integer => Bn_Ya);
+      Mpz_Init (Bn_Ya);
 
       --  ya = g^xa mod p
 
@@ -122,10 +122,10 @@ is
       Utils.To_Bytes (Bignum => Bn_Ya,
                       Bytes  => Ya);
 
-      Mpz_Clear (Integer => Bn_P);
-      Mpz_Clear (Integer => Bn_G);
-      Mpz_Clear (Integer => Bn_Xa);
-      Mpz_Clear (Integer => Bn_Ya);
+      Mpz_Clear (Bn_P);
+      Mpz_Clear (Bn_G);
+      Mpz_Clear (Bn_Xa);
+      Mpz_Clear (Bn_Ya);
    end Compute_Xa_Ya;
 
    -------------------------------------------------------------------------
@@ -158,8 +158,8 @@ is
       if Mpz_Cmp_Ui (Op1 => Bn_Yb,
                      Op2 => 1) <= 0
       then
-         Mpz_Clear (Integer => Bn_P);
-         Mpz_Clear (Integer => Bn_Yb);
+         Mpz_Clear (Bn_P);
+         Mpz_Clear (Bn_Yb);
          raise DH_Error with "Other public value smaller or equal to 1";
       end if;
 
@@ -168,14 +168,14 @@ is
       if Mpz_Cmp (Op1 => Bn_Yb,
                   Op2 => Bn_P) >= 0
       then
-         Mpz_Clear (Integer => Bn_P);
-         Mpz_Clear (Integer => Bn_Yb);
+         Mpz_Clear (Bn_P);
+         Mpz_Clear (Bn_Yb);
          raise DH_Error with "Other public value larger or equal to modulus";
       end if;
 
       Bn_Xa := To_Bignum (Bytes => Xa);
 
-      Mpz_Init (Integer => Bn_Zz);
+      Mpz_Init (Bn_Zz);
 
       --  zz = yb^xa mod p
 
@@ -187,10 +187,10 @@ is
       Utils.To_Bytes (Bignum => Bn_Zz,
                       Bytes  => Zz);
 
-      Mpz_Clear (Integer => Bn_P);
-      Mpz_Clear (Integer => Bn_Xa);
-      Mpz_Clear (Integer => Bn_Yb);
-      Mpz_Clear (Integer => Bn_Zz);
+      Mpz_Clear (Bn_P);
+      Mpz_Clear (Bn_Xa);
+      Mpz_Clear (Bn_Yb);
+      Mpz_Clear (Bn_Zz);
    end Compute_Zz;
 
    -------------------------------------------------------------------------
@@ -238,7 +238,7 @@ is
 
       Bignum : Mpz_T;
    begin
-      Mpz_Init (Integer => Bignum);
+      Mpz_Init (Bignum);
       Mpz_Import (Rop    => Bignum,
                   Count  => Bytes'Length,
                   Order  => 1,

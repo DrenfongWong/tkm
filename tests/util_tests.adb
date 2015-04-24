@@ -86,15 +86,15 @@ package body Util_Tests is
          when Utils.Conversion_Error => null;
       end;
 
-      Mpz_Clear (Integer => Bn_One);
-      Mpz_Clear (Integer => Bn_Value1);
-      Mpz_Clear (Integer => Bn_Value2);
+      Mpz_Clear (Bn_One);
+      Mpz_Clear (Bn_Value1);
+      Mpz_Clear (Bn_Value2);
 
    exception
       when others =>
-         Mpz_Clear (Integer => Bn_One);
-         Mpz_Clear (Integer => Bn_Value1);
-         Mpz_Clear (Integer => Bn_Value2);
+         Mpz_Clear (Bn_One);
+         Mpz_Clear (Bn_Value1);
+         Mpz_Clear (Bn_Value2);
          raise;
    end Convert_Bignum_To_Bytes;
 

@@ -91,14 +91,14 @@ is
    procedure Finalize (Ctx : in out Signer_Type)
    is
    begin
-      Mpz_Clear (Integer => Ctx.N);
-      Mpz_Clear (Integer => Ctx.E);
-      Mpz_Clear (Integer => Ctx.D);
-      Mpz_Clear (Integer => Ctx.P);
-      Mpz_Clear (Integer => Ctx.Q);
-      Mpz_Clear (Integer => Ctx.Exp1);
-      Mpz_Clear (Integer => Ctx.Exp2);
-      Mpz_Clear (Integer => Ctx.Coeff);
+      Mpz_Clear (Ctx.N);
+      Mpz_Clear (Ctx.E);
+      Mpz_Clear (Ctx.D);
+      Mpz_Clear (Ctx.P);
+      Mpz_Clear (Ctx.Q);
+      Mpz_Clear (Ctx.Exp1);
+      Mpz_Clear (Ctx.Exp2);
+      Mpz_Clear (Ctx.Coeff);
    end Finalize;
 
    -------------------------------------------------------------------------
@@ -106,8 +106,8 @@ is
    procedure Finalize (Ctx : in out Verifier_Type)
    is
    begin
-      Mpz_Clear (Integer => Ctx.N);
-      Mpz_Clear (Integer => Ctx.E);
+      Mpz_Clear (Ctx.N);
+      Mpz_Clear (Ctx.E);
    end Finalize;
 
    -------------------------------------------------------------------------
@@ -263,10 +263,10 @@ is
          Str    => C.To_C (Utils.To_Hex_String (Input => Data)),
          Base   => 16);
       if Res /= 0 then
-         Mpz_Clear (Integer => T1);
+         Mpz_Clear (T1);
          raise Signer_Error with "Unable to initialize encoded message";
       end if;
-      Mpz_Init (Integer => T2);
+      Mpz_Init (T2);
 
       --  Chinese remainder algorithm
 
@@ -304,12 +304,12 @@ is
       Mpz_Add (Rop => T1,
                Op1 => T1,
                Op2 => T2);
-      Mpz_Clear (Integer => T2);
+      Mpz_Clear (T2);
 
       return Bytes : constant Tkmrpc.Types.Byte_Sequence
         := Utils.To_Bytes (Bignum => T1)
       do
-         Mpz_Clear (Integer => T1);
+         Mpz_Clear (T1);
       end return;
    end Rsasp1;
 
@@ -331,16 +331,16 @@ is
          Str    => C.To_C (Utils.To_Hex_String (Input => Data)),
          Base   => 16);
       if Res /= 0 then
-         Mpz_Clear (Integer => S);
+         Mpz_Clear (S);
          raise Verifier_Error with "Unable to initialize signature";
       end if;
 
-      Mpz_Init (Integer => M);
+      Mpz_Init (M);
       Mpz_Powm (Rop    => M,
                 Base   => S,
                 Exp    => Ctx.E,
                 Modulo => Ctx.N);
-      Mpz_Clear (Integer => S);
+      Mpz_Clear (S);
 
       declare
          Bytes  : constant Tkmrpc.Types.Byte_Sequence
@@ -348,7 +348,7 @@ is
          Result : Tkmrpc.Types.Byte_Sequence (1 .. Ctx.K) := (others => 0);
       begin
          Result ((Result'Last - Bytes'Last + 1) .. Result'Last) := Bytes;
-         Mpz_Clear (Integer => M);
+         Mpz_Clear (M);
          return Result;
       end;
    end Rsavp1;
