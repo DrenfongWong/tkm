@@ -74,8 +74,10 @@ is
       Esp_Spi_Loc : Tkmrpc.Types.Esp_Spi_Type;
       Esp_Spi_Rem : Tkmrpc.Types.Esp_Spi_Type)
    is
-      pragma Precondition (Tkmrpc.Contexts.ae.Get_State
-                           (Id => Isa_Id) = Tkmrpc.Contexts.ae.active);
+      pragma Precondition
+        (Tkmrpc.Contexts.ae.Get_State
+           (Id => Tkmrpc.Contexts.isa.get_ae_id
+                (Id => Isa_Id)) = Tkmrpc.Contexts.ae.active);
       use type Tkmrpc.Types.Init_Type;
 
       Secret    : Tkmrpc.Types.Dh_Key_Type;
@@ -222,8 +224,10 @@ is
       Esp_Spi_Loc : Tkmrpc.Types.Esp_Spi_Type;
       Esp_Spi_Rem : Tkmrpc.Types.Esp_Spi_Type)
    is
-      pragma Precondition (Tkmrpc.Contexts.ae.Get_State
-                           (Id => Isa_Id) = Tkmrpc.Contexts.ae.authenticated);
+      pragma Precondition
+        (Tkmrpc.Contexts.ae.Get_State
+           (Id => Tkmrpc.Contexts.isa.get_ae_id
+                (Id => Isa_Id)) = Tkmrpc.Contexts.ae.authenticated);
 
       use type Tkmrpc.Types.Init_Type;
 
@@ -270,8 +274,10 @@ is
       Esp_Spi_Loc : Tkmrpc.Types.Esp_Spi_Type;
       Esp_Spi_Rem : Tkmrpc.Types.Esp_Spi_Type)
    is
-      pragma Precondition (Tkmrpc.Contexts.ae.Get_State
-                           (Id => Isa_Id) = Tkmrpc.Contexts.ae.active);
+      pragma Precondition
+        (Tkmrpc.Contexts.ae.Get_State
+           (Id => Tkmrpc.Contexts.isa.get_ae_id
+                (Id => Isa_Id)) = Tkmrpc.Contexts.ae.active);
       use type Tkmrpc.Types.Init_Type;
 
       Nonce_Loc : Tkmrpc.Types.Nonce_Type;
