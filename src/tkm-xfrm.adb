@@ -16,6 +16,8 @@
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+with Interfaces;
+
 with Ada.Exceptions;
 with Ada.Strings.Fixed;
 
@@ -79,7 +81,7 @@ is
             Sel_Dst_Prefix => Sel_Loc_Prefix,
             Tmpl_Src       => Tmpl_Rem,
             Tmpl_Dst       => Tmpl_Loc,
-            Reqid          => Policy.Id,
+            Reqid          => Interfaces.Unsigned_32 (Policy.Id),
             Direction      => X.Direction_Fwd);
       else
          Sel_Loc        := Policy.Local_Addr;
@@ -101,7 +103,7 @@ is
          Sel_Dst_Prefix => Sel_Rem_Prefix,
          Tmpl_Src       => Tmpl_Loc,
          Tmpl_Dst       => Tmpl_Rem,
-         Reqid          => Policy.Id,
+         Reqid          => Interfaces.Unsigned_32 (Policy.Id),
          Direction      => X.Direction_Out);
       Sock.Add_Policy
         (Mode           => Mode_Map (Policy.Mode),
@@ -111,7 +113,7 @@ is
          Sel_Dst_Prefix => Sel_Loc_Prefix,
          Tmpl_Src       => Tmpl_Rem,
          Tmpl_Dst       => Tmpl_Loc,
-         Reqid          => Policy.Id,
+         Reqid          => Interfaces.Unsigned_32 (Policy.Id),
          Direction      => X.Direction_In);
    end Add_Policy;
 
@@ -170,9 +172,11 @@ is
                 & Ada.Strings.Fixed.Trim (Source => Sel_Rem_Prefix'Img,
                                           Side   => Ada.Strings.Left)
                 & ", SPI_in " & Utils.To_Hex_String
-                  (Input => Utils.Network_To_Host (Input => SPI_In))
+                  (Input => Utils.Network_To_Host
+                     (Input => Interfaces.Unsigned_32 (SPI_In)))
                 & ", SPI_out " & Utils.To_Hex_String
-                  (Input => Utils.Network_To_Host (Input => SPI_Out))
+                  (Input => Utils.Network_To_Host
+                     (Input => Interfaces.Unsigned_32 (SPI_Out)))
                 & ", soft" & Policy.Lifetime_Soft'Img
                 & ", hard" & Policy.Lifetime_Hard'Img & " ]");
       else
@@ -184,9 +188,11 @@ is
                 & Anet.To_String (Address => Policy.Local_Addr) & " <-> "
                 & Anet.To_String (Address => Policy.Remote_Addr)
                 & ", SPI_in " & Utils.To_Hex_String
-                  (Input => Utils.Network_To_Host (Input => SPI_In))
+                  (Input => Utils.Network_To_Host
+                     (Input => Interfaces.Unsigned_32 (SPI_In)))
                 & ", SPI_out " & Utils.To_Hex_String
-                  (Input => Utils.Network_To_Host (Input => SPI_Out))
+                  (Input => Utils.Network_To_Host
+                     (Input => Interfaces.Unsigned_32 (SPI_Out)))
                 & ", soft" & Policy.Lifetime_Soft'Img
                 & ", hard" & Policy.Lifetime_Hard'Img & " ]");
       end if;
@@ -201,14 +207,14 @@ is
          Sel_Src_Prefix => Sel_Loc_Prefix,
          Sel_Dst        => Sel_Rem,
          Sel_Dst_Prefix => Sel_Rem_Prefix,
-         Reqid         => Policy.Id,
-         Spi           => SPI_Out,
+         Reqid         => Interfaces.Unsigned_32 (Policy.Id),
+         Spi           => Interfaces.Unsigned_32 (SPI_Out),
          Enc_Key       => To_Anet_Bytes (Item => Enc_Key_Out),
          Enc_Alg       => "aes",
          Int_Key       => To_Anet_Bytes (Item => Auth_Key_Out),
          Int_Alg       => "hmac(sha512)",
-         Lifetime_Soft => Policy.Lifetime_Soft,
-         Lifetime_Hard => Policy.Lifetime_Hard);
+         Lifetime_Soft => Interfaces.Unsigned_64 (Policy.Lifetime_Soft),
+         Lifetime_Hard => Interfaces.Unsigned_64 (Policy.Lifetime_Hard));
 
       --  Add inbound state
 
@@ -220,14 +226,14 @@ is
          Sel_Src_Prefix => Sel_Rem_Prefix,
          Sel_Dst        => Sel_Loc,
          Sel_Dst_Prefix => Sel_Loc_Prefix,
-         Reqid         => Policy.Id,
-         Spi           => SPI_In,
+         Reqid         => Interfaces.Unsigned_32 (Policy.Id),
+         Spi           => Interfaces.Unsigned_32 (SPI_In),
          Enc_Key       => To_Anet_Bytes (Item => Enc_Key_In),
          Enc_Alg       => "aes",
          Int_Key       => To_Anet_Bytes (Item => Auth_Key_In),
          Int_Alg       => "hmac(sha512)",
-         Lifetime_Soft => Policy.Lifetime_Soft,
-         Lifetime_Hard => Policy.Lifetime_Hard);
+         Lifetime_Soft => Interfaces.Unsigned_64 (Policy.Lifetime_Soft),
+         Lifetime_Hard => Interfaces.Unsigned_64 (Policy.Lifetime_Hard));
    end Add_State;
 
    -------------------------------------------------------------------------
@@ -244,21 +250,23 @@ is
              & Anet.To_String (Address => Policy.Local_Addr) & " <=> "
              & Anet.To_String (Address => Policy.Remote_Addr)
              & ", SPI_in " & Utils.To_Hex_String
-               (Input => Utils.Network_To_Host (Input => SPI_In))
+               (Input => Utils.Network_To_Host
+                  (Input => Interfaces.Unsigned_32 (SPI_In)))
              & ", SPI_out " & Utils.To_Hex_String
-               (Input => Utils.Network_To_Host (Input => SPI_Out)) & " ]");
+               (Input => Utils.Network_To_Host
+                  (Input => Interfaces.Unsigned_32 (SPI_Out))) & " ]");
 
       --  Delete outbound state
 
       Sock.Delete_State
         (Dst => Policy.Remote_Addr,
-         Spi => SPI_Out);
+         Spi => Interfaces.Unsigned_32 (SPI_Out));
 
       --  Delete inbound state
 
       Sock.Delete_State
         (Dst => Policy.Local_Addr,
-         Spi => SPI_In);
+         Spi => Interfaces.Unsigned_32 (SPI_In));
 
    exception
       when E : X.Xfrm_Error =>

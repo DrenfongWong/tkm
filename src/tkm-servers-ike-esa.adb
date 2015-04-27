@@ -16,6 +16,8 @@
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+with Interfaces;
+
 with Tkmrpc.Contexts.ae;
 with Tkmrpc.Contexts.dh;
 with Tkmrpc.Contexts.nc;
@@ -79,6 +81,7 @@ is
            (Id => Tkmrpc.Contexts.isa.get_ae_id
                 (Id => Isa_Id)) = Tkmrpc.Contexts.ae.active);
       use type Tkmrpc.Types.Init_Type;
+      use type Tkmrpc.Types.Ri_Id_Type;
 
       Secret    : Tkmrpc.Types.Dh_Key_Type;
       Nonce_Loc : Tkmrpc.Types.Nonce_Type;
@@ -101,9 +104,11 @@ is
              & ", Nc_Loc_Id" & Nc_Loc_Id'Img & ", Initiator "
              & Boolean'Image (Initiator = 1)
              & ", spi_loc " & Utils.To_Hex_String
-               (Input => Utils.Network_To_Host (Input => Esp_Spi_Loc))
+               (Input => Utils.Network_To_Host
+                  (Input => Interfaces.Unsigned_32 (Esp_Spi_Loc)))
              & ", spi_rem " & Utils.To_Hex_String
-               (Input => Utils.Network_To_Host (Input => Esp_Spi_Rem))
+               (Input => Utils.Network_To_Host
+                  (Input => Interfaces.Unsigned_32 (Esp_Spi_Rem)))
              & ")");
       Create_Esa
         (Esa_Id      => Esa_Id,
@@ -244,9 +249,11 @@ is
              & " (Isa" & Isa_Id'Img & ", Sp" & Sp_Id'Img & ", Ea" & Ea_Id'Img
              & ", Initiator " & Initiator'Img
              & ", spi_loc " & Utils.To_Hex_String
-               (Input => Utils.Network_To_Host (Input => Esp_Spi_Loc))
+               (Input => Utils.Network_To_Host
+                  (Input => Interfaces.Unsigned_32 (Esp_Spi_Loc)))
              & ", spi_rem " & Utils.To_Hex_String
-               (Input => Utils.Network_To_Host (Input => Esp_Spi_Rem))
+               (Input => Utils.Network_To_Host
+                  (Input => Interfaces.Unsigned_32 (Esp_Spi_Rem)))
              & ")");
       Create_Esa (Esa_Id      => Esa_Id,
                   Isa_Id      => Isa_Id,
@@ -290,9 +297,11 @@ is
              & ", Ea" & Ea_Id'Img  & ", Nc_Loc_Id" & Nc_Loc_Id'Img
              & ", Initiator " & Boolean'Image (Initiator = 1)
              & ", spi_loc " & Utils.To_Hex_String
-               (Input => Utils.Network_To_Host (Input => Esp_Spi_Loc))
+               (Input => Utils.Network_To_Host
+                  (Input => Interfaces.Unsigned_32 (Esp_Spi_Loc)))
              & ", spi_rem " & Utils.To_Hex_String
-               (Input => Utils.Network_To_Host (Input => Esp_Spi_Rem))
+               (Input => Utils.Network_To_Host
+                  (Input => Interfaces.Unsigned_32 (Esp_Spi_Rem)))
              & ")");
       Create_Esa (Esa_Id      => Esa_Id,
                   Isa_Id      => Isa_Id,

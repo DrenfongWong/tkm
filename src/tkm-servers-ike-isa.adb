@@ -16,6 +16,8 @@
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+with Interfaces;
+
 with X509.Keys;
 with X509.Certs;
 
@@ -209,8 +211,10 @@ is
 
       L.Log (Message => "Creating new ISA context with ID" & Isa_Id'Img
              & " (DH" & Dh_Id'Img & ", nonce" & Nc_Loc_Id'Img
-             & ", spi_loc " & Utils.To_Hex_String (Input => Spi_Loc)
-             & ", spi_rem " & Utils.To_Hex_String (Input => Spi_Rem) & ")");
+             & ", spi_loc " & Utils.To_Hex_String
+               (Input => Interfaces.Unsigned_64 (Spi_Loc))
+             & ", spi_rem " & Utils.To_Hex_String
+               (Input => Interfaces.Unsigned_64 (Spi_Rem)) & ")");
 
       Tkmrpc.Contexts.dh.consume (Id     => Dh_Id,
                                   dh_key => Secret);
@@ -244,11 +248,11 @@ is
             Prf_Plus_Seed
               (Nonce_Rem.Size + Nonce_Loc.Size + 1 .. Nonce_Rem.Size
                + Nonce_Loc.Size + 8)
-              := Utils.To_Bytes (Input => Spi_Loc);
+              := Utils.To_Bytes (Input => Interfaces.Unsigned_64 (Spi_Loc));
             Prf_Plus_Seed
               (Nonce_Rem.Size + Nonce_Loc.Size + 9 ..
                  Prf_Plus_Seed'Last)
-                := Utils.To_Bytes (Input => Spi_Rem);
+                := Utils.To_Bytes (Input => Interfaces.Unsigned_64 (Spi_Rem));
          else
             Fixed_Nonce (Fixed_Nonce'First .. Nonce_Rem.Size)
               := Nonce_Rem.Data (Nonce_Rem.Data'First .. Nonce_Rem.Size);
@@ -259,11 +263,11 @@ is
             Prf_Plus_Seed
               (Nonce_Rem.Size + Nonce_Loc.Size + 1 .. Nonce_Rem.Size
                + Nonce_Loc.Size + 8)
-              := Utils.To_Bytes (Input => Spi_Rem);
+              := Utils.To_Bytes (Input => Interfaces.Unsigned_64 (Spi_Rem));
             Prf_Plus_Seed
               (Nonce_Rem.Size + Nonce_Loc.Size + 9 ..
                  Prf_Plus_Seed'Last)
-                := Utils.To_Bytes (Input => Spi_Loc);
+                := Utils.To_Bytes (Input => Interfaces.Unsigned_64 (Spi_Loc));
          end if;
 
          --  SKEYSEED    = prf (Ni | Nr, Shared_Secret)
@@ -346,8 +350,10 @@ is
       L.Log (Message => "Creating new child ISA context with ID" & Isa_Id'Img
              & " (Parent Isa" & Parent_Isa_Id'Img & ", DH" & Dh_Id'Img
              & ", nonce" & Nc_Loc_Id'Img
-             & ", spi_loc " & Utils.To_Hex_String (Input => Spi_Loc)
-             & ", spi_rem " & Utils.To_Hex_String (Input => Spi_Rem) & ")");
+             & ", spi_loc " & Utils.To_Hex_String
+               (Input => Interfaces.Unsigned_64 (Spi_Loc))
+             & ", spi_rem " & Utils.To_Hex_String
+               (Input => Interfaces.Unsigned_64 (Spi_Rem)) & ")");
 
       Tkmrpc.Contexts.dh.consume (Id     => Dh_Id,
                                   dh_key => Dh_Secret);
@@ -398,9 +404,9 @@ is
             Prf_Plus_Seed (Prf_Plus_Seed'First .. PPS_Idx1 - 1)
               := Sk_Seed (Sks_Idx1 .. Sk_Seed'Last);
             Prf_Plus_Seed (PPS_Idx1 .. PPS_Idx2 - 1)
-              := Utils.To_Bytes (Input => Spi_Loc);
+              := Utils.To_Bytes (Input => Interfaces.Unsigned_64 (Spi_Loc));
             Prf_Plus_Seed (PPS_Idx2 .. Prf_Plus_Seed'Last)
-              := Utils.To_Bytes (Input => Spi_Rem);
+              := Utils.To_Bytes (Input => Interfaces.Unsigned_64 (Spi_Rem));
          else
             Sks_Idx2 := Sks_Idx1 + Nonce_Rem.Size;
             Sk_Seed (Sks_Idx1 .. Sks_Idx2 - 1)
@@ -410,9 +416,9 @@ is
             Prf_Plus_Seed (Prf_Plus_Seed'First .. PPS_Idx1 - 1)
               := Sk_Seed (Sks_Idx1 .. Sk_Seed'Last);
             Prf_Plus_Seed (PPS_Idx1 .. PPS_Idx2 - 1)
-              := Utils.To_Bytes (Input => Spi_Rem);
+              := Utils.To_Bytes (Input => Interfaces.Unsigned_64 (Spi_Rem));
             Prf_Plus_Seed (PPS_Idx2 .. Prf_Plus_Seed'Last)
-              := Utils.To_Bytes (Input => Spi_Loc);
+              := Utils.To_Bytes (Input => Interfaces.Unsigned_64 (Spi_Loc));
          end if;
 
          Crypto.Hmac_Sha512.Init (Ctx => Prf,
@@ -468,7 +474,8 @@ is
         := Compute_Auth_Octets
           (Ae_Id        => Ae_Id,
            Init_Message => Init_Message,
-           Idx          => Config.Get_Local_Identity (Id => Lc_Id).Name,
+           Idx          => Config.Get_Local_Identity
+             (Id => Tkmrpc.Types.Li_Id_Type (Lc_Id)).Name,
            Verify       => False);
    begin
       L.Log (Message => "Generating local signature for ISA context"

@@ -174,7 +174,7 @@ is
              & "' for CC context" & Cc_Id'Img);
       Tkmrpc.Contexts.cc.create
         (Id          => Cc_Id,
-         authag_id   => Autha_Id,
+         authag_id   => Tkmrpc.Types.Authag_Id_Type (Autha_Id),
          ri_id       => Ri_Id,
          certificate => Certificate,
          last_cert   => Certificate,

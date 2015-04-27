@@ -33,6 +33,13 @@ package body Server_Ike_Tkm_Tests is
    procedure Check_Limits
    is
       use type Types.Active_Requests_Type;
+      use type Tkmrpc.Results.Result_Type;
+      use type Tkmrpc.Types.Ae_Id_Type;
+      use type Tkmrpc.Types.Cc_Id_Type;
+      use type Tkmrpc.Types.Dh_Id_Type;
+      use type Tkmrpc.Types.Nc_Id_Type;
+      use type Tkmrpc.Types.Isa_Id_Type;
+      use type Tkmrpc.Types.Esa_Id_Type;
 
       Res      : Results.Result_Type;
       Max_Reqs : Types.Active_Requests_Type;
@@ -121,6 +128,7 @@ package body Server_Ike_Tkm_Tests is
    procedure Check_Version
    is
       use type Types.Version_Type;
+      use type Tkmrpc.Results.Result_Type;
 
       Res : Results.Result_Type;
       Ver : Types.Version_Type;
