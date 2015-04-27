@@ -16,6 +16,7 @@
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+with Ada.Exceptions;
 with Ada.Strings.Fixed;
 
 with Anet;
@@ -258,6 +259,11 @@ is
       Sock.Delete_State
         (Dst => Policy.Local_Addr,
          Spi => SPI_In);
+
+   exception
+      when E : X.Xfrm_Error =>
+         L.Log (Message => "Ignoring XFRM error: "
+                & Ada.Exceptions.Exception_Message (X => E));
    end Delete_State;
 
    -------------------------------------------------------------------------
