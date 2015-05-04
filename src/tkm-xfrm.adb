@@ -161,7 +161,7 @@ is
          Sel_Loc_Prefix := X.Prefix_Type (Policy.Local_Netmask);
          Sel_Rem        := Policy.Remote_Net;
          Sel_Rem_Prefix := X.Prefix_Type (Policy.Remote_Netmask);
-         L.Log (Message => "Adding SA [" & Policy.Id'Img & ", "
+         L.Log (Message => "Adding ESA [" & Policy.Id'Img & ", "
                 & Anet.To_String (Address => Sel_Loc) & "/"
                 & Ada.Strings.Fixed.Trim (Source => Sel_Loc_Prefix'Img,
                                           Side   => Ada.Strings.Left)
@@ -184,7 +184,7 @@ is
          Sel_Loc_Prefix := 32;
          Sel_Rem        := Policy.Remote_Addr;
          Sel_Rem_Prefix := 32;
-         L.Log (Message => "Adding SA [" & Policy.Id'Img & ", "
+         L.Log (Message => "Adding ESA [" & Policy.Id'Img & ", "
                 & Anet.To_String (Address => Policy.Local_Addr) & " <-> "
                 & Anet.To_String (Address => Policy.Remote_Addr)
                 & ", SPI_in " & Utils.To_Hex_String
@@ -246,7 +246,7 @@ is
       Policy : constant Config.Security_Policy_Type
         := Config.Get_Policy (Id => Policy_Id);
    begin
-      L.Log (Message => "Deleting SA [" & Policy.Id'Img & ", "
+      L.Log (Message => "Deleting ESA [" & Policy.Id'Img & ", "
              & Anet.To_String (Address => Policy.Local_Addr) & " <=> "
              & Anet.To_String (Address => Policy.Remote_Addr)
              & ", SPI_in " & Utils.To_Hex_String
