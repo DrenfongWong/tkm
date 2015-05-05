@@ -102,7 +102,7 @@ The full report about IKEv2 Separation can be found here:
 http://www.codelabs.ch/tkm/ike-separation.pdf.
 
 Information about the strongSwan project can be found on the project's website:
-http://wiki.strongswan.org/projects/strongswan/wiki.
+https://wiki.strongswan.org/projects/strongswan/wiki.
 
 Unfortunately the Linux kernel's XFRM subsystem is not well documented. A brief
 overview is given on the following website:
@@ -228,12 +228,10 @@ option:
   $ ./autogen.sh
   $ ./configure [--prefix=/path/to/install] \
       --disable-defaults      \
-      --enable-charon         \
       --enable-ikev2          \
       --enable-kernel-netlink \
       --enable-openssl        \
       --enable-pem            \
-      --enable-scripts        \
       --enable-socket-default \
       --enable-stroke         \
       --enable-tkm
@@ -241,10 +239,10 @@ option:
 
 For additional build instructions for strongSwan, the reader is directed to the
 project's documentation at
-http://wiki.strongswan.org/projects/strongswan/wiki/InstallationDocumentation.
+https://wiki.strongswan.org/projects/strongswan/wiki/InstallationDocumentation.
 
 NOTE: strongSwan requires specific kernel modules to be enabled, see
-      http://wiki.strongswan.org/projects/strongswan/wiki/KernelModules
+      https://wiki.strongswan.org/projects/strongswan/wiki/KernelModules
 
 TKM
 ~~~
@@ -268,7 +266,7 @@ Certificates
 ~~~~~~~~~~~~
 X509 certificates are needed for mutual authentication. The strongSwan PKI tool
 can be used to setup a simple CA with user certificates, see
-http://wiki.strongswan.org/projects/strongswan/wiki/SimpleCA. The generated CA
+https://wiki.strongswan.org/projects/strongswan/wiki/SimpleCA. The generated CA
 certificate must be placed in strongSwan's certificate directory, which is
 `/usr/local/etc/ipsec.d/cacerts/` by default. Likewise the user certificate
 containing the public key of the local identity used for authentication, must be
@@ -367,8 +365,8 @@ More detailed information is available in the project report in chapter 6.2, see
 Licence
 -------
 --------------------------------------------------------------------------------
-Copyright (C) 2012, 2013 Reto Buerki <reet@codelabs.ch>
-Copyright (C) 2012, 2013 Adrian-Ken Rueegsegger <ken@codelabs.ch>
+Copyright (C) 2012-2015 Reto Buerki <reet@codelabs.ch>
+Copyright (C) 2012-2015 Adrian-Ken Rueegsegger <ken@codelabs.ch>
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
