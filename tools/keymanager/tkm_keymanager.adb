@@ -36,6 +36,7 @@ with Tkm.Config;
 with Tkm.Callbacks;
 with Tkm.Ca_Cert;
 with Tkm.Private_Key;
+with Tkm.Termination;
 
 procedure Tkm_Keymanager
 is
@@ -147,6 +148,9 @@ begin
    Receiver.Register_Error_Handler
      (Callback => Tkm.Callbacks.Receiver_Error'Access);
    Receiver.Listen (Callback => Dispatch'Access);
+
+   Ada.Command_Line.Set_Exit_Status (Code => Tkm.Termination.Wait);
+   Tkm.Xfrm.Flush;
 
 exception
    when E : others =>
