@@ -150,7 +150,9 @@ begin
    Receiver.Listen (Callback => Dispatch'Access);
 
    Ada.Command_Line.Set_Exit_Status (Code => Tkm.Termination.Wait);
+   Receiver.Stop;
    Tkm.Xfrm.Flush;
+   L.Stop;
 
 exception
    when E : others =>
