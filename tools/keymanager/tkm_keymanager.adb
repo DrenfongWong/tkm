@@ -160,6 +160,9 @@ exception
              Message => "Terminating due to error");
       L.Log (Level   => L.Error,
              Message => Ada.Exceptions.Exception_Information (X => E));
+      if Receiver.Is_Listening then
+         Receiver.Stop;
+      end if;
       L.Stop;
       Ada.Command_Line.Set_Exit_Status (Code => Ada.Command_Line.Failure);
 end Tkm_Keymanager;
