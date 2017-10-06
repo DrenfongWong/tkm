@@ -47,11 +47,14 @@ is
    package L renames Tkm.Logger;
 
    package Unix_TCP_Receiver is new Anet.Receivers.Stream
-     (Socket_Type => Anet.Sockets.Unix.TCP_Socket_Type);
+     (Socket_Type       => Anet.Sockets.Unix.TCP_Socket_Type,
+      Address_Type      => Anet.Sockets.Unix.Full_Path_Type,
+      Accept_Connection => Anet.Sockets.Unix.Accept_Connection);
 
    procedure Dispatch is new Tkmrpc.Process_Stream
      (Dispatch          => Tkmrpc.Dispatchers.Ike.Dispatch,
-      Exception_Handler => L.Log);
+      Exception_Handler => L.Log,
+      Address_Type      => Anet.Sockets.Unix.Full_Path_Type);
 
    procedure Print_Usage (Msg : String);
    --  Print usage information, set exit status to failure and stop logger.

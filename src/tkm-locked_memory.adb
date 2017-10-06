@@ -20,7 +20,7 @@ with System.Address_Image;
 
 with Interfaces.C;
 
-with Anet;
+with Anet.Errno;
 
 with Tkm.Logger;
 
@@ -65,7 +65,7 @@ is
       if Res /= 0 then
          raise Locking_Error with "Unable to lock" & Size'Img & " byte(s) "
            & "at address " & System.Address_Image (A => Address)
-           & ": " & Anet.Get_Errno_String;
+           & ": " & Anet.Errno.Get_Errno_String;
       end if;
    end Lock;
 
@@ -86,7 +86,7 @@ is
       if Res /= 0 then
          raise Locking_Error with "Unable to unlock" & Size'Img & " byte(s) "
            & "at address " & System.Address_Image (A => Address)
-           & ": " & Anet.Get_Errno_String;
+           & ": " & Anet.Errno.Get_Errno_String;
       end if;
    end Unlock;
 
