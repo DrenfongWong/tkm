@@ -16,8 +16,6 @@
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-with Interfaces;
-
 with Tkmrpc.Results;
 with Tkmrpc.Types;
 with Tkmrpc.Servers.Ike;
@@ -31,7 +29,6 @@ package body Server_Ike_DH_Tests is
 
    procedure Check_DH_Operations
    is
-      use type Interfaces.Unsigned_32;
       use type Tkmrpc.Results.Result_Type;
       use type Tkmrpc.Types.Byte_Sequence;
 

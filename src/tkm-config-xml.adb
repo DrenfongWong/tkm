@@ -40,9 +40,6 @@ is
 
    use Tkm.Config.Xml.Tags;
 
-   use type Ada.Containers.Count_Type;
-   use type Tkmrpc.Types.Li_Id_Type;
-
    package Policies_Package is new Ada.Containers.Doubly_Linked_Lists
      (Element_Type => Security_Policy_Type);
 
@@ -55,7 +52,8 @@ is
 
    package Local_Ids_Pkg is new Ada.Containers.Ordered_Maps
      (Key_Type     => Tkmrpc.Types.Li_Id_Type,
-      Element_Type => Local_Id_Type);
+      Element_Type => Local_Id_Type,
+      "<"          => Tkmrpc.Types."<");
 
    function S
      (U : Ada.Strings.Unbounded.Unbounded_String)

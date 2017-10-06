@@ -81,7 +81,6 @@ is
    is
       use type Interfaces.C.int;
       use type Interfaces.C.unsigned_long;
-      use type Tkmrpc.Types.Dh_Algorithm_Type;
 
       Res                      : Interfaces.C.int;
       Bn_G, Bn_P, Bn_Xa, Bn_Ya : Mpz_T;
@@ -137,7 +136,6 @@ is
       Zz     : out Tkmrpc.Types.Byte_Sequence)
    is
       use type Interfaces.C.int;
-      use type Tkmrpc.Types.Dh_Algorithm_Type;
 
       Res                       : Interfaces.C.int;
       Bn_P, Bn_Xa, Bn_Yb, Bn_Zz : Mpz_T;

@@ -56,7 +56,6 @@ is
 
    function Hex_To_Bytes (Input : String) return Tkmrpc.Types.Byte_Sequence
    is
-      use type Tkmrpc.Types.Byte_Sequence;
    begin
       if Input = "" then
          return (1 => 0);
@@ -112,7 +111,6 @@ is
      (Bignum :     GMP.Binding.Mpz_T;
       Bytes  : out Tkmrpc.Types.Byte_Sequence)
    is
-      use GMP.Binding;
       use type Interfaces.C.size_t;
 
       procedure Mpz_Export
@@ -208,7 +206,6 @@ is
    function To_Hex_String (Input : Tkmrpc.Types.Byte_Sequence) return String
    is
       use type Interfaces.Unsigned_8;
-      use type Interfaces.C.size_t;
       use type Tkmrpc.Types.Byte_Sequence;
    begin
       if Input = Null_Byte_Sequence then

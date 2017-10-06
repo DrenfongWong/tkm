@@ -25,7 +25,6 @@ package body Signer_Tests is
 
    use Ahven;
    use Tkm;
-   use type Tkmrpc.Types.Byte_Sequence;
 
    package RSA renames Tkm.Crypto.Rsa_Pkcs1_Sha1;
 

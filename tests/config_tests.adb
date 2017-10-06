@@ -147,8 +147,6 @@ package body Config_Tests is
 
    procedure Load_Config
    is
-      use type Config.Security_Policy_Type;
-
       Tmp_Filename : constant String
         := "/tmp/tkm.test-config-" & Anet.Util.Random_String (Len => 8);
    begin

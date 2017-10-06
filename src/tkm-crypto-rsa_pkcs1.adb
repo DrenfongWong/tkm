@@ -60,7 +60,6 @@ is
               Input => Utils.To_String (Input => Data));
 
       declare
-         use type Tkmrpc.Types.Byte_Sequence;
 
          --  EMSA-PKCS1-v1_5 encoded message
          --  EM = 0x00 || 0x01 || PS || 0x00 || T
