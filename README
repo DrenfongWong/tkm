@@ -131,25 +131,25 @@ To compile the TKM components on your system, you need to have the following
 software installed:
 
 * Git version control tool:
-  http://git-scm.com/
+  https://git-scm.com/
 
 * GNAT compiler:
-  http://www.gnu.org/software/gnat/gnat.html
+  https://www.gnu.org/software/gnat/gnat.html
 
 * gprbuild (part of AdaCore's GNAT GPL Edition):
-  http://libre.adacore.com/tools/
+  https://libre.adacore.com/tools/
 
 * Anet (Version 0.2.2 or above):
-  http://www.codelabs.ch/anet/
+  https://www.codelabs.ch/anet/
 
 * Alog (Version 0.4 or above):
-  http://www.codelabs.ch/alog/
+  https://www.codelabs.ch/alog/
 
 * GMPAda (Ada GMP binding):
   http://nicolas.boulenguez.free.fr/
 
 * XML/Ada (Version 4.1 or above):
-  http://libre.adacore.com/tools/xmlada/
+  https://libre.adacore.com/tools/xmlada/
 
 If you want to run the unit tests before installation of a TKM component (which
 is recommended) you furthermore need to have the following installed:
@@ -174,7 +174,7 @@ XFRM/Ada library
 The first step is to compile and install the needed libraries. Compile and
 install XFRM/Ada:
 
-  $ git clone http://git.codelabs.ch/git/xfrm-ada.git
+  $ git clone https://git.codelabs.ch/git/xfrm-ada.git
   $ cd xfrm-ada
   $ make install
 
@@ -182,7 +182,7 @@ X509/Ada library
 ~~~~~~~~~~~~~~~~
 Compile and install X509/Ada:
 
-  $ git clone http://git.codelabs.ch/git/x509-ada.git
+  $ git clone https://git.codelabs.ch/git/x509-ada.git
   $ cd x509-ada
   $ make tests
   $ make install
@@ -191,7 +191,7 @@ TKM-RPC library
 ~~~~~~~~~~~~~~~
 After these dependencies have been met, the TKM-RPC library is next:
 
-  $ git clone http://git.codelabs.ch/git/tkm-rpc.git
+  $ git clone https://git.codelabs.ch/git/tkm-rpc.git
   $ cd tkm-rpc
   $ make tests
   $ make install
@@ -248,7 +248,7 @@ TKM
 ~~~
 Once the IKEv2 daemon is ready the TKM component can be compiled:
 
-  $ git clone http://git.codelabs.ch/git/tkm.git
+  $ git clone https://git.codelabs.ch/git/tkm.git
   $ cd tkm
   $ make tests
   $ make install
@@ -258,7 +258,7 @@ xfrm-proxy
 For XFRM Acquire and Expire processing, the xfrm-proxy component must be
 compiled and installed:
 
-  $ git clone http://git.codelabs.ch/git/xfrm-proxy.git
+  $ git clone https://git.codelabs.ch/git/xfrm-proxy.git
   $ cd xfrm-proxy
   $ make install
 
