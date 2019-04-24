@@ -19,7 +19,7 @@ component is used. It forwards XFRM Acquire and Expire events from the Linux
 kernel to the IKE daemon. The following diagram illustrates the main components
 of the system and how they communicate:
 
-image:system-overview.svg[alt="System overview"]
+image::system-overview.svg[alt="System overview", align="center"]
 
 The trusted key manager uses the tkm-rpc library to communicate with the
 augmented strongSwan charon daemon (`charon-tkm`) in the untrusted part. The
@@ -50,15 +50,15 @@ The following features are implemented by TKM:
 The following table lists the supported transforms with their IANA identifiers:
 
 .Supported IKEv2 transforms
-[options="header",width="25%"]
+[cols="10,90",options="header", width="30%"]
 |===========================
-|Transform Type         | Id
-|Encryption algorithm   | 12
-|Pseudo-random Function |  7
-|Integrity Algorithm    | 14
-|Diffie-Hellman Group   | 15
-|Diffie-Hellman Group   | 16
-|Authentication method  |  1
+| ID | Transform Type
+| 12 | Encryption algorithm
+|  7 | Pseudo-random Function
+| 14 | Integrity Algorithm
+| 15 | Diffie-Hellman Group
+| 16 | Diffie-Hellman Group
+|  1 | Authentication method
 |===========================
 
 A complete list of all IKEv2 IANA identifiers can be found here:

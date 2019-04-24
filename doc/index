@@ -1,1 +1,6 @@
-include::../README[]
+:description: Trusted Key Manager in Ada
+
+TKM
+===
+
+include::README[]

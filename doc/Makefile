@@ -1,29 +1,35 @@
-DESTDIR   ?= html
-STYLEPATH ?= .
-PREPARE   := $(shell mkdir -p $(DESTDIR))
+DESTDIR ?= html
+PREPARE := $(shell mkdir -p $(DESTDIR))
 
 ASCIIDOC_OPTS = \
-	--backend=xhtml11 \
-	--conf-file=page.conf \
-	-a stylesdir=$(STYLEPATH) \
-	-a linkcss \
-	-a disable-javascript \
+	-a icons=font \
+	-a iconfont-remote! \
+	-a stylesdir=css \
+	-a stylesheet=styles.css \
+	-a sectanchors \
 	-o -
 
-all: $(DESTDIR)/asciidoc.css $(DESTDIR)/system-overview.svg build_page
-
-$(DESTDIR)/asciidoc.css: asciidoc.css
-	cp $< $@
+all: build_page
 
 $(DESTDIR)/system-overview.svg: images/system-overview.svg
 	cp $< $@
 
 build_page: $(DESTDIR)/index.html
 
-$(DESTDIR)/index.html: index page.conf ../README
-	asciidoc $(ASCIIDOC_OPTS) $< > $@
+README: ../README
+	tail -n +4 $< > $@
+
+$(DESTDIR)/index.html: $(DESTDIR)/fonts $(DESTDIR)/css/font-awesome.css
+$(DESTDIR)/index.html: $(DESTDIR)/system-overview.svg
+$(DESTDIR)/index.html: index README css/styles.css
+	TZ=UTC asciidoctor $(ASCIIDOC_OPTS) $< > $@
+
+$(DESTDIR)/css/font-awesome.css: css/font-awesome.css
+	mkdir -p $(DESTDIR)/css
+	cp $< $@
+
+$(DESTDIR)/fonts: fonts
+	cp -R $< $@
 
 clean:
-	@rm -rf $(DESTDIR)/*.html
-	@rm -rf $(DESTDIR)/*.css
-	@rm -rf $(DESTDIR)/*.svg
+	@rm -rf $(DESTDIR) README
