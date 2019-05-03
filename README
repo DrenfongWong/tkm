@@ -7,8 +7,8 @@ using the Ada programming language. The TKM works in conjunction with the
 strongSwan IKEv2 daemon `charon-tkm` to provide key management services for
 IPsec.
 
-NOTE: IPsec can be used to protect data flows between hosts or security gateways
-      (see http://en.wikipedia.org/wiki/IPsec for further information on IPsec).
+NOTE: IPsec can be used to protect data flows between hosts or security gateways.
+      footnote:[https://en.wikipedia.org/wiki/IPsec]
 
 The underlying concept of IKE disaggregation and the design of TKM and all
 related components is presented in detail in the project report, see
@@ -238,11 +238,11 @@ option:
   $ make install
 
 For additional build instructions for strongSwan, the reader is directed to the
-project's documentation at
-https://wiki.strongswan.org/projects/strongswan/wiki/InstallationDocumentation.
+project's documentation.
+footnote:[https://wiki.strongswan.org/projects/strongswan/wiki/InstallationDocumentation]
 
-NOTE: strongSwan requires specific kernel modules to be enabled, see
-      https://wiki.strongswan.org/projects/strongswan/wiki/KernelModules
+NOTE: strongSwan requires specific kernel modules to be enabled
+      footnote:[https://wiki.strongswan.org/projects/strongswan/wiki/KernelModules]
 
 TKM
 ~~~
@@ -265,12 +265,12 @@ compiled and installed:
 Certificates
 ~~~~~~~~~~~~
 X509 certificates are needed for mutual authentication. The strongSwan PKI tool
-can be used to setup a simple CA with user certificates, see
-https://wiki.strongswan.org/projects/strongswan/wiki/SimpleCA. The generated CA
-certificate must be placed in strongSwan's certificate directory, which is
-`/usr/local/etc/ipsec.d/cacerts/` by default. Likewise the user certificate
-containing the public key of the local identity used for authentication, must be
-copied to `/usr/local/etc/ipsec.d/certs/`.
+can be used to setup a simple CA with user certificates
+footnote:[https://wiki.strongswan.org/projects/strongswan/wiki/SimpleCA]. The
+generated CA certificate must be placed in strongSwan's certificate directory,
+which is `/usr/local/etc/ipsec.d/cacerts/` by default. Likewise the user
+certificate containing the public key of the local identity used for
+authentication, must be copied to `/usr/local/etc/ipsec.d/certs/`.
 
 Configuration
 ~~~~~~~~~~~~~
