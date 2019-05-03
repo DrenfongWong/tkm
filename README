@@ -62,7 +62,7 @@ The following table lists the supported transforms with their IANA identifiers:
 |===========================
 
 A complete list of all IKEv2 IANA identifiers can be found here:
-http://www.iana.org/assignments/ikev2-parameters/.
+https://www.iana.org/assignments/ikev2-parameters/.
 
 
 [[anchor-doc]]
@@ -99,24 +99,24 @@ according to the specification.
 ____
 
 The full report about IKEv2 Separation can be found here:
-http://www.codelabs.ch/tkm/ike-separation.pdf.
+https://www.codelabs.ch/tkm/ike-separation.pdf.
 
 Information about the strongSwan project can be found on the project's website:
 https://wiki.strongswan.org/projects/strongswan/wiki.
 
 Unfortunately the Linux kernel's XFRM subsystem is not well documented. A brief
 overview is given on the following website:
-http://www.linuxfoundation.org/collaborate/workgroups/networking/ipsec-overview.
+https://www.linuxfoundation.org/collaborate/workgroups/networking/ipsec-overview.
 
 
 Download
 --------
 The TKM sources are available through its git repository:
 
-  $ git clone http://git.codelabs.ch/git/tkm.git
+  $ git clone https://git.codelabs.ch/git/tkm.git
 
 A browsable version of the repository is also available here:
-http://git.codelabs.ch/?p=tkm.git
+https://git.codelabs.ch/?p=tkm.git
 
 
 Installation
@@ -155,7 +155,7 @@ If you want to run the unit tests before installation of a TKM component (which
 is recommended) you furthermore need to have the following installed:
 
 * Ahven (Test-Framework):
-  http://ahven.stronglytyped.org/
+  https://ahven.stronglytyped.org/
 
 Preparatory steps
 ~~~~~~~~~~~~~~~~~
